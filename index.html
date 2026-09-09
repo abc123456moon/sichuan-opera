@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>川剧文化小站 · 首页</title>
+  <meta name="description" content="川剧文化小站 - 帮助你在 10 分钟内快速了解川剧核心特色和文化背景" />
+  <link rel="stylesheet" href="style.css?v=95" />
+</head>
+<body class="home-body">
+  <!-- 开场帷幕动画 -->
+  <div class="curtain-overlay" id="curtainOverlay">
+    <div class="curtain-rod"></div>
+    <div class="curtain-panel curtain-left"></div>
+    <div class="curtain-panel curtain-right"></div>
+  </div>
+
+  <header class="site-header home-header">
+    <div class="nav-wrap">
+      <a href="index.html" class="brand">
+        <img src="images/logo_mask.png" alt="川剧" class="brand-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-block'" />
+        <span class="brand-mask" style="display:none;"><i></i></span>
+        <span>彩墨·川剧</span>
+      </a>
+      <button class="nav-toggle" aria-label="菜单">☰</button>
+      <ul class="nav-links" id="homeNavLinks">
+        <li><a href="index.html" class="active">首页</a></li>
+        <li class="nav-has-dropdown">
+          <a href="knowledge.html">川剧百科<span class="nav-caret">▾</span></a>
+          <ul class="nav-dropdown">
+            <li><a href="knowledge.html#kb-origin">历史起源</a></li>
+            <li><a href="knowledge.html#kb-features">艺术特色</a></li>
+            <li><a href="knowledge.html#kb-roles">行当详解</a></li>
+            <li><a href="knowledge.html#kb-instruments">川剧乐器</a></li>
+            <li><a href="knowledge.html#kb-costume">服饰规矩</a></li>
+            <li><a href="knowledge.html#kb-mask">脸谱谱式</a></li>
+            <li><a href="knowledge.html#kb-facechange">变脸方式</a></li>
+            <li><a href="knowledge.html#kb-stunts">川剧绝活</a></li>
+            <li><a href="knowledge.html#kb-plays">经典剧目</a></li>
+            <li><a href="knowledge.html#kb-heritage">传承现状</a></li>
+          </ul>
+        </li>
+        <li><a href="shows.html">川剧体验</a></li>
+        <li><a href="quiz.html">后台一夜</a></li>
+        <li><a href="ai-chat.html">AI 问答</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- 全屏川剧演出轮播背景 + 中央脸谱 Logo + 右侧 4 个竖向导航按钮 -->
+  <section class="home-hero">
+    <!-- 3 图轮播背景(真实图 images/bg_opera_0*.jpg,无图则 CSS 舞台渐变兜底) -->
+    <div class="home-carousel" id="homeCarousel">
+      <div class="carousel-slide active" data-idx="0">
+        <img src="images/bg_opera_01.jpg" alt="川剧舞台一" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
+      </div>
+      <div class="carousel-slide" data-idx="1">
+        <img src="images/bg_opera_02.jpg" alt="川剧舞台二" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
+      </div>
+      <div class="carousel-slide" data-idx="2">
+        <img src="images/bg_opera_03.jpg" alt="川剧舞台三" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
+      </div>
+      <!-- 手动控制:左右箭头 -->
+      <button class="carousel-arrow prev" id="carouselPrev" aria-label="上一张">‹</button>
+      <button class="carousel-arrow next" id="carouselNext" aria-label="下一张">›</button>
+      <!-- 底部圆点指示器 -->
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+    <div class="home-hero-mask"></div>
+
+    <!-- 顶部幕布装饰 -->
+    <div class="home-curtain"></div>
+
+    <!-- 中央巨型书法"川剧"大字 + 副标题 + 戏码牌入口 -->
+    <div class="home-hero-content">
+      <!-- 巨型书法"川剧"大字(错落 + 金色渐变 + 呼吸感) -->
+      <div class="hero-calig-wrap">
+        <span class="hero-calig chuan" data-char="川">川</span>
+        <span class="hero-calig ju" data-char="剧">剧</span>
+      </div>
+
+      <!-- 副标题 -->
+      <p class="hero-poem">笔落惊风雨,脸谱即人生</p>
+      <p class="hero-desc">十分钟,认识巴蜀大地上最神秘的一抹色彩</p>
+
+      <!-- 4 个竖条戏码牌入口 -->
+      <nav class="playbill-nav" aria-label="主导航">
+        <a class="playbill-tag" href="knowledge.html">
+          <span class="playbill-name">川剧百科</span>
+          <span class="playbill-sub">历史/行当/脸谱</span>
+        </a>
+        <a class="playbill-tag" href="shows.html">
+          <span class="playbill-name">川剧体验</span>
+          <span class="playbill-sub">体验·互动·测脸</span>
+        </a>
+        <a class="playbill-tag" href="quiz.html">
+          <span class="playbill-name">后台一夜</span>
+          <span class="playbill-sub">沉浸式川剧游戏</span>
+        </a>
+        <a class="playbill-tag" href="ai-chat.html">
+          <span class="playbill-name">AI 问答</span>
+          <span class="playbill-sub">问问川小旦</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- 页面最底部题跋 -->
+    <p class="hero-bottom-inscription">以数字之技,传巴蜀之魂</p>
+  </section>
+
+  <!-- 首页下方简介 -->
+  <main class="container">
+    <div class="divider-pattern"></div>
+
+    <div class="knowledge-block">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">关于川剧文化小站</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p>川剧是中国西南地区影响最大的戏曲剧种,以<strong>变脸、吐火、滚灯</strong>等绝活闻名于世,2006 年被列入第一批国家级非物质文化遗产名录。</p>
+      <p>本站面向<strong>游客、戏剧爱好者与亲子家庭</strong>,用最简单的方式带你看懂川剧。本站不提供在线购票,如需购票请前往演出页查看联系方式;也不涉及社交评论与其他戏曲类型,只专注于川剧。</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>川剧文化小站 · 仅供学习交流使用 · 数据来源于公开资料</p>
+    <p>© 2026 Sichuan Opera Mini Site · Powered by HTML5 + CSS3 + 原生 JS</p>
+  </footer>
+
+  <script src="app.js?v=20260909a"></script>
+  <script src="mascot-widget.js?v=3"></script>
+  <script>
+    (function () {
+      // ====== 首页轮播背景(自动 5s + 左右箭头 + 圆点 + 淡入淡出) ======
+      var slides = document.querySelectorAll(".carousel-slide");
+      var dotsContainer = document.getElementById("carouselDots");
+      var prevBtn = document.getElementById("carouselPrev");
+      var nextBtn = document.getElementById("carouselNext");
+      var current = 0;
+      var carouselTimer = null;
+
+      // 生成圆点指示器
+      var dotsHtml = "";
+      for (var i = 0; i < slides.length; i++) {
+        dotsHtml += '<span class="carousel-dot' + (i === 0 ? " active" : "") + '" data-idx="' + i + '"></span>';
+      }
+      dotsContainer.innerHTML = dotsHtml;
+      var dots = dotsContainer.querySelectorAll(".carousel-dot");
+
+      function goTo(idx) {
+        idx = ((idx % slides.length) + slides.length) % slides.length;
+        slides[current].classList.remove("active");
+        dots[current].classList.remove("active");
+        current = idx;
+        slides[current].classList.add("active");
+        dots[current].classList.add("active");
+      }
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+
+      function startAuto() {
+        clearInterval(carouselTimer);
+        carouselTimer = setInterval(next, 5000);
+      }
+      // 仅在悬停控制按钮时暂停,移开恢复(背景轮播不因鼠标在页面上而暂停)
+      var carouselCtrl = document.querySelector(".carousel-dots");
+      if (carouselCtrl) {
+        carouselCtrl.addEventListener("mouseenter", function () { clearInterval(carouselTimer); });
+        carouselCtrl.addEventListener("mouseleave", startAuto);
+      }
+
+      nextBtn.addEventListener("click", function () { next(); startAuto(); });
+      prevBtn.addEventListener("click", function () { prev(); startAuto(); });
+      Array.prototype.forEach.call(dots, function (d) {
+        d.addEventListener("click", function () { goTo(parseInt(d.getAttribute("data-idx"), 10)); startAuto(); });
+      });
+      startAuto();
+
+      // ====== 开场帷幕 ======
+      var curtain = document.getElementById("curtainOverlay");
+
+      if (curtain) {
+        setTimeout(function () {
+          curtain.classList.add("curtain-open");
+        }, 400);
+
+        // 帷幕拉开后隐藏
+        setTimeout(function () {
+          curtain.style.display = "none";
+        }, 5200);
+      }
+
+      // ====== 移动端菜单切换 ======
+      var toggle = document.querySelector(".home-header .nav-toggle");
+      var menu = document.querySelector(".home-header .nav-links");
+      if (toggle && menu) {
+        toggle.addEventListener("click", function () { menu.classList.toggle("open"); });
+      }
+    })();
+  </script>
+</body>
+</html>

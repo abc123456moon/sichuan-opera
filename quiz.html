@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>后台一夜 · 彩墨川剧</title>
+  <link rel="stylesheet" href="style.css?v=110" />
+</head>
+<body class="game-body">
+  <header class="site-header"></header>
+  <button class="game-back-btn" id="btnBack">◂ 返回</button>
+  <div class="game-root" id="gameRoot">
+    <!-- ============ 场景一：封面 ============ -->
+    <div class="game-scene active" id="scene-cover" data-scene="cover">
+      <!-- 全屏封面图 -->
+      <div class="cover-fullimg">
+        <div class="cover-fallback" id="coverFallback" style="display:none;"></div>
+        <img src="images/game_cover.png" alt="后台一夜封面" class="cover-img"
+             onerror="this.style.display='none';document.getElementById('coverFallback').style.display='block';" />
+      </div>
+      <div class="cover-shade"></div>
+      <div class="cover-content">
+        <h1 class="game-title">后台一夜</h1>
+        <div class="cover-subblock">
+          <p class="game-subtitle">沉浸式戏曲体验游戏</p>
+          <button class="game-start-btn" id="btnStart">开始游戏</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 场景二：输入名字 ============ -->
+    <div class="game-scene" id="scene-name" data-scene="name">
+      <div class="name-input-content">
+        <h2 class="scene-heading">徒弟，你叫什么名字？</h2>
+        <input type="text" class="name-input-field" id="playerNameInput" placeholder="输入你的名字" maxlength="10" />
+        <button class="game-start-btn" id="btnConfirmName">确认</button>
+      </div>
+    </div>
+
+    <!-- ============ 场景三：黑屏背景 ============ -->
+    <div class="game-scene" id="scene-intro" data-scene="intro">
+      <div class="intro-black-screen" id="introScreen">
+        <div class="intro-text" id="introText"></div>
+        <div class="intro-skip-hint" id="introSkipHint">点击屏幕继续</div>
+      </div>
+    </div>
+
+    <!-- ============ 场景四：游戏主舞台 ============ -->
+    <div class="game-scene" id="scene-stage" data-scene="stage">
+      <div class="game-stage-bg" id="stageBg">
+        <div class="stage-bg-fallback" id="stageBgFallback" style="display:none;"></div>
+        <img src="images/game_stage_bg.png" alt="后台场景" class="stage-bg-img"
+             onerror="this.style.display='none';document.getElementById('stageBgFallback').style.display='block';" />
+      </div>
+
+      <!-- 关卡进度 -->
+      <div class="game-progress" id="gameProgress">
+        <div class="progress-dot active" data-level="1">一</div>
+        <div class="progress-line"></div>
+        <div class="progress-dot" data-level="2">二</div>
+        <div class="progress-line"></div>
+        <div class="progress-dot" data-level="3">三</div>
+        <div class="progress-line"></div>
+        <div class="progress-dot" data-level="4">四</div>
+      </div>
+
+      <!-- 角色形象（真实图片 + SVG 兜底，支持多状态切换） -->
+      <div class="char-master" id="charMaster">
+        <div class="char-fallback" id="masterFallback" style="display:none;"></div>
+        <img id="masterImg" class="char-img" src="images/master_normal.png" alt="周师傅" />
+      </div>
+      <div class="char-player" id="charPlayer">
+        <div class="char-fallback" id="playerFallback" style="display:none;"></div>
+        <img id="playerImg" class="char-img" src="images/player_normal.png" alt="徒弟" />
+      </div>
+
+      <!-- 关卡容器 -->
+      <div class="level-container" id="level1"></div>
+      <div class="level-container" id="level2"></div>
+      <div class="level-container" id="level3"></div>
+      <div class="level-container" id="level4"></div>
+
+      <!-- 对话框 -->
+      <div class="dialogue-box" id="dialogueBox" style="display:none;">
+        <div class="dialogue-box-inner">
+          <div class="dialogue-name" id="dialogueName"></div>
+          <div class="dialogue-text" id="dialogueText"></div>
+        </div>
+        <div class="dialogue-next-hint" id="dialogueHint">▼ 点击继续</div>
+      </div>
+
+      <!-- 分支选择按钮 -->
+      <div class="dialogue-choices" id="dialogueChoices" style="display:none;"></div>
+
+      <!-- 右下角跳过按钮：对话期间显示，一键跳到选项/下一环节 -->
+      <button class="game-skip-btn" id="btnSkip" style="display:none;">跳过 ▸</button>
+    </div>
+
+    <!-- ============ 场景五：通关 ============ -->
+    <div class="game-scene" id="scene-ending" data-scene="ending">
+      <div class="ending-content">
+        <h1 class="ending-title">通 关</h1>
+        <p class="ending-text" id="endingText"></p>
+        <div class="ending-buttons">
+          <button class="game-btn" id="btnRestart">再玩一次</button>
+          <a href="index.html" class="game-btn ghost" style="margin-left:12px;">返回首页</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 退出入口已由顶部导航栏承担 -->
+
+  <script src="app.js?v=20260909a"></script>
+  <script>
+  /* ============ 后台一夜 · 沉浸式川剧游戏 ============ */
+  (function () {
+    "use strict";
+
+    // ===== SVG 占位图生成器 =====
+
+    // 封面背景（后台场景：悬挂数张脸谱 + 灯笼 + 帷幕边）
+    function coverBgSVG() {
+      return '<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">' +
+        '<rect width="400" height="300" fill="#0a0608"/>' +
+        // 帷幕
+        '<path d="M0,0 L60,0 Q30,80 0,100 Z" fill="#5c0a0a" opacity="0.6"/>' +
+        '<path d="M400,0 L340,0 Q370,80 400,100 Z" fill="#5c0a0a" opacity="0.6"/>' +
+        // 灯笼
+        '<ellipse cx="200" cy="50" rx="24" ry="18" fill="#C41E3A" opacity="0.8"/>' +
+        '<line x1="200" y1="0" x2="200" y2="32" stroke="#D4A017" stroke-width="2"/>' +
+        '<line x1="200" y1="68" x2="200" y2="90" stroke="#D4A017" stroke-width="1" opacity="0.5"/>' +
+        '<circle cx="200" cy="50" r="20" fill="none" stroke="#D4A017" stroke-width="1.5"/>' +
+        '<text x="200" y="55" text-anchor="middle" font-size="10" fill="#D4A017" font-family="serif">戏</text>' +
+        // 悬挂脸谱（左红右黑）
+        '<g transform="translate(90,110)">' +
+          '<line x1="40" y1="0" x2="40" y2="-20" stroke="#D4A017" stroke-width="1" opacity="0.4"/>' +
+          '<circle cx="40" cy="30" r="32" fill="#C41E3A" stroke="#F5F0E6" stroke-width="1.5"/>' +
+          '<ellipse cx="28" cy="24" rx="6" ry="4" fill="none" stroke="#F5F0E6" stroke-width="1.5"/>' +
+          '<ellipse cx="52" cy="24" rx="6" ry="4" fill="none" stroke="#F5F0E6" stroke-width="1.5"/>' +
+          '<path d="M20,16 Q28,10 36,16" fill="none" stroke="#F5F0E6" stroke-width="2" stroke-linecap="round"/>' +
+          '<path d="M44,16 Q52,10 60,16" fill="none" stroke="#F5F0E6" stroke-width="2" stroke-linecap="round"/>' +
+          '<path d="M30,40 Q40,48 50,40" fill="none" stroke="#F5F0E6" stroke-width="2" stroke-linecap="round"/>' +
+        '</g>' +
+        '<g transform="translate(230,110)">' +
+          '<line x1="40" y1="0" x2="40" y2="-20" stroke="#D4A017" stroke-width="1" opacity="0.4"/>' +
+          '<circle cx="40" cy="30" r="32" fill="#1A1A1A" stroke="#D4A017" stroke-width="1.5"/>' +
+          '<ellipse cx="28" cy="24" rx="6" ry="4" fill="none" stroke="#D4A017" stroke-width="1.5"/>' +
+          '<ellipse cx="52" cy="24" rx="6" ry="4" fill="none" stroke="#D4A017" stroke-width="1.5"/>' +
+          '<path d="M20,16 Q28,10 36,16" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round"/>' +
+          '<path d="M44,16 Q52,10 60,16" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round"/>' +
+          '<path d="M30,40 Q40,48 50,40" fill="none" stroke="#D4A017" stroke-width="2" stroke-linecap="round"/>' +
+        '</g>' +
+        // 光晕
+        '<ellipse cx="200" cy="200" rx="180" ry="80" fill="#D4A017" opacity="0.06"/>' +
+        '<text x="200" y="260" text-anchor="middle" font-size="9" fill="#D4A017" opacity="0.3" font-family="serif" letter-spacing="6">巴 蜀 戏 台 · 后 台 一 夜</text>' +
+      '</svg>';
+    }
+
+    // 游戏大背景（后台环境：衣箱架 + 勾脸案 + 悬灯）
+    function stageBgSVG() {
+      return '<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">' +
+        '<rect width="1200" height="800" fill="#0d0807"/>' +
+        // 地面
+        '<rect y="600" width="1200" height="200" fill="#1a1010"/>' +
+        '<line x1="0" y1="600" x2="1200" y2="600" stroke="#3D2B1F" stroke-width="2" opacity="0.5"/>' +
+        // 衣箱架（左）
+        '<g transform="translate(80,200)" opacity="0.5">' +
+          '<rect x="0" y="0" width="140" height="280" fill="#3D2B1F" rx="4"/>' +
+          '<rect x="10" y="20" width="120" height="60" fill="#5c0a0a" rx="2"/>' +
+          '<rect x="10" y="100" width="120" height="60" fill="#4A2C4A" rx="2"/>' +
+          '<rect x="10" y="180" width="120" height="60" fill="#2E3B5C" rx="2"/>' +
+          '<line x1="20" y1="30" x2="120" y2="30" stroke="#D4A017" stroke-width="1" opacity="0.3"/>' +
+        '</g>' +
+        // 勾脸案（右）
+        '<g transform="translate(900,350)" opacity="0.4">' +
+          '<rect x="0" y="0" width="200" height="8" fill="#3D2B1F" rx="2"/>' +
+          '<rect x="10" y="8" width="8" height="120" fill="#3D2B1F"/>' +
+          '<rect x="182" y="8" width="8" height="120" fill="#3D2B1F"/>' +
+          // 铜镜
+          '<circle cx="100" cy="-30" r="35" fill="none" stroke="#D4A017" stroke-width="2" opacity="0.5"/>' +
+          '<circle cx="100" cy="-30" r="30" fill="#1a1010" opacity="0.8"/>' +
+        '</g>' +
+        // 悬挂灯笼
+        '<g transform="translate(300,80)" opacity="0.6">' +
+          '<line x1="0" y1="0" x2="0" y2="30" stroke="#D4A017" stroke-width="1"/>' +
+          '<ellipse cx="0" cy="50" rx="18" ry="22" fill="#C41E3A"/>' +
+          '<ellipse cx="0" cy="50" rx="18" ry="22" fill="none" stroke="#D4A017" stroke-width="1.5"/>' +
+          '<text x="0" y="55" text-anchor="middle" font-size="10" fill="#D4A017" font-family="serif">川</text>' +
+        '</g>' +
+        '<g transform="translate(600,60)" opacity="0.6">' +
+          '<line x1="0" y1="0" x2="0" y2="30" stroke="#D4A017" stroke-width="1"/>' +
+          '<ellipse cx="0" cy="50" rx="18" ry="22" fill="#C41E3A"/>' +
+          '<ellipse cx="0" cy="50" rx="18" ry="22" fill="none" stroke="#D4A017" stroke-width="1.5"/>' +
+          '<text x="0" y="55" text-anchor="middle" font-size="10" fill="#D4A017" font-family="serif">剧</text>' +
+        '</g>' +
+        '<g transform="translate(900,80)" opacity="0.6">' +
+          '<line x1="0" y1="0" x2="0" y2="30" stroke="#D4A017" stroke-width="1"/>' +
+          '<ellipse cx="0" cy="50" rx="18" ry="22" fill="#C41E3A"/>' +
+          '<ellipse cx="0" cy="50" rx="18" ry="22" fill="none" stroke="#D4A017" stroke-width="1.5"/>' +
+          '<text x="0" y="55" text-anchor="middle" font-size="10" fill="#D4A017" font-family="serif">台</text>' +
+        '</g>' +
+        // 悬挂脸谱剪影
+        '<g transform="translate(200,200)" opacity="0.25">' +
+          '<circle cx="30" cy="30" r="25" fill="#C41E3A"/>' +
+          '<ellipse cx="22" cy="24" rx="5" ry="3" fill="none" stroke="#F5F0E6" stroke-width="1"/>' +
+          '<ellipse cx="38" cy="24" rx="5" ry="3" fill="none" stroke="#F5F0E6" stroke-width="1"/>' +
+        '</g>' +
+        '<g transform="translate(500,180)" opacity="0.25">' +
+          '<circle cx="30" cy="30" r="25" fill="#1A1A1A"/>' +
+          '<ellipse cx="22" cy="24" rx="5" ry="3" fill="none" stroke="#D4A017" stroke-width="1"/>' +
+          '<ellipse cx="38" cy="24" rx="5" ry="3" fill="none" stroke="#D4A017" stroke-width="1"/>' +
+        '</g>' +
+        '<g transform="translate(800,220)" opacity="0.25">' +
+          '<circle cx="30" cy="30" r="25" fill="#1E5AA8"/>' +
+          '<ellipse cx="22" cy="24" rx="5" ry="3" fill="none" stroke="#F5F0E6" stroke-width="1"/>' +
+          '<ellipse cx="38" cy="24" rx="5" ry="3" fill="none" stroke="#F5F0E6" stroke-width="1"/>' +
+        '</g>' +
+        // 整体光晕
+        '<ellipse cx="600" cy="500" rx="500" ry="200" fill="#D4A017" opacity="0.04"/>' +
+      '</svg>';
+    }
+
+    // 玩家形象（年轻学徒）
+    function playerCharSVG() {
+      return '<svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">' +
+        // 影子
+        '<ellipse cx="60" cy="195" rx="30" ry="5" fill="#000" opacity="0.4"/>' +
+        // 身体（青布短褂）
+        '<path d="M35,80 L30,160 L40,190 L80,190 L90,160 L85,80 Q60,72 35,80 Z" fill="#3B5378" stroke="#1a1010" stroke-width="1"/>' +
+        // 腰带
+        '<rect x="32" y="120" width="56" height="8" fill="#1a1010"/>' +
+        '<rect x="56" y="120" width="8" height="14" fill="#D4A017"/>' +
+        // 手臂
+        '<path d="M35,82 L25,130 L28,145" fill="none" stroke="#3B5378" stroke-width="10" stroke-linecap="round"/>' +
+        '<path d="M85,82 L95,130 L92,145" fill="none" stroke="#3B5378" stroke-width="10" stroke-linecap="round"/>' +
+        // 头
+        '<circle cx="60" cy="50" r="26" fill="#E8DCC8" stroke="#1a1010" stroke-width="1"/>' +
+        // 发髻
+        '<path d="M40,30 Q60,12 80,30 Q75,20 60,15 Q45,20 40,30" fill="#1a1010"/>' +
+        '<circle cx="60" cy="18" r="6" fill="#1a1010"/>' +
+        // 眉
+        '<path d="M48,42 Q54,38 60,42" fill="none" stroke="#1a1010" stroke-width="2" stroke-linecap="round"/>' +
+        '<path d="M60,42 Q66,38 72,42" fill="none" stroke="#1a1010" stroke-width="2" stroke-linecap="round"/>' +
+        // 眼
+        '<circle cx="53" cy="48" r="2" fill="#1a1010"/>' +
+        '<circle cx="67" cy="48" r="2" fill="#1a1010"/>' +
+        // 嘴
+        '<path d="M54,58 Q60,62 66,58" fill="none" stroke="#1a1010" stroke-width="1.5" stroke-linecap="round"/>' +
+        // 鼻
+        '<path d="M60,48 L57,56 L63,56" fill="none" stroke="#1a1010" stroke-width="1" opacity="0.5"/>' +
+      '</svg>';
+    }
+
+    // 老师傅形象
+    function masterCharSVG() {
+      return '<svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">' +
+        // 影子
+        '<ellipse cx="60" cy="195" rx="32" ry="5" fill="#000" opacity="0.4"/>' +
+        // 身体（深色长袍）
+        '<path d="M32,80 L25,190 L40,192 L80,192 L95,190 L88,80 Q60,72 32,80 Z" fill="#2a1010" stroke="#1a0808" stroke-width="1"/>' +
+        // 长袍纹路
+        '<line x1="60" y1="85" x2="60" y2="190" stroke="#1a0808" stroke-width="1" opacity="0.5"/>' +
+        // 腰带
+        '<rect x="30" y="110" width="60" height="10" fill="#5c0a0a"/>' +
+        '<rect x="55" y="110" width="10" height="16" fill="#D4A017"/>' +
+        // 手（背在身后）
+        '<path d="M32,82 L22,115 L20,130" fill="none" stroke="#2a1010" stroke-width="12" stroke-linecap="round"/>' +
+        '<path d="M88,82 L98,115 L100,130" fill="none" stroke="#2a1010" stroke-width="12" stroke-linecap="round"/>' +
+        // 头
+        '<circle cx="60" cy="48" r="26" fill="#E8DCC8" stroke="#1a1010" stroke-width="1"/>' +
+        // 头发/帽
+        '<path d="M36,32 Q60,8 84,32 Q80,18 60,12 Q40,18 36,32" fill="#1a1010"/>' +
+        '<path d="M40,30 Q60,22 80,30 L80,35 Q60,28 40,35 Z" fill="#3D2B1F"/>' +
+        // 白须
+        '<path d="M44,62 Q48,70 44,80 Q40,90 48,95 L52,90 L56,95 Q60,85 60,75 Q60,85 64,95 L68,90 L72,95 Q80,90 76,80 Q72,70 76,62" fill="#F5F0E6" opacity="0.9"/>' +
+        '<path d="M48,65 Q50,75 48,82" fill="none" stroke="#E8DCC8" stroke-width="1"/>' +
+        '<path d="M72,65 Q70,75 72,82" fill="none" stroke="#E8DCC8" stroke-width="1"/>' +
+        // 眉（白长眉）
+        '<path d="M44,38 Q52,32 60,38" fill="none" stroke="#F5F0E6" stroke-width="2.5" stroke-linecap="round"/>' +
+        '<path d="M60,38 Q68,32 76,38" fill="none" stroke="#F5F0E6" stroke-width="2.5" stroke-linecap="round"/>' +
+        // 眼（微眯）
+        '<path d="M49,44 L57,44" stroke="#1a1010" stroke-width="2" stroke-linecap="round"/>' +
+        '<path d="M63,44 L71,44" stroke="#1a1010" stroke-width="2" stroke-linecap="round"/>' +
+        // 鼻
+        '<path d="M60,46 L56,56 L64,56" fill="none" stroke="#1a1010" stroke-width="1" opacity="0.5"/>' +
+        // 嘴
+        '<path d="M54,62 L66,62" stroke="#1a1010" stroke-width="1.5" stroke-linecap="round"/>' +
+      '</svg>';
+    }
+
+    // ===== 游戏数据（data.json 加载失败时的兜底） =====
+    var FALLBACK_MASKS = [
+      {color:"red",name:"红色",meaning:"忠诚勇敢",character:"关羽",image:"images/mask_red.jpg"},
+      {color:"black",name:"黑色",meaning:"公正刚毅",character:"包拯",image:"images/mask_black.jpg"},
+      {color:"white",name:"白色",meaning:"奸诈狡猾",character:"曹操",image:"images/mask_white.jpg"},
+      {color:"blue",name:"蓝色",meaning:"刚直勇敢",character:"窦尔敦",image:"images/mask_blue.jpg"},
+      {color:"green",name:"绿色",meaning:"鲁莽冲动",character:"张飞",image:"images/mask_green.jpg"},
+      {color:"yellow",name:"黄色",meaning:"骁勇善战",character:"典韦",image:"images/mask_yellow.jpg"},
+      {color:"purple",name:"紫色",meaning:"智勇刚毅",character:"徐延昭",image:"images/mask_purple.jpg"},
+      {color:"pink",name:"粉色",meaning:"年老有心计",character:"廉颇",image:"images/mask_pink.jpg"}
+    ];
+    var FALLBACK_ROLES = [
+      {name:"生",keyword:"儒雅风流",intro:"男性角色，分老生、小生、武生",color:"#4A6B8A"},
+      {name:"旦",keyword:"婉约秀丽",intro:"女性角色，分青衣、花旦、刀马旦",color:"#D4838A"},
+      {name:"净",keyword:"刚烈威猛",intro:"花脸角色，重彩涂绘，性格刚烈",color:"#4A2C4A"},
+      {name:"末",keyword:"苍劲老成",intro:"年长配角，现已多归入老生",color:"#8B6B4A"},
+      {name:"丑",keyword:"幽默诙谐",intro:"喜剧角色，鼻梁涂白粉",color:"#E8DCC8"}
+    ];
+    var FALLBACK_TONES = [
+      {key:"gaoqiang",name:"高腔",audio:"audio/gaoqiang.mp3"},
+      {key:"kunqiang",name:"昆腔",audio:"audio/kunqiang.mp3"},
+      {key:"huqin",name:"胡琴",audio:"audio/huqin.mp3"},
+      {key:"tanxi",name:"弹戏",audio:"audio/tanxi.mp3"},
+      {key:"dengdiao",name:"灯调",audio:"audio/dengdiao.mp3"}
+    ];
+
+    // 第三关音频题库（6 题，随机抽 3 题）
+    var AUDIO_QUESTIONS = [
+      {q:"听这段音频，是川剧的哪种声腔？", audio:"audio/gaoqiang.mp3", options:["高腔","昆腔","胡琴","弹戏"], answer:0, hint:"无伴奏干唱，一唱众和"},
+      {q:"听这段音频，是川剧的哪种声腔？", audio:"audio/kunqiang.mp3", options:["昆腔","胡琴","弹戏","灯调"], answer:0, hint:"典雅婉转，以笛子伴奏"},
+      {q:"听这段音频，是川剧的哪种声腔？", audio:"audio/huqin.mp3", options:["胡琴","弹戏","灯调","高腔"], answer:0, hint:"以小胡琴为主奏乐器"},
+      {q:"听这段音频，是川剧的哪种声腔？", audio:"audio/tanxi.mp3", options:["弹戏","灯调","高腔","昆腔"], answer:0, hint:"源自秦腔，又称川梆子"},
+      {q:"听这段音频，是川剧的哪种声腔？", audio:"audio/dengdiao.mp3", options:["灯调","高腔","昆腔","胡琴"], answer:0, hint:"四川民间小调，短小活泼"},
+      {q:"川剧中「一唱众和」是哪种声腔最显著的特点？", audio:null, options:["高腔","昆腔","胡琴","弹戏"], answer:0, hint:"无乐器伴奏的干唱形式"}
+    ];
+
+    // ===== 工具函数 =====
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    function $(id) { return document.getElementById(id); }
+
+    // ===== WebAudio 合成音效（无音频文件依赖） =====
+    // 单音合成器：freq 频率 / type 波形 / vol 音量 / dur 时长 / delay 延迟秒
+    function synthTone(freq, type, vol, dur, delay) {
+      try {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        var ctx = new AC();
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = type; o.frequency.value = freq;
+        var t0 = ctx.currentTime + (delay || 0);
+        g.gain.setValueAtTime(vol, t0);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0); o.stop(t0 + dur + 0.02);
+        setTimeout(function () { try { ctx.close(); } catch (e) {} }, ((delay || 0) + dur) * 1000 + 250);
+      } catch (e) {}
+    }
+    // 对话框点击：轻木"嗒"（短促、不打断氛围）
+    function sfxDialogueTap() {
+      synthTone(760, "triangle", 0.10, 0.07);
+      synthTone(240, "sine", 0.08, 0.09);
+    }
+    // 选中脸谱：清脆"叮"（双音铃感，表示进入选择状态）
+    function sfxSelect() {
+      synthTone(1180, "sine", 0.09, 0.12);
+      synthTone(1560, "sine", 0.05, 0.14, 0.03);
+    }
+    // 配对成功：木牌轻响（厚重一拍）
+    function woodTapSound() {
+      synthTone(620, "triangle", 0.16, 0.09);
+      synthTone(190, "sine", 0.12, 0.12);
+    }
+
+    // ===== 游戏状态机 =====
+    var Game = {
+      current: "cover",
+      playerName: "",
+      currentLevel: 0,
+      maskColors: FALLBACK_MASKS,
+      roles: FALLBACK_ROLES,
+      fiveTones: FALLBACK_TONES,
+      _twTimer: null,
+      _dialogueQueue: [],
+      _dialogueIdx: 0,
+      _dialogueComplete: null,
+      _autoClose: false,       // 错误提示自动关闭模式
+      _pendingMistake: null,   // 排队中的错误提示（剧情对话结束时弹出）
+      _mistakeAutoTimer: null,
+
+      init: function () {
+        // 渲染顶部导航栏
+        if (typeof SCU !== "undefined" && SCU.renderNav) SCU.renderNav("quiz");
+
+        // 左下角返回按钮：第二关勾脸中撤销上一步操作；对话进行中回退上一句对话；否则返回上一页
+        $("btnBack").addEventListener("click", function () {
+          if (Game._dialogueQueue.length > 0 && Game._dialogueIdx > 1) {
+            Game.rewindDialogue();
+            return;
+          }
+          // 勾脸流程中：纯撤销最近一次动作（不弹任何对话框）
+          if (Game._paint && $("level2").classList.contains("active")) {
+            Game._paintUndo();
+            return;
+          }
+          // 开场阶段（取名/背景故事）：返回游戏封面，而不是退出到上一页
+          if ($("scene-name").classList.contains("active") || $("scene-intro").classList.contains("active")) {
+            if (Game._introTimer) { clearTimeout(Game._introTimer); Game._introTimer = null; }
+            Game.goToScene("cover");
+            return;
+          }
+          if (history.length > 1) history.back();
+          else location.href = "index.html";
+        });
+
+        // 右下角跳过按钮：快进当前对话，直达选项/下一环节
+        $("btnSkip").addEventListener("click", function () {
+          Game.skipDialogue();
+        });
+
+        // 渲染 SVG 兜底（对应图片缺失时显示）
+        $("coverFallback").innerHTML = coverBgSVG();
+        $("stageBgFallback").innerHTML = stageBgSVG();
+        $("masterFallback").innerHTML = masterCharSVG();
+        $("playerFallback").innerHTML = playerCharSVG();
+
+        // 角色图片错误兜底：状态图缺失 → normal → SVG
+        this._bindCharError("master");
+        this._bindCharError("player");
+
+        // 加载数据
+        if (typeof SCU !== "undefined" && SCU.loadData) {
+          SCU.loadData(function (err, data) {
+            if (!err && data) {
+              if (data.maskColors) Game.maskColors = data.maskColors;
+              if (data.roles) Game.roles = data.roles;
+              if (data.fiveTones) Game.fiveTones = data.fiveTones;
+            }
+          });
+        }
+
+        // 绑定事件
+        $("btnStart").addEventListener("click", function () { Game.goToScene("name"); });
+        $("btnConfirmName").addEventListener("click", function () { Game.confirmName(); });
+        $("playerNameInput").addEventListener("keydown", function (e) {
+          if (e.key === "Enter") Game.confirmName();
+        });
+        $("introScreen").addEventListener("click", function () { Game.advanceIntro(); });
+        $("btnRestart").addEventListener("click", function () { location.reload(); });
+      },
+
+      goToScene: function (name) {
+        var old = document.querySelector(".game-scene.active");
+        var next = $("scene-" + name);
+        if (!next) return;
+        if (old) {
+          old.classList.remove("active");
+        }
+        next.classList.add("active");
+        this.current = name;
+        // 进入游戏流程（名字输入/黑屏/舞台）即隐藏导航栏；封面与通关画面恢复
+        document.body.classList.toggle("game-full", ["stage", "name", "intro"].indexOf(name) >= 0);
+      },
+
+      // ===== 角色形象多状态切换 =====
+      // 用法：Game.setCharState("master", "happy") → images/master_happy.png
+      // 状态图缺失自动回退 normal，normal 也缺失则显示 SVG 剪影
+      setCharState: function (role, state) {
+        var img = $(role + "Img");
+        if (!img) return;
+        img.onerror = function () {
+          if (state !== "normal") {
+            Game.setCharState(role, "normal");
+          } else {
+            img.style.display = "none";
+            $(role + "Fallback").style.display = "block";
+          }
+        };
+        img.style.display = "";
+        $(role + "Fallback").style.display = "none";
+        img.src = "images/" + role + "_" + state + ".png";
+        // 换图淡入（重新触发 CSS 动画）
+        img.style.animation = "none";
+        void img.offsetWidth;
+        img.style.animation = "";
+      },
+
+      _bindCharError: function (role) {
+        var img = $(role + "Img");
+        if (!img) return;
+        img.onerror = function () {
+          img.style.display = "none";
+          $(role + "Fallback").style.display = "block";
+        };
+        // 脚本执行前图片已加载失败的情况
+        if (img.complete && img.naturalWidth === 0) {
+          img.style.display = "none";
+          $(role + "Fallback").style.display = "block";
+        }
+      },
+
+      // ===== 师徒立绘显隐与状态 =====
+      // showChars("praise", "happy") → 老班主称赞 + 学徒开心；已可见时只换状态图，不重播入场
+      showChars: function (mState, pState) {
+        this._charsVisible = true; // 立绘在场标志（自动提示关闭时据此决定是否恢复立绘）
+        this.setCharState("master", mState || "normal");
+        // 第二关勾脸全程：玩家立绘统一用"绘制"状态（images/player_paint.png）
+        if ($("level2") && $("level2").classList.contains("active")) pState = "paint";
+        this.setCharState("player", pState || "normal");
+        ["charMaster", "charPlayer"].forEach(function (id) {
+          var el = $(id);
+          var wasHidden = el.style.display === "none";
+          el.style.display = "";
+          if (wasHidden) {
+            // 从隐藏到出现：播入场动画
+            el.style.animation = "none";
+            void el.offsetWidth;
+            el.style.animation = "charRise 0.45s ease";
+          } else {
+            // 已在场：直接换图，无浮动重现效果
+            el.style.animation = "";
+          }
+        });
+      },
+
+      hideChars: function () {
+        this._charsVisible = false;
+        $("charMaster").style.display = "none";
+        $("charPlayer").style.display = "none";
+        // 清除说话人高亮，下次显示时重新按对话分配
+        $("masterImg").classList.remove("char-dim");
+        $("playerImg").classList.remove("char-dim");
+      },
+
+      // ===== 舞台背景切换 =====
+      // 关卡操作时换专属背景（如 images/level1_bg.png），缺失自动回退默认后台图
+      setStageBg: function (src) {
+        var img = document.querySelector("#stageBg .stage-bg-img");
+        if (!img) return;
+        // 淡出旧图 → 换 src → 新图加载完淡入，切换更自然
+        img.classList.add("bg-fading");
+        var doSwap = function () {
+          img.onload = function () {
+            img.onload = null;
+            img.classList.remove("bg-fading");
+          };
+          img.onerror = function () {
+            img.onerror = null;
+            img.src = "images/game_stage_bg.png";
+          };
+          // 加时间戳破缓存，替换图片后刷新必生效
+          img.src = src + (src.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now();
+        };
+        if (img.complete) { setTimeout(doSwap, 400); } else { doSwap(); }
+      },
+
+      // ===== 场景：名字输入 =====
+      confirmName: function () {
+        var name = $("playerNameInput").value.trim();
+        if (!name) {
+          $("playerNameInput").style.borderColor = "#C41E3A";
+          $("playerNameInput").focus();
+          return;
+        }
+        this.playerName = name;
+        this.startIntro();
+      },
+
+      // ===== 场景：黑屏背景 =====
+      introLines: [
+        "巴蜀大地，夜色将临。",
+        "城北老戏台，锣鼓未响，后台灯先亮了。",
+        "你推开那扇朱漆剥落的门——",
+        "一夜的川剧学徒生涯，就此开始。"
+      ],
+      _introIdx: 0,
+
+      startIntro: function () {
+        this._introIdx = 0;
+        this.goToScene("intro");
+        $("introText").innerHTML = "";
+        this._showIntroLine();
+      },
+
+      _showIntroLine: function () {
+        if (this._introIdx >= this.introLines.length) {
+          this.enterStage();
+          return;
+        }
+        var p = document.createElement("p");
+        p.className = "intro-text-line";
+        p.textContent = this.introLines[this._introIdx];
+        $("introText").appendChild(p);
+        var self = this;
+        setTimeout(function () { p.classList.add("show"); }, 50);
+        this._introIdx++;
+        // 自动下一行
+        this._introTimer = setTimeout(function () { self._showIntroLine(); }, 2000);
+      },
+
+      advanceIntro: function () {
+        // 点击跳过：直接进入舞台
+        if (this._introTimer) { clearTimeout(this._introTimer); this._introTimer = null; }
+        this.enterStage();
+      },
+
+      // ===== 场景：游戏主舞台 =====
+      enterStage: function () {
+        this.goToScene("stage");
+        this.currentLevel = 0;
+        var self = this;
+
+        // 开场：师徒立绘（普通状态）
+        this.showChars("normal", "normal");
+
+        // 开场对话（含知识复习，hl = 打字完毕后的重点金色标记）
+        this.showDialogue([
+          { name: "周师傅", text: "哦？你来了。" },
+          { name: "周师傅", text: "我是这后台的老师傅，姓周，大伙都叫我周师傅。" },
+          { name: "周师傅", text: this.playerName + "，今夜戏码重，人手紧，你既来了，便当我的徒弟。" },
+          { name: "周师傅", text: "开演前，我先帮你把旧课理一理，等会儿是要考的。" },
+          { name: "周师傅", text: "脸谱八色，各有脾气：红忠、黑正、白奸、蓝强、绿莽、黄骁、紫毅、粉老——记住，颜色就是性格。",
+            hl: "脸谱八色，各有脾气：<b class='dg'>红忠、黑正、白奸、蓝强、绿莽、黄骁、紫毅、粉老</b>——记住，<b class='dg'>颜色就是性格</b>。" },
+          { name: "周师傅", text: "声腔五味：高腔、昆腔、胡琴、弹戏、灯调，行里人合称「昆高胡弹灯」——这个口诀要记牢。",
+            hl: "声腔五味：高腔、昆腔、胡琴、弹戏、灯调，行里人合称<b class='dg'>「昆高胡弹灯」</b>——这个口诀要记牢。" },
+          { name: "周师傅", text: "五腔之中，高腔是川剧的头牌：不用管弦乐器，只靠锣鼓伴奏，一人启口，众人帮腔——帮腔就是它最独特的招牌。",
+            hl: "五腔之中，<b class='dg'>高腔</b>是川剧的头牌：不用管弦乐器，只靠锣鼓伴奏，一人启口，<b class='dg'>众人帮腔</b>——帮腔就是它最独特的招牌。" },
+          { name: "周师傅", text: "昆腔从江苏昆山传来，文雅细腻；胡琴分西皮、二黄，西皮明快、二黄深沉；弹戏以梆子击节，高亢激越；灯调出自民间灯戏，欢快诙谐，乡土味最浓。",
+            hl: "昆腔文雅细腻；胡琴分<b class='dg'>西皮、二黄</b>——西皮明快、二黄深沉；弹戏以<b class='dg'>梆子击节</b>，高亢激越；灯调<b class='dg'>欢快诙谐</b>，乡土味最浓。" },
+          { name: "徒弟", text: "（掰着指头数）昆、高、胡、弹、灯——师傅，我记下啦！" },
+          { name: "周师傅", text: "行当五类：生、旦、净、末、丑。",
+            hl: "行当五类：<b class='dg'>生、旦、净、末、丑</b>。" },
+          { name: "周师傅", text: "生是男角：老生沉稳醇厚，小生儒雅风流，武生英武挺拔；旦是女角：青衣端庄温婉，花旦活泼娇俏。",
+            hl: "生是男角：<b class='dg'>老生</b>沉稳醇厚，<b class='dg'>小生</b>儒雅风流，<b class='dg'>武生</b>英武挺拔；旦是女角：<b class='dg'>青衣</b>端庄温婉，<b class='dg'>花旦</b>活泼娇俏。" },
+          { name: "周师傅", text: "净是花脸，性格刚烈豪迈、脸谱最浓；末是年长的老配角；丑在鼻梁画一块豆腐块，专管滑稽逗趣。",
+            hl: "净是<b class='dg'>花脸</b>，性格刚烈豪迈、脸谱最浓；末是年长的老配角；丑鼻梁画<b class='dg'>一块豆腐块</b>，专管滑稽逗趣。" },
+          { name: "徒弟", text: "（忍不住笑）那块豆腐块真有意思——师傅，我一准忘不了！", pstate: "happy" },
+          { name: "周师傅", text: "川剧有句老话——「不识脸谱不上台，不会勾脸不登台」。",
+            pstate: "normal",
+            hl: "川剧有句老话——<b class='dg'>「不识脸谱不上台，不会勾脸不登台」</b>。" },
+          { name: "周师傅", text: "后台四关：识谱、勾脸、听辨、亮相。过得了这四关，你今夜便能登台。",
+            hl: "后台四关：<b class='dg'>识谱、勾脸、听辨、亮相</b>。过得了这四关，你今夜便能登台。" }
+        ], function () {
+          // 轮到玩家表态：徒弟高亮，师傅压暗
+          $("masterImg").classList.add("char-dim");
+          $("playerImg").classList.remove("char-dim");
+          self.showChoices([
+            { text: "再听一遍", action: function () { self._repeatIntro(); } },
+            { text: "直接开始", action: function () { self._startLevel1Dialogue(); } }
+          ]);
+        });
+      },
+
+      _repeatIntro: function () {
+        var self = this;
+        this.showDialogue([
+          { name: "周师傅", text: "好，那我再从头理一遍，等会儿是要考的。" },
+          { name: "周师傅", text: "脸谱八色：红忠、黑正、白奸、蓝强、绿莽、黄骁、紫毅、粉老——颜色就是性格。",
+            hl: "脸谱八色：<b class='dg'>红忠、黑正、白奸、蓝强、绿莽、黄骁、紫毅、粉老</b>——<b class='dg'>颜色就是性格</b>。" },
+          { name: "周师傅", text: "声腔五味：高腔、昆腔、胡琴、弹戏、灯调，合称「昆高胡弹灯」，口诀记牢。",
+            hl: "声腔五味：高腔、昆腔、胡琴、弹戏、灯调，合称<b class='dg'>「昆高胡弹灯」</b>，口诀记牢。" },
+          { name: "周师傅", text: "高腔最独特：不用管弦，一人启口，众人帮腔。",
+            hl: "<b class='dg'>高腔</b>最独特：不用管弦，一人启口，<b class='dg'>众人帮腔</b>。" },
+          { name: "周师傅", text: "昆腔文雅细腻；胡琴分西皮、二黄；弹戏以梆子击节；灯调欢快诙谐，乡土味最浓。",
+            hl: "昆腔文雅细腻；胡琴分<b class='dg'>西皮、二黄</b>；弹戏以<b class='dg'>梆子击节</b>；灯调<b class='dg'>欢快诙谐</b>，乡土味最浓。" },
+          { name: "周师傅", text: "行当五类：生、旦、净、末、丑，各演各的人。",
+            hl: "行当五类：<b class='dg'>生、旦、净、末、丑</b>，各演各的人。" },
+          { name: "周师傅", text: "老生沉稳、小生儒雅、武生英武；青衣端庄、花旦娇俏；净是花脸；末是老配角；丑鼻梁一块豆腐块，专管逗趣。",
+            hl: "<b class='dg'>老生</b>沉稳、<b class='dg'>小生</b>儒雅、<b class='dg'>武生</b>英武；<b class='dg'>青衣</b>端庄、<b class='dg'>花旦</b>娇俏；净是<b class='dg'>花脸</b>；末是老配角；丑鼻梁<b class='dg'>一块豆腐块</b>，专管逗趣。" },
+          { name: "周师傅", text: "第一关「识谱」，认脸谱脾气；第二关「勾脸」，亲手画一张。" },
+          { name: "周师傅", text: "第三关「听辨」，闭眼听腔调；第四关「亮相」，选行当登台。" },
+          { name: "周师傅", text: "记住了？那走吧，先去识谱。" }
+        ], function () {
+          self._startLevel1Dialogue();
+        });
+      },
+
+      // ===== 对话系统 =====
+      showDialogue: function (lines, onComplete) {
+        var self = this;
+        this._autoClose = false; // 剧情对话为点击推进模式
+        if (this._mistakeAutoTimer) { clearTimeout(this._mistakeAutoTimer); this._mistakeAutoTimer = null; }
+        this._dialogueQueue = lines;
+        this._dialogueIdx = 0;
+        this._dialogueComplete = onComplete;
+        $("dialogueBox").style.display = "block";
+        $("dialogueHint").style.display = "block";
+        $("dialogueChoices").style.display = "none";
+        $("btnSkip").style.display = "block"; // 对话期间显示跳过按钮
+
+        // 点击推进
+        $("dialogueBox").onclick = function () {
+          sfxDialogueTap(); // 对话框点击：轻木"嗒"
+          if (self._twTimer) {
+            // 跳过打字机，显示全文（有重点标记则渲染高亮版）
+            clearInterval(self._twTimer);
+            self._twTimer = null;
+            var line = self._dialogueQueue[self._dialogueIdx - 1];
+            if (line.hl) { $("dialogueText").innerHTML = line.hl; }
+            else { $("dialogueText").textContent = line.text; }
+            $("dialogueHint").style.display = "block";
+          } else {
+            self._nextLine();
+          }
+        };
+        this._nextLine();
+      },
+
+      _nextLine: function () {
+        if (this._dialogueIdx >= this._dialogueQueue.length) {
+          $("dialogueBox").style.display = "none";
+          $("dialogueBox").onclick = null;
+          $("btnSkip").style.display = "none"; // 对话结束隐藏跳过按钮
+          var done = this._dialogueComplete;
+          var pending = this._pendingMistake;
+          this._dialogueComplete = null;
+          this._pendingMistake = null;
+          if (done) done();
+          // 剧情对话结束且没有新对话顶替时，弹出排队的错误提示
+          if (pending && $("dialogueBox").style.display !== "block") {
+            this.showChars("help", "confused");
+            this._showAutoTip(pending);
+          }
+          return;
+        }
+        var line = this._dialogueQueue[this._dialogueIdx];
+        $("dialogueName").textContent = line.name;
+        $("dialogueHint").style.display = "none";
+        // 说话人高亮：师傅说话压暗徒弟，反之亦然
+        var isMaster = line.name === "周师傅";
+        $("masterImg").classList.toggle("char-dim", !isMaster);
+        $("playerImg").classList.toggle("char-dim", isMaster);
+        // 台词驱动的立绘状态切换（mstate/pstate 可选字段）
+        if (line.mstate) this.setCharState("master", line.mstate);
+        if (line.pstate) this.setCharState("player", line.pstate);
+        this._dialogueIdx++;
+        var self = this;
+        var textEl = $("dialogueText");
+        this._typewriter(line.text, textEl, function () {
+          // 打字完毕：有重点标记则染金呈现
+          if (line.hl) textEl.innerHTML = line.hl;
+          if (!self._autoClose) $("dialogueHint").style.display = "block";
+        });
+      },
+
+      // 回退到上一句对话（返回按钮触发）
+      rewindDialogue: function () {
+        if (this._twTimer) {
+          clearInterval(this._twTimer);
+          this._twTimer = null;
+        }
+        if ($("dialogueBox").style.display === "block") {
+          // 对话推进中：回退到上一句
+          if (this._dialogueIdx < 2) return;
+          this._dialogueIdx -= 2;
+        } else {
+          // 分支选择阶段：重放最后一句，播完重新出现选项
+          if (this._dialogueQueue.length === 0 || this._dialogueIdx < 1) return;
+          this._dialogueIdx = this._dialogueQueue.length - 1;
+        }
+        $("dialogueChoices").style.display = "none";
+        $("dialogueBox").style.display = "block";
+        $("btnSkip").style.display = "block";
+        this._nextLine();
+      },
+
+      // 跳过按钮：快进当前对话，直达选项/下一环节
+      skipDialogue: function () {
+        if ($("dialogueBox").style.display !== "block") return;
+        if (this._twTimer) {
+          clearInterval(this._twTimer);
+          this._twTimer = null;
+        }
+        $("dialogueBox").style.display = "none";
+        $("dialogueBox").onclick = null;
+        $("btnSkip").style.display = "none";
+        this._dialogueIdx = this._dialogueQueue.length;
+        if (this._dialogueComplete) this._dialogueComplete();
+      },
+
+      _typewriter: function (text, el, onDone) {
+        var self = this;
+        if (this._twTimer) clearInterval(this._twTimer);
+        var i = 0;
+        el.textContent = "";
+        this._twTimer = setInterval(function () {
+          if (i < text.length) {
+            el.textContent += text[i];
+            i++;
+          } else {
+            clearInterval(self._twTimer);
+            self._twTimer = null;
+            if (onDone) onDone();
+          }
+        }, 35);
+      },
+
+      showChoices: function (choices) {
+        var container = $("dialogueChoices");
+        container.innerHTML = "";
+        container.style.display = "flex";
+        var self = this;
+        choices.forEach(function (c) {
+          var btn = document.createElement("button");
+          btn.className = "choice-btn";
+          btn.textContent = c.text;
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            container.style.display = "none";
+            c.action();
+          });
+          container.appendChild(btn);
+        });
+      },
+
+      updateProgress: function (level) {
+        var dots = document.querySelectorAll(".progress-dot");
+        dots.forEach(function (d) {
+          var lv = parseInt(d.getAttribute("data-level"), 10);
+          d.classList.remove("active", "done");
+          if (lv < level) d.classList.add("done");
+          else if (lv === level) d.classList.add("active");
+        });
+      },
+
+      // ===== 第一关：后台识谱（脸谱配对） =====
+      _startLevel1Dialogue: function () {
+        var self = this;
+        this.showChars("normal", "normal");
+        this.showDialogue([
+          { name: "周师傅", text: "后台墙上挂着八张脸谱，各有各的脾气。" },
+          { name: "周师傅", text: "红忠、黑正、白奸、蓝强、绿莽、黄骁、紫毅、粉老。" },
+          { name: "周师傅", text: "你来把脸谱和它的性格一一配对。点一张脸谱，再点它对应的含义。" }
+        ], function () {
+          // 第一关立绘常驻：不隐藏师徒，操作与对话间只切换状态图
+          self.startLevel1();
+        });
+      },
+
+      startLevel1: function () {
+        this.updateProgress(1);
+        this._praiseIdx = 0; // 赞许语从第一句开始
+        this.setStageBg("images/level1_bg.png"); // 脸谱配对专属背景
+        var container = $("level1");
+        // 隐藏其他关卡
+        ["level2","level3","level4"].forEach(function (id) { $(id).classList.remove("active"); });
+        container.classList.add("active");
+
+        // 随机选 4 张
+        var selected = shuffle(this.maskColors).slice(0, 4);
+        var slotOrder = shuffle(selected);
+        var cardOrder = shuffle(selected);
+
+        var slotsHtml = slotOrder.map(function (m, i) {
+          return '<div class="match-slot" data-color="' + m.color + '" data-idx="' + i + '">' +
+            '<span class="slot-meaning">' + m.meaning + '</span>' +
+            '<span class="slot-placed"></span>' +
+          '</div>';
+        }).join("");
+
+        // 木牌轻响改用全局 woodTapSound()（WebAudio 合成，无音频文件依赖）
+
+        var self = this;
+        var cardsHtml = cardOrder.map(function (m, i) {
+          var imgHtml = (typeof SCU !== "undefined" && SCU.maskImgHTML)
+            ? SCU.maskImgHTML(m.color, m.image, { size: 72 })
+            : '<span style="font-size:40px;">🎭</span>';
+          return '<div class="match-card" data-color="' + m.color + '" data-idx="' + i + '">' + imgHtml + '</div>';
+        }).join("");
+
+        container.innerHTML =
+          '<div class="level-title">第一关 · 后台识谱</div>' +
+          '<div class="level-subtitle">点击脸谱，再点击对应的性格含义</div>' +
+          '<div class="match-game">' +
+            '<div class="match-slots">' + slotsHtml + '</div>' +
+            '<div class="match-cards">' + cardsHtml + '</div>' +
+          '</div>';
+
+        var selectedCard = null;
+        var matchedCount = 0;
+
+        // 卡牌点击
+        container.querySelectorAll(".match-card").forEach(function (card) {
+          card.addEventListener("click", function () {
+            if (card.classList.contains("placed")) return;
+            container.querySelectorAll(".match-card.selected").forEach(function (c) { c.classList.remove("selected"); });
+            card.classList.add("selected");
+            selectedCard = card;
+            sfxSelect(); // 选中脸谱：清脆"叮"
+          });
+        });
+
+        // 槽位点击
+        container.querySelectorAll(".match-slot").forEach(function (slot) {
+          slot.addEventListener("click", function () {
+            if (!selectedCard) return;
+            if (slot.classList.contains("correct")) return;
+            var cardColor = selectedCard.getAttribute("data-color");
+            var slotColor = slot.getAttribute("data-color");
+            if (cardColor === slotColor) {
+              slot.classList.add("correct");
+              slot.querySelector(".slot-placed").innerHTML = selectedCard.innerHTML;
+              selectedCard.classList.add("placed");
+              selectedCard.classList.remove("selected");
+              selectedCard = null;
+              matchedCount++;
+              woodTapSound(); // 木牌轻响
+              // 匹配成功 → 弹赞许对话（师傅称赞 / 学徒开心）
+              var allDone = matchedCount >= 4;
+              setTimeout(function () { self._praiseChat(allDone); }, 600);
+            } else {
+              // 匹配错误：木签轻抖 + 对话框温和提示（立绘直接换 help/confused，无重现动效）
+              slot.classList.add("wrong");
+              setTimeout(function () { slot.classList.remove("wrong"); }, 450);
+              self._mistakeChat();
+            }
+          });
+        });
+      },
+
+      // ===== 第一关配套对话 =====
+      // 匹配成功赞许：师傅竖大拇指 + 学徒开心
+      // 单次配对 → 自动关闭模式（2.5 秒消失，不打断配对节奏）；最后一对 → 普通对话过渡进通关
+      _praiseChat: function (allDone) {
+        var praises = [
+          "好眼力！就是这个理儿。",
+          "配得准！这脸谱的脾气你摸着了。",
+          "不错不错，手上稳当。",
+          "好！一张不差，全对上了。"
+        ];
+        var idx = this._praiseIdx || 0;
+        this._praiseIdx = idx + 1;
+        var text = praises[Math.min(idx, praises.length - 1)];
+        this.showChars("praise", "happy");
+        if (allDone) {
+          var self = this;
+          this.showDialogue([
+            { name: "周师傅", text: text }
+          ], function () {
+            self._level1Complete();
+          });
+        } else {
+          this._showAutoTip(text);
+        }
+      },
+
+      // 匹配错误温和提示：师傅帮忙 + 学徒困惑；立绘已常驻，直接换图无动效
+      // 提示为自动关闭模式（3 秒后自动消失，无需点击），连续答错直接替换新提示
+      _mistakeChat: function () {
+        var hints = [
+          "别急，再想想这张脸谱的脾气。",
+          "不对哦。回忆一下——红忠、黑正、白奸，颜色和性格是对应的。",
+          "差一点。这颜色看着是温和还是刚烈？"
+        ];
+        var text = hints[Math.floor(Math.random() * hints.length)];
+        // 剧情对话开着：排队等待，不打断、不换立绘
+        if ($("dialogueBox").style.display === "block" && !this._autoClose) {
+          this._pendingMistake = text;
+          return;
+        }
+        this.showChars("help", "confused");
+        this._showAutoTip(text);
+      },
+
+      // 轻量反馈展示主体（答对赞许 / 答错提示共用）：
+      // 自动关闭模式——不响应点击、不显示"点击继续"、到时自动消失并恢复立绘
+      // onClose：浮窗关闭瞬间的回调（如立绘与浮窗同步退场）；dur：自动关闭时长（默认 2600ms）；speaker：说话人（默认 周师傅）
+      _showAutoTip: function (text, onClose, dur, speaker) {
+        var self = this;
+        this._autoClose = true;
+        this._tipCloseCb = onClose || null;
+        this._dialogueQueue = [{ name: speaker || "周师傅", text: text }];
+        this._dialogueIdx = 0;
+        this._dialogueComplete = null;
+        if (this._twTimer) { clearInterval(this._twTimer); this._twTimer = null; }
+        $("dialogueBox").style.display = "block";
+        $("dialogueChoices").style.display = "none";
+        $("dialogueHint").style.display = "none";
+        $("btnSkip").style.display = "none";
+        $("dialogueBox").onclick = null; // 自动模式不响应点击推进
+        this._nextLine();
+        if (this._mistakeAutoTimer) clearTimeout(this._mistakeAutoTimer);
+        this._mistakeAutoTimer = setTimeout(function () {
+          self._mistakeAutoTimer = null;
+          // 期间无新对话顶替时自动关闭
+          if ($("dialogueBox").style.display === "block" && self._autoClose) {
+            $("dialogueBox").style.display = "none";
+            self._autoClose = false;
+            var cb = self._tipCloseCb;
+            self._tipCloseCb = null;
+            if (cb) { cb(); } // 调用方自管立绘（与浮窗同一时刻退场）
+            else if (self._charsVisible) { self.showChars("normal", "normal"); } // 只有立绘本在场时才恢复平静状态
+          }
+        }, dur || 2600);
+      },
+
+      // 全部配对完成 → 通关过渡对话（师傅普通 / 学徒正常）
+      _level1Complete: function () {
+        $("level1").classList.remove("active");
+        var self = this;
+        this.setStageBg("images/game_stage_bg.png"); // 对话时恢复后台背景
+        this.showChars("normal", "normal");
+        this.showDialogue([
+          { name: "周师傅", text: "不错，脸谱认得了。八色脸谱，各有脾气，你都配对了。" },
+          { name: "周师傅", text: "接下来，亲手勾一张。" }
+        ], function () {
+          self._startLevel2Dialogue();
+        });
+      },
+
+      // ===== 第二关：案前勾脸（四步渐进：定谱式→定主色→勾纹样→点染） =====
+      _startLevel2Dialogue: function () {
+        var self = this;
+        this.setStageBg("images/level2_bg.png"); // 勾脸专属背景（第一关过渡对话结束后切换）
+        this.hideChars(); // 进入第二关：师徒立绘不出现，交代话以旁白形式交代
+        this.showDialogue([
+          { name: "周师傅", text: "坐到勾脸案前。勾脸讲究循序渐进，一共四步：先定谱式，再定主色，然后勾纹样，最后点染细节。" },
+          { name: "周师傅", text: "画脸谱先定谱式，谱式定好了，人物模样才有根基。动手吧。" }
+        ], function () {
+          self.startLevel2();
+        });
+      },
+
+      startLevel2: function () {
+        this.updateProgress(2);
+        this.hideChars(); // 第二关入场默认无立绘（选主色时师徒才上场）
+        var container = $("level2");
+        ["level1","level3","level4"].forEach(function (id) { $(id).classList.remove("active"); });
+        container.classList.add("active");
+
+        var self = this;
+        // —— 勾脸状态机 ——
+        this._paint = {
+          step: 1,
+          maxStep: 1,                                 // 已到达的最远步骤（标题可点击回退）
+          pattern: null,                              // 'san' 三块瓦 | 'shi' 十字门
+          baseColor: null,                            // 底色 hex
+          strokes: { lefteye: false, righteye: false, forehead: false }, // 描线完成
+          strokeDone: 0,
+          stickers: [],                               // {type,x,y,scale,rot}
+          selIdx: -1,
+          paintStrokes: [],                           // 点染笔迹 {area, color, pts:[{x,y}]}
+          dotColor: "#D4A017",                        // 当前点染颜色
+          painting: null,                             // 正在进行的点染笔画
+          tipCool: 0,                                 // 区域外提示冷却
+          drawing: null,                              // 当前笔画 {key, pts}
+          dragging: -1,
+          history: [],                                // 撤销栈
+          redoStack: []                               // 恢复栈（撤销后可恢复）
+        };
+
+        container.innerHTML =
+          '<div class="level-title">第二关 · 案前勾脸</div>' +
+          '<div class="level-subtitle">一步一步来，画出你自己的脸谱</div>' +
+          '<div class="paint-steps">' +
+            '<span class="paint-step cur" data-s="1">一 · 定谱式</span>' +
+            '<span class="paint-step" data-s="2">二 · 定主色</span>' +
+            '<span class="paint-step" data-s="3">三 · 勾纹样</span>' +
+            '<span class="paint-step" data-s="4">四 · 细节点染</span>' +
+          '</div>' +
+          '<div class="paint-game">' +
+            '<div class="paint-board">' +
+              '<canvas id="paintCanvas" width="400" height="500"></canvas>' +
+              '<div class="paint-hint" id="paintHint">先选一张谱式底稿，铺在案上</div>' +
+            '</div>' +
+            '<div class="paint-ops" id="paintOps"></div>' +
+          '</div>';
+
+        this._pcv = $("paintCanvas").getContext("2d");
+        this._renderPaintOps();
+        this._drawPaint();
+
+        // —— 画布指针交互（描线 / 贴纸拖动 / 点染） ——
+        var canvas = $("paintCanvas");
+        function pos(e) {
+          var r = canvas.getBoundingClientRect();
+          return { x: (e.clientX - r.left) * (canvas.width / r.width), y: (e.clientY - r.top) * (canvas.height / r.height) };
+        }
+        canvas.addEventListener("pointerdown", function (e) { self._paintDown(pos(e)); });
+        canvas.addEventListener("pointermove", function (e) { self._paintMove(pos(e)); });
+        window.addEventListener("pointerup", function () { self._paintUp(); });
+      },
+
+      // ---------- 勾脸：步骤操作区 ----------
+      // 新动作入栈（清空恢复栈）
+      _pushHistory: function (act) {
+        var P = this._paint;
+        P.history.push(act);
+        P.redoStack.length = 0;
+      },
+
+      _renderPaintOps: function () {
+        var P = this._paint, ops = $("paintOps"), self = this;
+        document.querySelectorAll(".paint-step").forEach(function (el) {
+          var s = parseInt(el.getAttribute("data-s"), 10);
+          el.classList.toggle("cur", s === P.step);
+          el.classList.toggle("done", s < P.step);
+          el.classList.toggle("locked", s > P.maxStep);
+          // 标题点击切换：可回到已到达过的任一步骤（改谱式/改主色/调纹样/补点染）
+          el.style.cursor = s <= P.maxStep ? "pointer" : "default";
+          el.onclick = (s <= P.maxStep) ? function () {
+            // 点板块 = 回到该阶段的编辑状态：先清空对话框与立绘，再切步骤
+            self._leaveEditMode();
+            if (s !== P.step) self._setPaintStep(s);
+          } : null;
+        });
+        var hint = $("paintHint");
+
+        // —— 步骤 1：选择净行谱式（选完悄悄锁定行当 = 净） ——
+        if (P.step === 1) {
+          ops.innerHTML =
+            '<div class="paint-task">第 1 步 · 选择净行谱式<br/><span class="paint-task-sub">两种经典净角骨架，选一张铺在案上</span></div>' +
+            '<div class="pp-row">' +
+              '<div class="pp-card" data-p="san">' +
+                '<svg viewBox="0 0 100 124" xmlns="http://www.w3.org/2000/svg">' +
+                  '<ellipse cx="50" cy="62" rx="38" ry="46" fill="#F5F0E6" stroke="#3D2B1F" stroke-width="2"/>' +
+                  '<path d="M20,48 Q50,36 80,48" fill="none" stroke="#3D2B1F" stroke-width="1.6"/>' +
+                  '<path d="M21,63 L29,94" fill="none" stroke="#3D2B1F" stroke-width="1.2"/>' +
+                  '<path d="M79,63 L71,94" fill="none" stroke="#3D2B1F" stroke-width="1.2"/>' +
+                '</svg>' +
+                '<div>三块瓦脸</div><div class="pc-sub">经典武将净</div>' +
+              '</div>' +
+              '<div class="pp-card" data-p="shi">' +
+                '<svg viewBox="0 0 100 124" xmlns="http://www.w3.org/2000/svg">' +
+                  '<ellipse cx="50" cy="62" rx="38" ry="46" fill="#F5F0E6" stroke="#3D2B1F" stroke-width="2"/>' +
+                  '<path d="M43,17 Q41,40 43,64" fill="none" stroke="#3D2B1F" stroke-width="1.6"/>' +
+                  '<path d="M57,17 Q59,40 57,64" fill="none" stroke="#3D2B1F" stroke-width="1.6"/>' +
+                  '<path d="M15,63 L85,63" fill="none" stroke="#3D2B1F" stroke-width="1.2"/>' +
+                '</svg>' +
+                '<div>十字门脸</div><div class="pc-sub">忠义净角</div>' +
+              '</div>' +
+            '</div>';
+          hint.textContent = "画脸谱先定谱式——谱式是脸谱的骨架";
+          ops.querySelectorAll(".pp-card").forEach(function (card) {
+            card.addEventListener("click", function () {
+              P.pattern = card.getAttribute("data-p");
+              self._lockedRole = "净"; // 悄悄存档：本次登台行当固定为净（玩家无感知）
+              self._pushHistory({ t: "pattern" });
+              self._drawPaint();
+              hint.textContent = P.pattern === "san" ? "三块瓦脸定了！下一步定主色" : "十字门脸定了！下一步定主色";
+              self._setPaintStep(2);
+            });
+          });
+          this._appendUndoRedo(ops);
+          return;
+        }
+
+        // —— 步骤 2：定主色（五行正统色自由选，选完报性格并存档） ——
+        if (P.step === 2) {
+          var palette = [
+            { hex: "#C41E3A", name: "红", meaning: "忠勇赤诚" },
+            { hex: "#1A1A1A", name: "黑", meaning: "刚直正直" },
+            { hex: "#F5F0E6", name: "白", meaning: "狡诈多疑" },
+            { hex: "#E5B500", name: "黄", meaning: "骁勇刚烈" },
+            { hex: "#1E5AA8", name: "蓝", meaning: "勇猛霸气" }
+          ];
+          ops.innerHTML =
+            '<div class="paint-task">第 2 步 · 定主色<br/><span class="paint-task-sub">脸部大面积底色，只用五种戏曲正统净色——回忆第一关：颜色就是性格</span></div>' +
+            '<div class="palette5">' + palette.map(function (c) {
+              return '<div class="color-swatch5" data-hex="' + c.hex + '" data-name="' + c.name + '" style="background:' + c.hex + ';" title="' + c.name + '"></div>';
+            }).join("") + '</div>' +
+            '<div class="paint-task-sub" style="margin-top:10px;text-align:center;">红 · 黑 · 白 · 黄 · 蓝，每一种都是一种性格</div>';
+          hint.textContent = "选一种主色铺底——想画什么样的人，就选什么样的色";
+          ops.querySelectorAll(".color-swatch5").forEach(function (sw) {
+            sw.addEventListener("click", function () {
+              var hex = sw.getAttribute("data-hex"), name = sw.getAttribute("data-name");
+              var meta = null;
+              for (var i = 0; i < palette.length; i++) { if (palette[i].hex === hex) { meta = palette[i]; break; } }
+              P.baseColor = hex;
+              self.paintColor = { hex: hex, name: name, meaning: meta.meaning }; // 存档主色 → 第四关台词
+              self._pushHistory({ t: "color" });
+              self._drawPaint();
+              // 选色瞬间：师徒上场点评；师傅说完徒弟惊叹一句，随后师徒与浮窗一同退场
+              self.showChars("normal", "paint");
+              self._showAutoTip(name + "——" + meta.meaning, function () {
+                self._showAutoTip("哇，原来颜色就是性格！", function () { self.hideChars(); }, 1900, "徒弟");
+              });
+              hint.textContent = "好！" + name + "脸铺成——接下来勾纹样";
+              // 连点换色时先清掉上一轮遗留的跳步定时器
+              if (self._colorTimers) self._colorTimers.forEach(clearTimeout);
+              self._colorTimers = [ setTimeout(function () { self._setPaintStep(3); }, 900) ];
+            });
+          });
+          this._appendUndoRedo(ops);
+          return;
+        }
+
+        // —— 步骤 3：勾纹样（描线 + 贴纸） ——
+        if (P.step === 3) {
+          var check = '<div class="paint-check">' +
+            '<span class="' + (P.strokes.lefteye ? "done" : "") + '">左眼窝' + (P.strokes.lefteye ? "✓" : "") + '</span>' +
+            '<span class="' + (P.strokes.righteye ? "done" : "") + '">右眼窝' + (P.strokes.righteye ? "✓" : "") + '</span>' +
+            '<span class="' + (P.strokes.forehead ? "done" : "") + '">额纹' + (P.strokes.forehead ? "✓" : "") + '</span>' +
+            '<span class="' + (P.stickers.length ? "done" : "") + '">纹样×' + P.stickers.length + '</span>' +
+          '</div>';
+          var ctrl = "";
+          if (P.selIdx >= 0 && P.stickers[P.selIdx]) {
+            ctrl = '<div class="paint-task-sub" style="text-align:center;">已选中纹样，可在画布上拖动</div>' +
+              '<div class="stick-ctrl">' +
+                '<button data-act="big">放大</button><button data-act="small">缩小</button>' +
+                '<button data-act="rot">旋转</button><button data-act="del">删除</button>' +
+              '</div>';
+          }
+          ops.innerHTML =
+            '<div class="paint-task">第 3 步 · 勾纹样<br/><span class="paint-task-sub">沿虚线描黑三笔（眼窝、额纹），再贴一枚传统纹样</span></div>' +
+            check +
+            '<div class="paint-task-sub" style="margin-top:8px;text-align:center;">纹样贴纸库</div>' +
+            '<div class="sticker-lib">' +
+              '<button class="sticker-btn" data-st="flame">火焰纹</button>' +
+              '<button class="sticker-btn" data-st="bat">蝠纹</button>' +
+              '<button class="sticker-btn" data-st="cloud">云纹</button>' +
+              '<button class="sticker-btn" data-st="horn">牛角纹</button>' +
+            '</div>' + ctrl +
+            (P.strokeDone === 3 && P.stickers.length
+              ? ""
+              : '<div class="paint-task-sub" style="text-align:center;">勇猛武将常用火焰纹</div>');
+          hint.textContent = P.strokeDone < 3 ? "按住描线：顺着虚线走一遍（大体流畅即可）" : "描线完成！点一枚纹样贴上去";
+
+          ops.querySelectorAll(".sticker-btn[data-st]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              P.stickers.push({ type: btn.getAttribute("data-st"), x: 200, y: 140, scale: 1, rot: 0 });
+              P.selIdx = P.stickers.length - 1;
+              self._pushHistory({ t: "sticker", idx: P.selIdx });
+              sfxSelect();
+              self._renderPaintOps();
+              self._drawPaint();
+            });
+          });
+          ops.querySelectorAll(".stick-ctrl button[data-act]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              var s = P.stickers[P.selIdx];
+              if (!s) return;
+              var act = btn.getAttribute("data-act");
+              if (act === "big") s.scale = Math.min(2.2, s.scale + 0.15);
+              else if (act === "small") s.scale = Math.max(0.5, s.scale - 0.15);
+              else if (act === "rot") s.rot += Math.PI / 6;
+              else if (act === "del") { P.stickers.splice(P.selIdx, 1); P.selIdx = -1; }
+              self._renderPaintOps();
+              self._drawPaint();
+            });
+          });
+          this._appendUndoRedo(ops, {
+            id: "btnStrokeDone", label: "落笔完成 →", show: P.strokeDone === 3 && P.stickers.length > 0,
+            onDone: function () { self._setPaintStep(4); }
+          });
+          return;
+        }
+
+        // —— 步骤 4：细节点染（虚线区域内自由涂抹） ——
+        if (P.step === 4) {
+          var areas = this._paintAreas();
+          var doneAreas = {};
+          P.paintStrokes.forEach(function (st) { doneAreas[st.area] = true; });
+          var areaCount = Object.keys(doneAreas).length;
+          var dotPalette = [
+            { hex: "#D4A017", name: "金" },
+            { hex: "#C0C0C8", name: "银" },
+            { hex: "#2E8B57", name: "绿" }
+          ];
+          ops.innerHTML =
+            '<div class="paint-task">第 4 步 · 细节点染<br/><span class="paint-task-sub">用画笔在<b>虚线框内</b>自由涂抹、画小图形——脸颊额头大片底色已锁定</span></div>' +
+            '<div class="dot-palette">' + dotPalette.map(function (c) {
+              return '<div class="dot-swatch' + (P.dotColor === c.hex ? " cur" : "") + '" data-hex="' + c.hex + '" style="background:' + c.hex + ';" title="' + c.name + '"></div>';
+            }).join("") + '<span class="dot-palette-tip">金 · 银 · 绿</span></div>' +
+            '<div class="paint-check">' + areas.map(function (a) {
+              return '<span class="' + (doneAreas[a.key] ? "done" : "") + '">' + a.name + (doneAreas[a.key] ? "✓" : "") + '</span>';
+            }).join("") + '</div>' +
+            (areaCount >= 1
+              ? ""
+              : '<div class="paint-task-sub" style="text-align:center;">任选 1 处以上画上颜色，即可完成</div>');
+          hint.textContent = "点染是最后一道工——点睛之笔";
+          ops.querySelectorAll(".dot-swatch").forEach(function (sw) {
+            sw.addEventListener("click", function () {
+              P.dotColor = sw.getAttribute("data-hex");
+              self._renderPaintOps();
+            });
+          });
+          this._appendUndoRedo(ops, {
+            id: "btnPaintDone", label: "完成勾脸 ✓", show: areaCount >= 1,
+            onDone: function () { self._paintDone(); }
+          });
+          return;
+        }
+      },
+
+      _setPaintStep: function (n) {
+        var P = this._paint;
+        P.step = n;
+        P.maxStep = Math.max(P.maxStep || 1, n);
+        P.selIdx = -1;
+        this._renderPaintOps();
+        this._drawPaint();
+      },
+
+      // 点步骤板块 = 回到编辑状态：清空对话框/自动提示与师徒立绘，并撤销挂起的对话定时器
+      _leaveEditMode: function () {
+        if (this._colorTimers) { this._colorTimers.forEach(clearTimeout); this._colorTimers = null; }
+        if (this._mistakeAutoTimer) { clearTimeout(this._mistakeAutoTimer); this._mistakeAutoTimer = null; }
+        if (this._twTimer) { clearInterval(this._twTimer); this._twTimer = null; }
+        this._autoClose = false;
+        this._tipCloseCb = null;
+        this._pendingMistake = null;
+        $("dialogueBox").style.display = "none";
+        $("dialogueBox").onclick = null;
+        $("btnSkip").style.display = "none";
+        this.hideChars();
+      },
+
+      // 撤销最近一次用户动作：撤销时补记原值，供"恢复"重放
+      _paintUndo: function () {
+        var P = this._paint;
+        if (!P.history.length) {
+          $("paintHint").textContent = "还没有可撤销的操作";
+          return;
+        }
+        var act = P.history.pop();
+        if (act.t === "pattern") {
+          act.val = P.pattern;          // 记住撤销的是哪种谱式
+          P.pattern = null;
+          this._lockedRole = null;
+          this._setPaintStep(1);
+        } else if (act.t === "color") {
+          act.color = P.baseColor;      // 记住撤销的主色
+          act.meta = this.paintColor;
+          P.baseColor = null;
+          this.paintColor = null;
+          this._setPaintStep(2);
+        } else if (act.t === "stroke") {
+          P.strokes[act.key] = false;
+          P.strokeDone--;
+          this._setPaintStep(3);
+        } else if (act.t === "sticker") {
+          act.sticker = P.stickers[act.idx]; // 记住整个贴纸对象
+          P.stickers.splice(act.idx, 1);
+          P.selIdx = -1;
+          this._setPaintStep(3);
+        } else if (act.t === "paint") {
+          act.stroke = P.paintStrokes[act.idx]; // 记住整条点染笔迹
+          P.paintStrokes.splice(act.idx, 1);
+          this._setPaintStep(4);
+        }
+        P.redoStack.push(act);
+        $("paintHint").textContent = "已撤销上一步";
+        this._drawPaint();
+      },
+
+      // 恢复最近一次被撤销的动作
+      _paintRedo: function () {
+        var P = this._paint;
+        if (!P.redoStack.length) {
+          $("paintHint").textContent = "没有可恢复的操作";
+          return;
+        }
+        var act = P.redoStack.pop();
+        if (act.t === "pattern") {
+          P.pattern = act.val;
+          this._lockedRole = "净";
+          this._setPaintStep(1);
+        } else if (act.t === "color") {
+          P.baseColor = act.color;
+          this.paintColor = act.meta;
+          this._setPaintStep(2);
+        } else if (act.t === "stroke") {
+          P.strokes[act.key] = true;
+          P.strokeDone++;
+          this._setPaintStep(3);
+        } else if (act.t === "sticker") {
+          P.stickers.splice(act.idx, 0, act.sticker);
+          this._setPaintStep(3);
+        } else if (act.t === "paint") {
+          P.paintStrokes.splice(act.idx, 0, act.stroke);
+          this._setPaintStep(4);
+        }
+        $("paintHint").textContent = "已恢复";
+        this._drawPaint();
+      },
+
+      // 操作栏底部：撤销/恢复按钮行 +（可选）独占一行的步骤完成按钮
+      _appendUndoRedo: function (ops, done) {
+        var row = document.createElement("div");
+        row.className = "undo-redo-row";
+        row.innerHTML = '<button class="ur-btn" data-ur="undo">↶ 撤销</button><button class="ur-btn" data-ur="redo">↷ 恢复</button>';
+        ops.appendChild(row);
+        var self = this;
+        row.querySelector('[data-ur="undo"]').addEventListener("click", function () { self._paintUndo(); });
+        row.querySelector('[data-ur="redo"]').addEventListener("click", function () { self._paintRedo(); });
+        if (done && done.show) {
+          // 完成按钮单独一行居中，监听器在按钮创建后立刻绑定
+          var drow = document.createElement("div");
+          drow.className = "paint-done-row";
+          drow.innerHTML = '<button class="ur-btn paint-done-inline" id="' + done.id + '">' + done.label + '</button>';
+          ops.appendChild(drow);
+          drow.querySelector(".paint-done-inline").addEventListener("click", done.onDone);
+        }
+      },
+
+      // ---------- 勾脸：引导路径与采样 ----------
+      _qCurve: function (p0, p1, p2, n) {
+        var out = [];
+        for (var i = 0; i <= n; i++) {
+          var t = i / n, mt = 1 - t;
+          out.push({
+            x: mt * mt * p0.x + 2 * mt * t * p1.x + t * t * p2.x,
+            y: mt * mt * p0.y + 2 * mt * t * p1.y + t * t * p2.y
+          });
+        }
+        return out;
+      },
+      _paintGuides: function () {
+        return {
+          lefteye:  this._qCurve({ x: 180, y: 248 }, { x: 148, y: 230 }, { x: 114, y: 250 }, 12),
+          righteye: this._qCurve({ x: 220, y: 248 }, { x: 252, y: 230 }, { x: 286, y: 250 }, 12),
+          forehead: this._qCurve({ x: 200, y: 92 }, { x: 186, y: 128 }, { x: 200, y: 166 }, 12)
+        };
+      },
+      // 点染虚线区域（椭圆）：只开放这些局部，脸颊额头大片底色锁定
+      _paintAreas: function () {
+        return [
+          { key: "yintang",  name: "印堂",   x: 200, y: 148, rx: 40, ry: 42 },
+          { key: "browL",    name: "左眉角", x: 108, y: 205, rx: 28, ry: 18 },
+          { key: "browR",    name: "右眉角", x: 292, y: 205, rx: 28, ry: 18 },
+          { key: "eyeL",     name: "左眼窝", x: 148, y: 258, rx: 46, ry: 28 },
+          { key: "eyeR",     name: "右眼窝", x: 252, y: 258, rx: 46, ry: 28 },
+          { key: "nose",     name: "鼻头",   x: 200, y: 318, rx: 28, ry: 26 },
+          { key: "chin",     name: "下巴",   x: 200, y: 412, rx: 40, ry: 24 }
+        ];
+      },
+      _inArea: function (a, p) {
+        var dx = (p.x - a.x) / a.rx, dy = (p.y - a.y) / a.ry;
+        return dx * dx + dy * dy <= 1;
+      },
+
+      // ---------- 勾脸：画布交互 ----------
+      _paintDown: function (p) {
+        var P = this._paint;
+        if (P.step === 3 && P.strokeDone < 3) {
+          // 优先拖动已有贴纸
+          for (var i = P.stickers.length - 1; i >= 0; i--) {
+            var s = P.stickers[i], dx = p.x - s.x, dy = p.y - s.y;
+            if (dx * dx + dy * dy < 48 * 48 * s.scale * s.scale) {
+              P.selIdx = i; P.dragging = i; this._renderPaintOps(); this._drawPaint();
+              return;
+            }
+          }
+          // 开始描线：按点靠近某条未完成引导线
+          var guides = this._paintGuides();
+          for (var key in guides) {
+            if (P.strokes[key]) continue;
+            for (var j = 0; j < guides[key].length; j++) {
+              var g = guides[key][j], gx = p.x - g.x, gy = p.y - g.y;
+              if (gx * gx + gy * gy < 32 * 32) {
+                P.drawing = { key: key, pts: [p] };
+                return;
+              }
+            }
+          }
+        } else if (P.step === 4) {
+          // 落笔在虚线区域内 → 开始该区域的点染笔画；区域外 → 温和提示（带冷却）
+          var areas = this._paintAreas();
+          for (var k = 0; k < areas.length; k++) {
+            if (this._inArea(areas[k], p)) {
+              P.painting = { area: areas[k].key, color: P.dotColor, pts: [p] };
+              return;
+            }
+          }
+          var now = Date.now();
+          if (now - P.tipCool > 2500) {
+            P.tipCool = now;
+            this._showAutoTip("主色已定，点染只需在眉眼、额头、鼻、下巴局部做点缀。");
+          }
+        } else if (P.step === 3) {
+          // 描线完成后仍可调整贴纸
+          for (var m = P.stickers.length - 1; m >= 0; m--) {
+            var st = P.stickers[m], mx = p.x - st.x, my = p.y - st.y;
+            if (mx * mx + my * my < 48 * 48 * st.scale * st.scale) {
+              P.selIdx = m; P.dragging = m; this._renderPaintOps(); this._drawPaint();
+              return;
+            }
+          }
+        }
+      },
+
+      _paintMove: function (p) {
+        var P = this._paint;
+        if (P.drawing) {
+          P.drawing.pts.push(p);
+          this._drawPaint();
+        } else if (P.painting) {
+          // 点染笔画：只记录区域内的点（出界即断笔）
+          var areas = this._paintAreas(), area = null;
+          for (var i = 0; i < areas.length; i++) { if (areas[i].key === P.painting.area) { area = areas[i]; break; } }
+          if (area && this._inArea(area, p)) {
+            P.painting.pts.push(p);
+            this._drawPaint();
+          }
+        } else if (P.dragging >= 0 && P.stickers[P.dragging]) {
+          P.stickers[P.dragging].x = p.x;
+          P.stickers[P.dragging].y = p.y;
+          this._drawPaint();
+        }
+      },
+
+      _paintUp: function () {
+        var P = this._paint;
+        // 点染收笔：有实际笔迹才入栈，刷新进度与完成按钮
+        if (P.painting) {
+          if (P.painting.pts.length > 0) {
+            P.paintStrokes.push(P.painting);
+            this._pushHistory({ t: "paint", idx: P.paintStrokes.length - 1 });
+            this._renderPaintOps();
+          }
+          P.painting = null;
+          this._drawPaint();
+          return;
+        }
+        if (P.drawing) {
+          var guides = this._paintGuides();
+          var pts = guides[P.drawing.key];
+          var hit = 0;
+          for (var i = 0; i < pts.length; i++) {
+            for (var j = 0; j < P.drawing.pts.length; j++) {
+              var dx = pts[i].x - P.drawing.pts[j].x, dy = pts[i].y - P.drawing.pts[j].y;
+              if (dx * dx + dy * dy < 22 * 22) { hit++; break; }
+            }
+          }
+          if (hit / pts.length >= 0.55) {
+            P.strokes[P.drawing.key] = true;
+            P.strokeDone++;
+            this._pushHistory({ t: "stroke", key: P.drawing.key });
+            woodTapSound();
+            $("paintHint").textContent = "这一笔稳！继续";
+            this._renderPaintOps();
+          } else {
+            $("paintHint").textContent = "手要稳，贴着虚线再描一遍";
+          }
+          P.drawing = null;
+          this._drawPaint();
+          // 3 笔描完且有纹样 → 出现落笔完成按钮
+          if (P.strokeDone === 3 && P.stickers.length) this._renderPaintOps();
+        }
+        P.dragging = -1;
+      },
+
+      // ---------- 勾脸：画布绘制 ----------
+      _drawPaint: function () {
+        var c = this._pcv, P = this._paint;
+        if (!c) return;
+        c.clearRect(0, 0, 400, 500);
+        // 案上纸底
+        c.fillStyle = "#F0E6CE";
+        c.fillRect(0, 0, 400, 500);
+        // 线稿颜色：上色后按底色深浅反转
+        var ink = "#3D2B1F";
+        if (P.baseColor) ink = (P.baseColor === "#F5F0E6" || P.baseColor === "#E5B500") ? "#3D2B1F" : "#F5F0E6";
+        // 脸型
+        c.beginPath(); c.ellipse(200, 250, 150, 185, 0, 0, Math.PI * 2);
+        c.fillStyle = P.baseColor || "#F5F0E6"; c.fill();
+        c.lineWidth = 3; c.strokeStyle = ink; c.stroke();
+        // 眉
+        c.lineWidth = 4; c.lineCap = "round";
+        c.beginPath(); c.moveTo(115, 208); c.quadraticCurveTo(135, 190, 158, 205); c.stroke();
+        c.beginPath(); c.moveTo(285, 208); c.quadraticCurveTo(265, 190, 242, 205); c.stroke();
+        // 眼窝轮廓
+        c.lineWidth = 2.5;
+        c.beginPath(); c.ellipse(148, 258, 38, 22, 0, 0, Math.PI * 2); c.stroke();
+        c.beginPath(); c.ellipse(252, 258, 38, 22, 0, 0, Math.PI * 2); c.stroke();
+        // 眼珠
+        c.fillStyle = ink;
+        c.beginPath(); c.arc(148, 260, 6, 0, Math.PI * 2); c.fill();
+        c.beginPath(); c.arc(252, 260, 6, 0, Math.PI * 2); c.fill();
+        // 鼻柱与鼻窝
+        c.beginPath(); c.moveTo(200, 265); c.lineTo(188, 318); c.quadraticCurveTo(200, 328, 212, 318); c.stroke();
+        c.beginPath(); c.moveTo(172, 330); c.quadraticCurveTo(200, 344, 228, 330); c.stroke();
+        // 嘴
+        c.lineWidth = 3.5;
+        c.beginPath(); c.moveTo(160, 385); c.quadraticCurveTo(200, 412, 240, 385); c.stroke();
+        c.lineWidth = 2;
+        c.beginPath(); c.moveTo(172, 396); c.quadraticCurveTo(200, 408, 228, 396); c.stroke();
+        // 谱式分界线
+        c.lineWidth = 2.5;
+        if (P.pattern === "san") {
+          c.beginPath(); c.moveTo(62, 190); c.quadraticCurveTo(200, 150, 338, 190); c.stroke();
+          c.beginPath(); c.moveTo(78, 235); c.quadraticCurveTo(95, 300, 92, 375); c.stroke();
+          c.beginPath(); c.moveTo(322, 235); c.quadraticCurveTo(305, 300, 308, 375); c.stroke();
+        } else if (P.pattern === "shi") {
+          // 十字门脸：窄中柱从额头通到眼窝上沿（眼窝上缘 y≈230，不入眼球），与眉眼间短横杠相交成"十字"
+          c.beginPath(); c.moveTo(180, 72); c.quadraticCurveTo(176, 130, 180, 230); c.stroke();
+          c.beginPath(); c.moveTo(220, 72); c.quadraticCurveTo(224, 130, 220, 230); c.stroke();
+          c.beginPath(); c.moveTo(118, 212); c.quadraticCurveTo(200, 224, 282, 212); c.stroke();
+        }
+        // 点染笔迹（自由涂抹，裁剪在虚线区域内）
+        var areas = this._paintAreas();
+        function drawPaintStroke(c, st) {
+          var area = null;
+          for (var i = 0; i < areas.length; i++) { if (areas[i].key === st.area) { area = areas[i]; break; } }
+          if (!area || !st.pts.length) return;
+          c.save();
+          c.beginPath(); c.ellipse(area.x, area.y, area.rx, area.ry, 0, 0, Math.PI * 2); c.clip();
+          c.strokeStyle = st.color; c.lineWidth = 7; c.lineCap = "round"; c.lineJoin = "round";
+          c.globalAlpha = 0.85;
+          c.beginPath(); c.moveTo(st.pts[0].x, st.pts[0].y);
+          for (var j = 1; j < st.pts.length; j++) c.lineTo(st.pts[j].x, st.pts[j].y);
+          c.stroke();
+          c.restore();
+        }
+        for (var st = 0; st < P.paintStrokes.length; st++) drawPaintStroke(c, P.paintStrokes[st]);
+        if (P.painting && P.painting.pts.length) drawPaintStroke(c, P.painting);
+        // 点染虚线提示框（步骤 4 显示，已点染区域变淡金实线圈）
+        // 双描边：深色衬底 + 亮色线，任何底色上都清晰；通关存档截图时跳过
+        if (P.step === 4 && !this._cleanShot) {
+          var doneAreas = {};
+          P.paintStrokes.forEach(function (s) { doneAreas[s.area] = true; });
+          for (var a = 0; a < areas.length; a++) {
+            c.beginPath(); c.ellipse(areas[a].x, areas[a].y, areas[a].rx, areas[a].ry, 0, 0, Math.PI * 2);
+            // 深色衬底
+            c.setLineDash([6, 5]); c.lineWidth = 3.2; c.strokeStyle = "rgba(15,10,6,0.65)"; c.stroke();
+            // 亮色面线
+            c.setLineDash([6, 5]); c.lineWidth = 1.4;
+            c.strokeStyle = doneAreas[areas[a].key] ? "rgba(255,220,130,0.95)" : "rgba(255,236,190,0.92)";
+            c.stroke();
+            c.setLineDash([]);
+          }
+        }
+        // 描线引导（虚线）与完成线
+        var guides = this._paintGuides();
+        for (var key in guides) {
+          var pts = guides[key];
+          if (P.strokes[key]) {
+            // 完成的专业实线
+            c.lineWidth = 5; c.strokeStyle = ink; c.lineCap = "round"; c.lineJoin = "round";
+            c.beginPath(); c.moveTo(pts[0].x, pts[0].y);
+            for (var i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y);
+            c.stroke();
+          } else if (P.step === 3) {
+            // 虚线引导：深色衬底 + 米金亮线双描边，红/深底色上也清晰
+            for (var pass = 0; pass < 2; pass++) {
+              c.setLineDash([7, 6]);
+              c.lineWidth = pass === 0 ? 4.2 : 2;
+              c.strokeStyle = pass === 0 ? "rgba(15,10,6,0.72)" : "rgba(255,236,190,0.95)";
+              c.beginPath(); c.moveTo(pts[0].x, pts[0].y);
+              for (var k = 1; k < pts.length; k++) c.lineTo(pts[k].x, pts[k].y);
+              c.stroke();
+              c.setLineDash([]);
+            }
+          }
+        }
+        // 玩家当前笔画（毛笔感）
+        if (P.drawing && P.drawing.pts.length > 1) {
+          c.lineWidth = 5; c.strokeStyle = ink; c.lineCap = "round"; c.lineJoin = "round";
+          c.beginPath(); c.moveTo(P.drawing.pts[0].x, P.drawing.pts[0].y);
+          for (var m = 1; m < P.drawing.pts.length; m++) c.lineTo(P.drawing.pts[m].x, P.drawing.pts[m].y);
+          c.stroke();
+        }
+        // 贴纸纹样（金色勾线）；存档截图时不带选中虚线圈
+        for (var s = 0; s < P.stickers.length; s++) {
+          this._drawSticker(c, P.stickers[s], s === P.selIdx && !this._cleanShot);
+        }
+      },
+
+      // 传统纹样贴纸：火焰纹/蝠纹/云纹/牛角纹（金色，模拟勾金粉线）
+      _drawSticker: function (c, s, selected) {
+        c.save();
+        c.translate(s.x, s.y);
+        c.rotate(s.rot);
+        c.scale(s.scale, s.scale);
+        c.fillStyle = "#D4A017";
+        c.strokeStyle = "rgba(90,60,10,0.9)";
+        c.lineWidth = 1.5;
+        var type = s.type;
+        if (type === "flame") {
+          // 火焰纹：三重火苗
+          c.beginPath();
+          c.moveTo(0, 26);
+          c.quadraticCurveTo(-16, 14, -8, -2);
+          c.quadraticCurveTo(-20, -4, -6, -18);
+          c.quadraticCurveTo(-2, -26, 0, -34);
+          c.quadraticCurveTo(2, -26, 6, -18);
+          c.quadraticCurveTo(20, -4, 8, -2);
+          c.quadraticCurveTo(16, 14, 0, 26);
+          c.closePath(); c.fill(); c.stroke();
+        } else if (type === "bat") {
+          // 蝠纹：蝠身 + 双翼
+          c.beginPath();
+          c.moveTo(0, -6); c.lineTo(6, 0); c.lineTo(0, 14); c.lineTo(-6, 0); c.closePath();
+          c.fill(); c.stroke();
+          c.beginPath();
+          c.moveTo(-5, -2); c.quadraticCurveTo(-24, -14, -30, 4); c.quadraticCurveTo(-18, 2, -6, 6);
+          c.closePath(); c.fill(); c.stroke();
+          c.beginPath();
+          c.moveTo(5, -2); c.quadraticCurveTo(24, -14, 30, 4); c.quadraticCurveTo(18, 2, 6, 6);
+          c.closePath(); c.fill(); c.stroke();
+        } else if (type === "cloud") {
+          // 云纹：三卷云
+          c.beginPath();
+          c.arc(-12, 4, 9, Math.PI, 0); c.arc(0, -2, 11, Math.PI, 0); c.arc(12, 4, 9, Math.PI, 0);
+          c.lineTo(21, 10); c.lineTo(-21, 10); c.closePath();
+          c.fill(); c.stroke();
+        } else if (type === "horn") {
+          // 牛角纹：对称双角
+          c.lineWidth = 5; c.lineCap = "round";
+          c.strokeStyle = "#D4A017";
+          c.beginPath(); c.moveTo(-2, 16); c.quadraticCurveTo(-26, 4, -20, -20); c.stroke();
+          c.beginPath(); c.moveTo(2, 16); c.quadraticCurveTo(26, 4, 20, -20); c.stroke();
+        }
+        c.restore();
+        if (selected) {
+          c.save();
+          c.strokeStyle = "rgba(255,232,188,0.9)";
+          c.setLineDash([5, 4]);
+          c.lineWidth = 1.5;
+          c.beginPath(); c.arc(s.x, s.y, 50 * s.scale, 0, Math.PI * 2); c.stroke();
+          c.setLineDash([]);
+          c.restore();
+        }
+      },
+
+      // ---------- 勾脸完成：保存作品 → 评价对话 ----------
+      _paintDone: function () {
+        // 通关存档截图：临时关闭辅助虚线（点染提示框/选中圈），截完还原
+        this._cleanShot = true;
+        this._drawPaint();
+        this.playerMask = $("paintCanvas").toDataURL("image/png");
+        this._cleanShot = false;
+        this._drawPaint();
+        var col = this.paintColor;
+        var self = this;
+        this.showChars("praise", "happy");
+        this.showDialogue([
+          { name: "周师傅", text: "勾得有模有样！" + (col ? col.name + "脸" + col.meaning + "，" : "") + "谱式正、纹样也压得住——这张脸谱有神了。" },
+          { name: "周师傅", text: "好，我替你收着。今夜登台，就戴你自己画的这张。" }
+        ], function () {
+          self._level2Complete();
+        });
+      },
+
+      _level2Complete: function () {
+        $("level2").classList.remove("active");
+        var self = this;
+        this.showChars("normal", "normal");
+        this.showDialogue([
+          { name: "周师傅", text: "嗯，有模有样。脸上有色了，耳朵也得灵。" }
+        ], function () {
+          self._startLevel3Dialogue();
+        });
+      },
+
+      // ===== 第三关：后台听辨（音频答题） =====
+      _startLevel3Dialogue: function () {
+        var self = this;
+        this.showChars("normal", "normal");
+        this.showDialogue([
+          { name: "周师傅", text: "川剧五腔——高腔、昆腔、胡琴、弹戏、灯调，各有各的味儿。" },
+          { name: "周师傅", text: "你听这段音频，说说是哪一种声腔。" }
+        ], function () {
+          self.hideChars();
+          self.startLevel3();
+        });
+      },
+
+      startLevel3: function () {
+        this.updateProgress(3);
+        this.setStageBg("images/level3_bg.png"); // 听辨专属背景（缺失自动回退当前背景）
+        var container = $("level3");
+        ["level1","level2","level4"].forEach(function (id) { $(id).classList.remove("active"); });
+        container.classList.add("active");
+
+        // 随机抽 3 题
+        this._audioQuestions = shuffle(AUDIO_QUESTIONS).slice(0, 3);
+        this._audioIdx = 0;
+        this._audioScore = 0;
+        this._audioHintShown = false; // 口头提示只在每轮第一次答错时出现
+        this._renderAudioQuestion();
+      },
+
+      _renderAudioQuestion: function () {
+        var container = $("level3");
+        var q = this._audioQuestions[this._audioIdx];
+        var self = this;
+
+        // 复古播放器：木色圆钮 + 细金进度条（原生控件隐藏）
+        var audioHtml = "";
+        if (q.audio) {
+          audioHtml = '<div class="audio-player retro">' +
+            '<button class="audio-play-btn" id="btnAudioPlay"><span class="apb-icon">▶</span><span class="apb-text">播声</span></button>' +
+            '<div class="audio-track"><div class="audio-track-fill" id="audioFill"></div>' +
+              '<span class="audio-track-knob" id="audioKnob"></span></div>' +
+            '<audio src="' + q.audio + '" id="audioEl" preload="auto"></audio>' +
+          '</div>';
+        } else {
+          audioHtml = '<div class="audio-player"><p class="audio-no-sound">本题无需音频，根据知识作答</p></div>';
+        }
+
+        var optionsHtml = q.options.map(function (opt, i) {
+          return '<div class="audio-option" data-idx="' + i + '">' + opt + '</div>';
+        }).join("");
+
+        container.innerHTML =
+          '<div class="level-title">第三关 · 后台听辨</div>' +
+          '<div class="level-subtitle">第 ' + (this._audioIdx + 1) + ' / ' + this._audioQuestions.length + ' 题</div>' +
+          '<div class="audio-game">' +
+            '<p class="audio-question">' + q.q + '</p>' +
+            audioHtml +
+            '<div class="audio-options">' + optionsHtml + '</div>' +
+          '</div>';
+
+        // —— 复古播放器交互 ——
+        var playBtn = $("btnAudioPlay");
+        if (playBtn) {
+          var audio = $("audioEl"), fill = $("audioFill"), knob = $("audioKnob");
+          playBtn.addEventListener("click", function () {
+            if (audio.paused) {
+              audio.play();
+              playBtn.querySelector(".apb-icon").textContent = "❚❚";
+              playBtn.querySelector(".apb-text").textContent = "停声";
+              playBtn.classList.add("playing");
+            } else {
+              audio.pause();
+              playBtn.querySelector(".apb-icon").textContent = "▶";
+              playBtn.querySelector(".apb-text").textContent = "播声";
+              playBtn.classList.remove("playing");
+            }
+          });
+          audio.addEventListener("timeupdate", function () {
+            var pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+            fill.style.width = pct + "%";
+            knob.style.left = pct + "%";
+          });
+          audio.addEventListener("ended", function () {
+            playBtn.querySelector(".apb-icon").textContent = "▶";
+            playBtn.querySelector(".apb-text").textContent = "播声";
+            playBtn.classList.remove("playing");
+            fill.style.width = "0%";
+            knob.style.left = "0%";
+          });
+        }
+
+        // —— 选项交互：答对赞许浮窗；首次答错老师傅口头提示 ——
+        container.querySelectorAll(".audio-option").forEach(function (opt) {
+          opt.addEventListener("click", function () {
+            if (container.querySelector(".audio-option.correct")) return;
+            var idx = parseInt(opt.getAttribute("data-idx"), 10);
+            if (idx === q.answer) {
+              opt.classList.add("correct");
+              self._audioScore++;
+              var praise = ["答对了！耳朵灵。", "好耳朵！一听便知。", "不错，这段味道你听出来了。"];
+              // 答对：师徒上场赞许，徒弟捧场一句，说完与浮窗同时退场
+              self.showChars("praise", "happy");
+              self._showAutoTip(praise[Math.floor(Math.random() * praise.length)], function () {
+                self._showAutoTip("嘿嘿，耳朵练出来啦！", function () { self.hideChars(); }, 1600, "徒弟");
+              }, 2000);
+              setTimeout(function () { self._nextAudioQuestion(); }, 1300);
+            } else {
+              opt.classList.add("wrong");
+              var correctEl = container.querySelector('.audio-option[data-idx="' + q.answer + '"]');
+              if (correctEl) correctEl.classList.add("correct");
+              if (!self._audioHintShown) {
+                self._audioHintShown = true; // 只在第一回答错时老师傅口头提示
+                // 答错：师徒上场提示，徒弟共情一句，说完与浮窗同时退场
+                self.showChars("help", "confused");
+                self._showAutoTip("听不出来？给你提个醒——" + q.hint, function () {
+                  self._showAutoTip("哎呀，这声儿藏得也太深了……", function () { self.hideChars(); }, 1800, "徒弟");
+                }, 2400);
+              }
+              setTimeout(function () { self._nextAudioQuestion(); }, 1600);
+            }
+          });
+        });
+      },
+
+      _nextAudioQuestion: function () {
+        this._audioIdx++;
+        if (this._audioIdx >= this._audioQuestions.length) {
+          this._level3Complete();
+        } else {
+          this._renderAudioQuestion();
+        }
+      },
+
+      // 分层过关：<1 重来；≥1 合格；全中优秀（合格即可进第四关）
+      _level3Complete: function () {
+        $("level3").classList.remove("active");
+        // 过关切画面时，最后一段音频必须立即停止
+        var ap = $("audioEl");
+        if (ap) { ap.pause(); ap.currentTime = 0; }
+        var self = this;
+        var right = this._audioScore, total = this._audioQuestions.length;
+        if (right < 1) {
+          this.showChars("help", "confused");
+          this.showDialogue([
+            { name: "周师傅", text: "一题都没中。不急——回去再听一遍！记住：昆高胡弹灯，各有各的脾气。" }
+          ], function () {
+            self.hideChars(); // 重听清场：答题反馈时师徒再上场
+            self.startLevel3(); // 重抽题重来
+          });
+        } else {
+          this.showChars("praise", "happy");
+          var line1 = (right === total)
+            ? "三题全中！好耳朵！锣鼓一响，你就知道是哪一路的戏。"
+            : "答对 " + right + " 题，过了！能听出腔调，便算入了门。";
+          this.showDialogue([
+            { name: "周师傅", text: line1 },
+            { name: "周师傅", text: "就差最后一步了。" }
+          ], function () {
+            self._startLevel4Dialogue();
+          });
+        }
+      },
+
+      // ===== 第四关：登台亮相（选择行当） =====
+      _startLevel4Dialogue: function () {
+        var self = this;
+        this.showChars("normal", "normal");
+        this.showDialogue([
+          { name: "周师傅", text: "前台锣鼓响了。生旦净末丑，你选哪一行登台？" },
+          { name: "周师傅", text: "选定了，今夜这出戏，你就是台上的人了。" }
+        ], function () {
+          self.hideChars();
+          self.startLevel4();
+        });
+      },
+
+      startLevel4: function () {
+        this.updateProgress(4);
+        this.setStageBg("images/level4_bg.png"); // 登台专属背景（缺失自动回退当前背景）
+        var container = $("level4");
+        ["level1","level2","level3"].forEach(function (id) { $(id).classList.remove("active"); });
+        container.classList.add("active");
+
+        var self = this;
+        // 第二关选谱式时已锁定行当（净）：其余四个行当灰锁不可选
+        var locked = this._lockedRole || null;
+        var cardsHtml = this.roles.map(function (r, i) {
+          var isLocked = locked && r.name !== locked;
+          return '<div class="role-game-card' + (isLocked ? " locked" : "") + '" data-idx="' + i + '"' +
+            (isLocked ? ' title="你在勾脸时定下的是「' + locked + '」行，此行不可选"' : '') + '>' +
+            '<div class="role-card-name" style="color:' + r.color + ';">' + r.name + '</div>' +
+            '<div class="role-card-keyword">' + (r.keyword || "") + '</div>' +
+            '<div class="role-card-intro">' + (r.intro || "").substring(0, 20) + '...</div>' +
+          '</div>';
+        }).join("");
+
+        container.innerHTML =
+          '<div class="level-title">第四关 · 登台亮相</div>' +
+          '<div class="level-subtitle">' + (locked ? "你勾的是「" + locked + "」行脸谱——行当已定，唯它可选" : "选择你的行当，登台亮相") + '</div>' +
+          (this.playerMask
+            ? '<div class="level4-mask-show"><img src="' + this.playerMask + '" alt="你亲手勾绘的脸谱"/><span>你亲手勾绘的脸谱' + (this.paintColor ? "——" + this.paintColor.name + "脸" + this.paintColor.meaning : "") + '，今夜就戴它登台</span></div>'
+            : "") +
+          '<div class="role-game">' +
+            '<div class="role-cards">' + cardsHtml + '</div>' +
+            '<button class="game-btn role-confirm-btn" id="btnRoleConfirm" style="display:none;">登 台</button>' +
+          '</div>';
+
+        var selectedRole = null;
+        container.querySelectorAll(".role-game-card").forEach(function (card) {
+          card.addEventListener("click", function () {
+            if (card.classList.contains("locked")) return; // 灰锁行当不可选
+            container.querySelectorAll(".role-game-card.selected").forEach(function (c) { c.classList.remove("selected"); });
+            card.classList.add("selected");
+            selectedRole = parseInt(card.getAttribute("data-idx"), 10);
+            $("btnRoleConfirm").style.display = "inline-block";
+          });
+        });
+
+        $("btnRoleConfirm").addEventListener("click", function () {
+          if (selectedRole !== null) {
+            self._selectedRole = self.roles[selectedRole];
+            self._level4Complete();
+          }
+        });
+      },
+
+      _level4Complete: function () {
+        $("level4").classList.remove("active");
+        this.updateProgress(5); // 全部完成
+        var self = this;
+        var roleName = this._selectedRole ? this._selectedRole.name : "——";
+        this.showChars("praise", "happy"); // 登台送行：师徒上场见证
+        this.showDialogue([
+          { name: "周师傅", text: this.playerName + "，好！你选了「" + roleName + "」行。" },
+          { name: "周师傅", text: "今夜一夜，你已初窥川剧门径。" },
+          { name: "徒弟", text: "师傅，我……我有点紧张！" },
+          { name: "周师傅", text: "怕什么。脸谱在脸上，功课在心里——后台的灯灭了，前台的灯亮了。去吧，台上见。" }
+        ], function () {
+          self.showEnding();
+        });
+      },
+
+      // ===== 通关 =====
+      showEnding: function () {
+        this.goToScene("ending");
+        this.setStageBg("images/level4_bg.png"); // 舞台底图同步（再玩一次回到舞台时保持一致）
+        // 通关场景在 scene-stage 之外（stageBg 随舞台场景一起隐藏），需自带与登台相同的背景照片
+        $("scene-ending").style.background =
+          'linear-gradient(rgba(20,12,8,0.55), rgba(20,12,8,0.78)), url("images/level4_bg.png") center/cover no-repeat';
+        var role = this._selectedRole;
+        var col = this.paintColor;
+        var text = this.playerName + "，你完成了「后台一夜」的全部四关。\n" +
+          "从识谱到勾脸，从听辨到亮相，\n" +
+          "你选了「" + (role ? role.name : "") + "」行，今夜便是台上的人。" +
+          (col ? "\n你勾的" + col.name + "脸——" + col.meaning + "，戏台会记得今夜的油彩。" : "") + "\n" +
+          "（你向周师傅深深一躬）谢谢师傅，教我这后台一夜。\n\n" +
+          "川剧的路还长，但今夜，你迈出了第一步。";
+        $("endingText").innerHTML = text.replace(/\n/g, "<br/>");
+        // 展示玩家亲手勾绘的脸谱
+        var old = document.querySelector(".ending-mask");
+        if (old) old.remove();
+        if (this.playerMask) {
+          var maskDiv = document.createElement("div");
+          maskDiv.className = "ending-mask";
+          maskDiv.innerHTML = '<img src="' + this.playerMask + '" alt="你亲手勾绘的脸谱"/>' +
+            '<span>这张脸谱，是你今夜亲手勾出来的</span>';
+          var et = $("endingText");
+          et.parentNode.insertBefore(maskDiv, et);
+        }
+      }
+    };
+
+    // ===== 封面金粉：一进封面就有金屑飘落，营造后台灯下氛围 =====
+    function spawnGoldDust() {
+      var cover = document.getElementById("scene-cover");
+      if (!cover || document.getElementById("goldDust")) return;
+      var wrap = document.createElement("div");
+      wrap.id = "goldDust";
+      wrap.className = "gold-dust";
+      for (var i = 0; i < 46; i++) {
+        var s = document.createElement("span");
+        var size = 2 + Math.random() * 3.5;
+        s.style.left = (Math.random() * 100).toFixed(1) + "%";
+        s.style.width = size.toFixed(1) + "px";
+        s.style.height = size.toFixed(1) + "px";
+        s.style.setProperty("--d", (7 + Math.random() * 8).toFixed(1) + "s");
+        s.style.setProperty("--dl", (-12 + Math.random() * 18).toFixed(1) + "s"); // 负延迟：刚进封面就有金粉在半空
+        s.style.setProperty("--dx", (Math.random() * 60 - 30).toFixed(0) + "px");
+        s.style.setProperty("--o", (0.45 + Math.random() * 0.5).toFixed(2));
+        wrap.appendChild(s);
+      }
+      cover.appendChild(wrap);
+    }
+
+    // ===== 启动 =====
+    Game.init();
+    spawnGoldDust(); // 封面金粉飘落
+    window.Game = Game; // 暴露全局：便于浏览器调试与外部扩展
+
+    // 调试后门：quiz.html#debug-levelN 直达第 N 关（正常游玩不受影响）
+    window.addEventListener("load", function () {
+      var m = location.hash.match(/^#debug-level([234])$/);
+      if (m) {
+        Game.playerName = "测试";
+        Game.goToScene("stage");
+        var n = parseInt(m[1], 10);
+        setTimeout(function () {
+          if (n === 2) Game.startLevel2();
+          else if (n === 3) Game.startLevel3();
+          else if (n === 4) Game.startLevel4();
+        }, 300);
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

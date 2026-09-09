@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>川剧百科 · 川剧文化小站</title>
+  <link rel="stylesheet" href="style.css?v=100" />
+</head>
+<body class="kb-page" data-mood="wood">
+  <!-- 舞台底板:情绪色 + 金色织锦暗纹 + 追光(内容之下,固定不动) -->
+  <div class="kb-bg" aria-hidden="true">
+    <div class="kb-bg-pattern"></div>
+    <div class="kb-bg-shade"></div>
+    <div class="kb-bg-spot"></div>
+  </div>
+  <header class="site-header"></header>
+
+  <main class="container">
+    <h1 class="section-title">川剧百科</h1>
+    <p class="subtitle">从历史源流到脸谱密码,十分钟读懂川剧 —— 八大模块全景呈现。</p>
+
+    <div class="divider-pattern"></div>
+
+    <!-- 模块 1:历史起源 - 沉浸式老戏台场景 -->
+    <div class="knowledge-block" id="kb-origin" data-mood="wood">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">历史起源 · 沉浸式老戏台</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p>点击戏台上的红色光点,探索川剧的历史脉络。</p>
+      <div class="theater-scene" id="theaterScene">
+        <!-- 背景图(不存在则灰色占位) -->
+        <img class="theater-bg" src="images/bg_old_theater.jpg" alt="老式川剧戏园" onerror="this.style.display='none';this.parentElement.classList.add('no-bg');" />
+        <div class="theater-overlay"></div>
+        <!-- 5 个热区(从上到下按戏台空间顺序排列) -->
+        <div class="hotspot" style="top:22%;left:50%;" data-card="0">
+          <span class="hotspot-dot">1</span>
+          <span class="hotspot-label">川剧的形成</span>
+        </div>
+        <div class="hotspot" style="top:42%;left:68%;" data-card="1">
+          <span class="hotspot-dot">2</span>
+          <span class="hotspot-label">五大声腔体系</span>
+        </div>
+        <div class="hotspot" style="top:48%;left:50%;" data-card="2">
+          <span class="hotspot-dot">3</span>
+          <span class="hotspot-label">脸谱与变脸起源</span>
+        </div>
+        <div class="hotspot" style="top:74%;left:50%;" data-card="3">
+          <span class="hotspot-dot">4</span>
+          <span class="hotspot-label">川剧的繁荣时期</span>
+        </div>
+        <div class="hotspot" style="top:88%;left:28%;" data-card="4">
+          <span class="hotspot-dot">5</span>
+          <span class="hotspot-label">川剧的现代传承</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 历史知识卡片模态框 -->
+    <div class="history-modal" id="historyModal">
+      <div class="history-modal-card" id="historyModalCard">
+        <button class="history-modal-close" id="historyModalClose">×</button>
+        <div class="history-modal-img" id="historyModalImg"></div>
+        <div class="history-modal-body">
+          <h3 class="history-modal-title" id="historyModalTitle"></h3>
+          <p class="history-modal-text" id="historyModalText"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模块 2:艺术特色(五腔 + 四大绝活 可交互卡片) -->
+    <div class="knowledge-block" id="kb-features" data-mood="palace">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">艺术特色</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p>川剧以<strong>"五腔共和"</strong>与<strong>"四大绝活"</strong>闻名,是西南地区最具代表性的戏曲剧种。</p>
+
+      <!-- ═══ 上半场·五腔共和 横版联票 ═══ -->
+      <div class="sub-section-title" data-mood="palace">
+        <h3>🎼 五腔共和</h3>
+        <span class="sub-hint">雅集听戏 · 点击"听一听"聆听声腔</span>
+      </div>
+      <div class="tone-ticket-grid" id="toneTickets"></div>
+
+      <!-- ═══ 水袖飘带 分隔带 ═══ -->
+      <div class="ribbon-divider" aria-hidden="true">
+        <svg class="ribbon-svg" viewBox="0 0 1200 50" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8B5A2B" stop-opacity="0" />
+              <stop offset="15%" stop-color="#8B5A2B" stop-opacity="0.6" />
+              <stop offset="45%" stop-color="#7A4A2B" stop-opacity="0.7" />
+              <stop offset="55%" stop-color="#3A2A1A" stop-opacity="0.7" />
+              <stop offset="85%" stop-color="#1A1A1A" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#1A1A1A" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path class="ribbon-path" d="M0 25 Q150 5 300 25 T600 25 T900 25 T1200 25" />
+        </svg>
+      </div>
+
+      <!-- ═══ 下半场·四大绝活 竖版方票 ═══ -->
+      <div class="sub-section-title" data-mood="ember">
+        <h3>✨ 四大绝活</h3>
+        <span class="sub-hint">特技专场 · 点击"观看片段"跳转 B 站</span>
+      </div>
+      <div class="stunt-ticket-grid" id="stuntTickets"></div>
+    </div>
+
+    <!-- 模块 3:行当详解(扇形展开) -->
+    <div class="knowledge-block bk-vintage-tint" id="kb-roles" data-mood="navy">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">行当详解</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p class="role-plaque-sub">展开折扇 · 细品各行当</p>
+      <div class="fan-stage" id="fanStage">
+        <div class="fan-glow" id="fanGlow"></div>
+        <div class="fan-container" id="fanContainer"></div>
+        <div class="fan-pivot" id="fanPivot" title="点击收起"></div>
+        <div class="fan-hint">点击任一折面 · 细品各行当</div>
+        <!-- 卷轴展开层 -->
+        <div class="fan-scroll" id="fanScroll">
+          <div class="fan-scroll-rod fan-scroll-rod-top"></div>
+          <div class="fan-scroll-body">
+            <div class="fan-scroll-img-wrap"><img class="fan-scroll-img" id="fanScrollImg" src="" alt="" /></div>
+            <div class="fan-scroll-text">
+              <h3 class="fan-scroll-name" id="fanScrollName"></h3>
+              <span class="fan-scroll-alias" id="fanScrollAlias"></span>
+              <p class="fan-scroll-intro" id="fanScrollIntro"></p>
+              <div class="fan-scroll-detail" id="fanScrollDetail"></div>
+            </div>
+          </div>
+          <div class="fan-scroll-rod fan-scroll-rod-bottom"></div>
+          <button class="fan-scroll-close" id="fanScrollClose">收起 ▲</button>
+        </div>
+      </div>
+    </div>
+    <div class="knowledge-block bk-vintage-tint" id="kb-instruments" data-mood="navy">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">川剧乐器</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+
+      <!-- 台口过渡线:金色细线位置不动,标语与牌匾上下交换 -->
+      <div class="stage-apron" aria-hidden="true" style="margin-top:14px;">
+        <span class="apron-rule">
+          <span class="apron-dot"></span>
+          <span class="apron-line"></span>
+          <span class="apron-dot"></span>
+        </span>
+        <span class="apron-text">一台锣鼓半台戏</span>
+      </div>
+      <p>川戏锣鼓,是川剧音乐的重要组成部分。其使用乐器共有二十多种,常用的可简为小鼓、堂鼓、大锣、大钹、小锣(兼铰子),统称为"五方",加上弦乐、唢呐为六方,由小鼓指挥。这是去农村演出的轻便乐队。锣鼓曲牌有三百支左右。"装龙象龙,装虎象虎",这一句形容和要求川剧表演的话,在川剧演员中代代相传。川剧表演具有深厚的现实主义传统,同时又运用大量的艺术夸张手法,表演真实、细腻、优美动人。</p>
+      <p style="margin-top:10px;color:rgba(74,58,42,0.6);font-size:13px;">👆 悬停乐器可听其声、观其名,点击查看乐器详解</p>
+      <div class="instrument-scene">
+        <!-- 暖色脚灯光晕(空气层) -->
+        <div class="stage-glow" aria-hidden="true"></div>
+        <!-- 老戏台侧幕小木桌 -->
+        <div class="stage-table" aria-hidden="true">
+          <div class="table-top"></div>
+          <div class="table-front"></div>
+        </div>
+        <!-- 桌面左右侧边厚度(贴屏幕边缘的深色木条) -->
+        <span class="table-edge table-edge-left" aria-hidden="true"></span>
+        <span class="table-edge table-edge-right" aria-hidden="true"></span>
+        <!-- 乐器 -->
+        <div class="instrument-stage" id="instrumentStage"></div>
+      </div>
+
+      <!-- 乐器详情卷轴弹窗(同行当卷轴样式) -->
+      <div class="inst-modal" id="instModal" aria-hidden="true">
+        <div class="inst-modal-backdrop" id="instModalBackdrop"></div>
+        <div class="inst-modal-card" role="dialog" aria-modal="true" aria-labelledby="instModalName">
+          <button class="inst-modal-close" id="instModalClose" aria-label="关闭">×</button>
+          <div class="fan-scroll-rod inst-modal-rod-top"></div>
+          <div class="inst-modal-body">
+            <div class="inst-modal-img-wrap" id="instModalImgWrap">
+              <div class="inst-modal-img-fallback" id="instModalFallback"></div>
+              <img id="instModalImg" src="" alt="乐器实物图" />
+            </div>
+            <div class="inst-modal-text">
+              <h3 id="instModalName"></h3>
+              <span class="inst-modal-tag" id="instModalTag"></span>
+              <p class="inst-modal-intro" id="instModalIntro"></p>
+            </div>
+          </div>
+          <div class="fan-scroll-rod inst-modal-rod-bottom"></div>
+          <button type="button" class="fan-scroll-close" id="instModalCloseBtn">收起 ▲</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模块 3.6:川剧服饰(古籍卷轴 · 宁穿破不穿错) -->
+    <div class="knowledge-block" id="kb-costume" data-mood="ochre">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">宁穿破，不穿错</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+
+      <!-- 简介内容(纸框外,深底暖字) -->
+      <div class="bk-cb-intro">
+        <p class="bk-cb-intro-text">川剧服饰，非仅为装扮，乃身份之徽、礼制之器、色彩之象、工艺之珍。观其服，可知其人也。</p>
+        <nav class="bk-cb-intro-index">
+          <span>身份</span><i>·</i><span>色彩</span><i>·</i><span>纹样</span><i>·</i><span>工艺</span>
+        </nav>
+      </div>
+
+      <div class="bk-cb-paper">
+        <!-- 屏 2: 衣箱制(点击衣箱展开服饰详情) -->
+        <section class="bk-cb-screen bk-cb-trunks">
+          <h3 class="bk-cb-subhead">衣箱制</h3>
+          <p class="bk-cb-subhead-sub">后台分柜 · 点击衣箱展开服饰</p>
+          <div class="bk-cb-trunk-row">
+            <button type="button" class="bk-cb-trunk" data-trunk="dayi" aria-pressed="false">
+              <div class="bk-cb-trunk-svg" aria-hidden="true">
+                <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="none" stroke="#3a2a20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 44 L30 10 L90 10 L102 44"/>
+                    <path d="M30 10 L30 40 L90 40 L90 10" opacity="0.45"/>
+                    <path d="M12 44 L108 44 L108 92 L12 92 Z"/>
+                    <path d="M12 50 L108 50 M12 86 L108 86" opacity="0.5"/>
+                    <circle cx="60" cy="44" r="2.5" fill="#b8392b" stroke="none"/>
+                    <ellipse cx="60" cy="97" rx="50" ry="3.5" fill="rgba(60,40,20,0.2)" stroke="none"/>
+                  </g>
+                </svg>
+              </div>
+              <h4>大衣箱</h4>
+              <span class="bk-cb-trunk-tag">文服 · 礼制</span>
+              <p class="bk-cb-trunk-list">蟒 · 官衣 · 帔 · 褶子 · 宫装 · 开氅</p>
+            </button>
+            <button type="button" class="bk-cb-trunk" data-trunk="eryi" aria-pressed="false">
+              <div class="bk-cb-trunk-svg" aria-hidden="true">
+                <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="none" stroke="#3a2a20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 44 L30 10 L90 10 L102 44"/>
+                    <path d="M30 10 L30 40 L90 40 L90 10" opacity="0.45"/>
+                    <path d="M12 44 L108 44 L108 92 L12 92 Z"/>
+                    <path d="M12 50 L108 50 M12 86 L108 86" opacity="0.5"/>
+                    <circle cx="60" cy="44" r="2.5" fill="#b8392b" stroke="none"/>
+                    <ellipse cx="60" cy="97" rx="50" ry="3.5" fill="rgba(60,40,20,0.2)" stroke="none"/>
+                  </g>
+                </svg>
+              </div>
+              <h4>二衣箱</h4>
+              <span class="bk-cb-trunk-tag">武服 · 戎装</span>
+              <p class="bk-cb-trunk-list">靠子 · 箭衣 · 坎肩</p>
+            </button>
+            <button type="button" class="bk-cb-trunk" data-trunk="zhazha" aria-pressed="false">
+              <div class="bk-cb-trunk-svg" aria-hidden="true">
+                <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+                  <g fill="none" stroke="#3a2a20" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 44 L30 10 L90 10 L102 44"/>
+                    <path d="M30 10 L30 40 L90 40 L90 10" opacity="0.45"/>
+                    <path d="M12 44 L108 44 L108 92 L12 92 Z"/>
+                    <path d="M12 50 L108 50 M12 86 L108 86" opacity="0.5"/>
+                    <circle cx="60" cy="44" r="2.5" fill="#b8392b" stroke="none"/>
+                    <ellipse cx="60" cy="97" rx="50" ry="3.5" fill="rgba(60,40,20,0.2)" stroke="none"/>
+                  </g>
+                </svg>
+              </div>
+              <h4>饰扎头</h4>
+              <span class="bk-cb-trunk-tag">帽盔 · 髯口</span>
+              <p class="bk-cb-trunk-list">盔帽 · 髯口 · 头面</p>
+            </button>
+          </div>
+          <!-- 展开区:动态渲染当前衣箱的服饰详情 -->
+          <div class="bk-cb-trunk-detail" id="bkCbTrunkDetail" aria-live="polite"></div>
+        </section>
+
+        <!-- 屏 3: 总纲二 · 五行五色谱色带 -->
+        <section class="bk-cb-screen bk-cb-spectrum">
+          <h3 class="bk-cb-subhead">五行五色</h3>
+          <p class="bk-cb-subhead-sub">色彩哲学 · 一色一人品</p>
+          <div class="bk-cb-band" role="img" aria-label="黄绿白黑红五色对应五行五人">
+            <div class="bk-cb-band-color" data-color="yellow" data-caption="黄为天子之色，唐明皇、宋太祖皆着黄蟒。">
+              <span class="bk-cb-band-elem">土</span>
+              <span class="bk-cb-band-role">皇生</span>
+              <span class="bk-cb-band-actor">唐明皇</span>
+            </div>
+            <div class="bk-cb-band-color" data-color="green" data-caption="绿表重义，关羽穿绿靠，后世武圣以此为尊。">
+              <span class="bk-cb-band-elem">木</span>
+              <span class="bk-cb-band-role">红生</span>
+              <span class="bk-cb-band-actor">关羽</span>
+            </div>
+            <div class="bk-cb-band-color" data-color="white" data-caption="白为英武，赵云、吕布皆白袍小将，少年英雄。">
+              <span class="bk-cb-band-elem">金</span>
+              <span class="bk-cb-band-role">武生</span>
+              <span class="bk-cb-band-actor">赵云</span>
+            </div>
+            <div class="bk-cb-band-color" data-color="black" data-caption="黑主刚直，包公黑面黑袍，铁面无私。">
+              <span class="bk-cb-band-elem">水</span>
+              <span class="bk-cb-band-role">正生</span>
+              <span class="bk-cb-band-actor">包公</span>
+            </div>
+            <div class="bk-cb-band-color" data-color="red" data-caption="红分忠奸：关羽红脸表忠义，奸雄亦用红表其暴烈。">
+              <span class="bk-cb-band-elem">火</span>
+              <span class="bk-cb-band-role">净 · 丑</span>
+              <span class="bk-cb-band-actor">张飞</span>
+            </div>
+          </div>
+          <p class="bk-cb-band-caption" id="bkCbBandCaption">悬停色块查看详解 · 黄→绿→白→黑→红</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- 模块 4:脸谱天地(含义 + 谱式,变色水袖分隔) -->
+    <div class="knowledge-block" id="kb-mask" data-mood="ink">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">脸谱 · 含义与谱式</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p>川剧脸谱以颜色暗示人物性格,共 8 种主色。点击卡片翻转,查看典型人物。</p>
+      <div class="mask-flip-grid" id="maskFlipGrid"></div>
+
+      <!-- 变色水袖分隔带(与艺术特色板块同款) -->
+      <div class="ribbon-divider ribbon-divider-mask" aria-hidden="true">
+        <svg class="ribbon-svg" viewBox="0 0 1200 50" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="ribbonGradMask" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#9E2B25" stop-opacity="0" />
+              <stop offset="18%" stop-color="#9E2B25" stop-opacity="0.62" />
+              <stop offset="42%" stop-color="#C43C3C" stop-opacity="0.72" />
+              <stop offset="58%" stop-color="#C9A84C" stop-opacity="0.66" />
+              <stop offset="82%" stop-color="#6B4A22" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#6B4A22" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path class="ribbon-path" style="stroke:url(#ribbonGradMask)" d="M0 25 Q150 5 300 25 T600 25 T900 25 T1200 25" />
+        </svg>
+      </div>
+
+      <!-- 下半场:川剧谱式 -->
+      <p id="patternsIntroText">加载中...</p>
+      <div class="patterns-legend">· 整脸 · 三块瓦脸 · 十字门脸 · 碎脸 · 歪脸 · 象形脸 ·</div>
+
+      <div class="pattern-stage" id="patternStage">
+        <!-- 书页式翻阅:两张卡片交替,各含正反两面 -->
+        <div class="pattern-deck" id="patternDeck">
+          <div class="pattern-card" id="patternCardA">
+            <div class="pattern-page pattern-page-front" id="patternFrontA"></div>
+            <div class="pattern-page pattern-page-back" id="patternBackA"></div>
+          </div>
+          <div class="pattern-card" id="patternCardB">
+            <div class="pattern-page pattern-page-front" id="patternFrontB"></div>
+            <div class="pattern-page pattern-page-back" id="patternBackB"></div>
+          </div>
+        </div>
+
+        <!-- 进度 + 翻下一张按钮 -->
+        <div class="pattern-controls">
+          <div class="pattern-progress">
+            <span id="patternIdx">1</span> / <span id="patternTotal">6</span>
+          </div>
+          <button type="button" class="pattern-next-btn" id="patternNextBtn">翻下一张 →</button>
+        </div>
+
+        <!-- 6 种谱式名称标签(快速跳转) -->
+        <div class="pattern-tabs" id="patternTabs"></div>
+      </div>
+    </div>
+
+    <!-- 模块 6:变脸方式(4 种) -->
+    <div class="knowledge-block" id="kb-facechange" data-mood="ink">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">变脸方式</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p>川剧变脸手法神秘,主要有以下四种方式,以"扯脸"最为常见。</p>
+      <div class="method-grid" id="methodGrid"></div>
+    </div>
+
+    <!-- 模块 6.5:川剧绝活(带封面 + B 站视频),形式同经典剧目 -->
+    <div class="knowledge-block" id="kb-stunts" data-mood="plum">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">川剧绝活</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p class="stunts-intro">川剧素以特技绝活名扬四海,变脸、吐火、滚灯之外,尚有褶子功、翎子功、水袖等身段功夫。精选如下,点击封面跳转观看。</p>
+      <div class="plays-caption">—— 绝活精选 · 点击封面跳转观看 ——</div>
+      <div class="play-carousel">
+        <button type="button" class="play-carousel-btn prev" id="stuntCarouselPrev" aria-label="上一组">‹</button>
+        <div class="play-carousel-viewport" id="stuntCarouselViewport">
+          <div class="play-grid" id="stuntGrid"></div>
+        </div>
+        <button type="button" class="play-carousel-btn next" id="stuntCarouselNext" aria-label="下一组">›</button>
+        <div class="play-carousel-dots" id="stuntCarouselDots"></div>
+      </div>
+    </div>
+
+    <!-- 模块 7:经典剧目(带配图 + B 站视频) -->
+    <div class="knowledge-block" id="kb-plays" data-mood="ochre">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">经典剧目</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p id="playsIntroText">加载中...</p>
+      <div class="plays-caption">—— 精选剧目推荐 · 点击封面跳转观看 ——</div>
+      <div class="play-carousel">
+        <button type="button" class="play-carousel-btn prev" id="playCarouselPrev" aria-label="上一组">‹</button>
+        <div class="play-carousel-viewport" id="playCarouselViewport">
+          <div class="play-grid" id="playGrid"></div>
+        </div>
+        <button type="button" class="play-carousel-btn next" id="playCarouselNext" aria-label="下一组">›</button>
+        <div class="play-carousel-dots" id="playCarouselDots"></div>
+      </div>
+    </div>
+
+    <!-- 模块 8:传承现状 -->
+    <div class="knowledge-block" id="kb-heritage" data-mood="ochre">
+      <div class="role-plaque">
+        <span class="role-plaque-nail"></span>
+        <div class="role-plaque-line"></div>
+        <h2 class="role-plaque-title">传承现状</h2>
+        <div class="role-plaque-line"></div>
+        <span class="role-plaque-nail"></span>
+      </div>
+      <p id="heritageText">加载中...</p>
+    </div>
+
+    <div class="divider-pattern" data-mood="ochre"></div>
+
+    <p style="text-align:center;">
+      <a class="btn" href="quiz.html">去互动页试试脸谱配对 →</a>
+      <a class="btn ghost" href="ai-chat.html" style="margin-left:8px;">问问 AI 娃娃</a>
+    </p>
+  </main>
+
+  <footer class="site-footer">
+    <p>川剧文化小站 · 仅供学习交流使用</p>
+  </footer>
+
+  <script src="app.js?v=20260909a"></script>
+  <script src="mascot-widget.js?v=3"></script>
+  <script>
+    (function () {
+      SCU.renderNav("knowledge");
+
+      // 行当图片兜底:加载失败显示带行当字的色块
+      function roleImgHTML(role, imgPath, big) {
+        var palette = { "生": "#3a6e8c", "旦": "#C41E3A", "净": "#1A1A1A", "末": "#7a5a3a", "丑": "#D4A017" };
+        var bg = palette[role] || "#888";
+        var size = big ? 140 : 56;
+        return '' +
+          '<span class="role-img-wrap" style="position:relative;display:inline-block;width:' + size + 'px;height:' + size + 'px;flex-shrink:0;">' +
+            '<svg viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" style="background:' + bg + ';">' +
+              '<text x="110" y="138" text-anchor="middle" font-size="110" fill="#fff" font-family="serif" font-weight="bold">' + role + "</text>" +
+            "</svg>" +
+            '<img src="' + imgPath + '" alt="行当-' + role + '" ' +
+              'style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:contain;display:block;background:' + bg + ';" ' +
+              'onload="this.previousElementSibling.style.display=\'none\';" ' +
+              'onerror="this.style.display=\'none\';" />' +
+          "</span>";
+      }
+
+      // 剧目图片兜底
+      function playImgHTML(title, imgPath) {
+        return '' +
+          '<span class="play-img-wrap" style="position:relative;display:block;width:100%;height:140px;">' +
+            '<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="width:100%;height:100%;">' +
+              '<defs><linearGradient id="pg' + title.charCodeAt(0) + '" x1="0" y1="0" x2="1" y2="1">' +
+                '<stop offset="0" stop-color="#C41E3A"/><stop offset="1" stop-color="#1A1A1A"/>' +
+              "</linearGradient></defs>" +
+              '<rect width="200" height="140" fill="url(#pg' + title.charCodeAt(0) + ')"/>' +
+              '<text x="100" y="84" text-anchor="middle" font-size="56" fill="#fff" opacity="0.9" font-family="serif" font-weight="bold">' + title.charAt(0) + "</text>" +
+            "</svg>" +
+            '<img src="' + imgPath + '" alt="剧目-' + title + '" ' +
+              'style="position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;display:block;" ' +
+              'onload="this.previousElementSibling.style.display=\'none\';" ' +
+              'onerror="this.style.display=\'none\';" />' +
+          "</span>";
+      }
+
+      SCU.loadData(function (err, data) {
+        if (err) {
+          ["artFeaturesText","heritageText"].forEach(function(id){
+            if (document.getElementById(id)) document.getElementById(id).textContent = "数据加载失败,请通过本地服务器打开本页面(如 VS Code Live Server)。";
+          });
+          return;
+        }
+
+        // 模块 8:传承现状(艺术特色已改为可交互卡片,由五腔+绝活渲染)
+        document.getElementById("heritageText").textContent = data.knowledge.heritage;
+
+        // ===== 模块 3:行当详解(扇形展开 + 卷轴) =====
+        var roles = data.roles;
+        var fanOrder = [0, 1, 2, 3, 4]; // 生旦净末丑
+        var fanAngles = [-75, -40, 0, 40, 75];
+
+        var fanContainer = document.getElementById("fanContainer");
+        var fanScroll = document.getElementById("fanScroll");
+        var fanStage = document.getElementById("fanStage");
+
+        var fanLengths = [460, 500, 540, 500, 460];
+
+        fanContainer.innerHTML = fanOrder.map(function(dataIdx, i) {
+          var r = roles[dataIdx];
+          var angle = fanAngles[i];
+          var len = fanLengths[i];
+          var labelTilt = angle * 0.35;
+          return '' +
+            '<div class="fan-leaf" style="--angle:' + angle + 'deg; --len:' + len + 'px; --rcolor:' + r.color + ';" data-idx="' + dataIdx + '">' +
+              '<div class="fan-leaf-inner">' +
+                '<div class="fan-leaf-front">' +
+                  '<div class="fan-arc-label" style="transform: translateX(-50%) rotate(' + labelTilt + 'deg);">' + r.keyword + '</div>' +
+                  '<div class="fan-makeup-window" style="background:' + r.color + ';">' +
+                    '<img src="' + r.image + '" alt="' + r.name + '" class="fan-makeup-img" ' +
+                      'onerror="this.style.display=\'none\';" />' +
+                  '</div>' +
+                  '<div class="fan-role-name">' + r.name + '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+        }).join("") +
+        '<div class="fan-leaf fan-leaf-stub fan-leaf-stub-left" style="--angle:-88deg; --len:380px;"></div>' +
+        '<div class="fan-leaf fan-leaf-stub fan-leaf-stub-right" style="--angle:88deg; --len:380px;"></div>';
+
+        var fanLeaves = document.querySelectorAll(".fan-leaf");
+        var fanActive = false; // 是否有卷轴打开
+
+        // 悬停
+        fanLeaves.forEach(function(leaf) {
+          leaf.addEventListener("mouseenter", function() {
+            if (fanActive) return;
+            fanLeaves.forEach(function(l) { l.classList.add("dimmed"); });
+            leaf.classList.remove("dimmed");
+            leaf.classList.add("hovered");
+          });
+          leaf.addEventListener("mouseleave", function() {
+            if (fanActive) return;
+            fanLeaves.forEach(function(l) { l.classList.remove("dimmed"); });
+            leaf.classList.remove("hovered");
+          });
+          // 点击:其余收拢 + 卷轴展开
+          leaf.addEventListener("click", function(e) {
+            e.stopPropagation();
+            if (fanActive) return;
+            openScroll(leaf);
+          });
+        });
+
+        function openScroll(activeLeaf) {
+          fanActive = true;
+          var idx = parseInt(activeLeaf.getAttribute("data-idx"), 10);
+          var r = roles[idx];
+
+          // 其余折面收拢(顺时针并拢)
+          fanLeaves.forEach(function(l) {
+            l.classList.remove("dimmed", "hovered");
+            if (l !== activeLeaf) {
+              l.classList.add("folded");
+            }
+          });
+          // 当前折面也收拢到中间
+          activeLeaf.classList.add("folded");
+          fanContainer.classList.add("fan-folded");
+
+          // 填充卷轴数据
+          document.getElementById("fanScrollImg").src = r.image;
+          document.getElementById("fanScrollImg").alt = r.name;
+          document.getElementById("fanScrollName").textContent = r.name;
+          document.getElementById("fanScrollAlias").textContent = r.alias || "";
+          document.getElementById("fanScrollIntro").textContent = r.intro || "";
+          document.getElementById("fanScrollDetail").innerHTML = r.description || "";
+
+          // 延迟显示卷轴(等折面收拢动画)
+          setTimeout(function() {
+            fanScroll.classList.add("active");
+          }, 500);
+        }
+
+        function closeScroll() {
+          if (!fanActive) return;
+          fanActive = false;
+          fanScroll.classList.remove("active");
+          // 延迟恢复扇面
+          setTimeout(function() {
+            fanLeaves.forEach(function(l) { l.classList.remove("folded"); });
+            fanContainer.classList.remove("fan-folded");
+          }, 400);
+        }
+
+        // 关闭按钮
+        document.getElementById("fanScrollClose").addEventListener("click", function(e) {
+          e.stopPropagation();
+          closeScroll();
+        });
+        // 点击扇钉:关闭卷轴 / 复原
+        document.getElementById("fanPivot").addEventListener("click", function(e) {
+          e.stopPropagation();
+          if (fanActive) { closeScroll(); }
+          else {
+            fanLeaves.forEach(function(l) { l.classList.remove("dimmed", "hovered"); });
+          }
+        });
+
+        // 入场动画
+        var fanOpened = false;
+        var fanObserver = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting && !fanOpened) {
+              fanOpened = true;
+              fanContainer.classList.add("fan-opened");
+              fanLeaves.forEach(function(leaf, i) {
+                setTimeout(function() {
+                  leaf.classList.add("flash");
+                  setTimeout(function() { leaf.classList.remove("flash"); }, 400);
+                }, 300 + i * 100);
+              });
+            }
+          });
+        }, { threshold: 0.3 });
+        fanObserver.observe(fanStage);
+
+        // ===== 模块 3.5:场面乐器(卡通 SVG + 博物馆标签) =====
+        // 卡通乐器 SVG 库(传统暖色:铜金/木色/红鼓/米白皮)
+        var INSTR_SVG = {
+          // 小鼓:C 位,鼓面朝左上倾斜,鼓钉排列清晰可见
+          xiaogu:
+            '<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><linearGradient id="xgRed" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#c84040"/><stop offset="0.5" stop-color="#a02828"/><stop offset="1" stop-color="#701818"/></linearGradient>' +
+            '<radialGradient id="xgSkin" cx="0.38" cy="0.32" r="0.85">' +
+            '<stop offset="0" stop-color="#f5ecd8"/><stop offset="1" stop-color="#d8c8a8"/></radialGradient>' +
+            '<linearGradient id="xgRim" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#801818"/><stop offset="1" stop-color="#501010"/></linearGradient></defs>' +
+            // 鼓身侧面(红鼓腔,左上倾斜后可见右侧鼓身更多)
+            '<path d="M28 48 Q30 88 60 90 Q90 88 92 48 Q88 52 60 53 Q32 52 28 48 Z" fill="url(#xgRed)"/>' +
+            // 鼓身横向纹路
+            '<path d="M32 64 Q60 70 88 64" stroke="rgba(255,200,180,0.22)" fill="none" stroke-width="2"/>' +
+            '<path d="M33 76 Q60 82 87 76" stroke="rgba(255,200,180,0.18)" fill="none" stroke-width="1.6"/>' +
+            // 鼓身鼓钉排列(沿鼓身侧面均匀排列,因左上倾斜右侧钉更多可见)
+            '<g fill="#f0d080" stroke="#8a6a24" stroke-width="0.5">' +
+            '<circle cx="36" cy="60" r="1.5"/><circle cx="42" cy="66" r="1.5"/><circle cx="50" cy="70" r="1.5"/>' +
+            '<circle cx="60" cy="72" r="1.5"/><circle cx="70" cy="70" r="1.5"/><circle cx="78" cy="66" r="1.5"/>' +
+            '<circle cx="84" cy="60" r="1.5"/>' +
+            '<circle cx="38" cy="76" r="1.4"/><circle cx="48" cy="80" r="1.4"/><circle cx="60" cy="82" r="1.4"/>' +
+            '<circle cx="72" cy="80" r="1.4"/><circle cx="82" cy="76" r="1.4"/></g>' +
+            // 鼓面(朝左上方倾斜,椭圆透视)
+            '<g transform="rotate(-10 60 46)">' +
+            '<ellipse cx="60" cy="46" rx="34" ry="15" fill="url(#xgSkin)" stroke="#8a2020" stroke-width="2.5"/>' +
+            // 鼓面内圈
+            '<ellipse cx="60" cy="46" rx="27" ry="10.5" fill="none" stroke="rgba(138,32,32,0.35)" stroke-width="1.2"/>' +
+            // 鼓面边缘鼓钉(沿椭圆均匀排列)
+            '<g fill="#f0d080" stroke="#8a6a24" stroke-width="0.5">' +
+            '<circle cx="32" cy="46" r="1.6"/><circle cx="38" cy="39" r="1.6"/><circle cx="49" cy="34" r="1.6"/>' +
+            '<circle cx="60" cy="32" r="1.6"/><circle cx="71" cy="34" r="1.6"/><circle cx="82" cy="39" r="1.6"/>' +
+            '<circle cx="88" cy="46" r="1.6"/><circle cx="82" cy="53" r="1.6"/><circle cx="71" cy="58" r="1.6"/>' +
+            '<circle cx="60" cy="60" r="1.6"/><circle cx="49" cy="58" r="1.6"/><circle cx="38" cy="53" r="1.6"/></g>' +
+            '</g>' +
+            // 鼓签(两根竹签,斜搁在鼓面上)
+            '<line x1="46" y1="38" x2="100" y2="6" stroke="#d8a868" stroke-width="3.4" stroke-linecap="round"/>' +
+            '<line x1="100" y1="38" x2="46" y2="6" stroke="#c89a58" stroke-width="3.4" stroke-linecap="round"/>' +
+            '<circle cx="100" cy="6" r="2.8" fill="#e8c878"/><circle cx="46" cy="6" r="2.8" fill="#e8c878"/>' +
+            '</svg>',
+          // 大锣:锣面略侧,可见边缘厚度+红绸系挂
+          daluo:
+            '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><radialGradient id="dlGong" cx="0.42" cy="0.30" r="0.78">' +
+            '<stop offset="0" stop-color="#f2d478"/><stop offset="0.5" stop-color="#d4a843"/><stop offset="1" stop-color="#8a6424"/></radialGradient>' +
+            '<linearGradient id="dlRim" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#b88a28"/><stop offset="0.5" stop-color="#8a6424"/><stop offset="1" stop-color="#5a3e14"/></linearGradient></defs>' +
+            '<g transform="rotate(-6 58 60)">' +
+            // 后方边缘厚度(露出的金属侧壁)
+            '<ellipse cx="58" cy="64" rx="40" ry="40" fill="#6a4a18"/>' +
+            // 底部边缘厚度带(因略侧而可见,模拟金属截面)
+            '<path d="M19 64 Q24 96 58 100 Q92 96 97 64 Q90 92 58 95 Q26 92 19 64 Z" fill="url(#dlRim)" stroke="#4a3010" stroke-width="1.2"/>' +
+            // 锣面(正面圆面,略呈椭圆透视)
+            '<ellipse cx="58" cy="58" rx="39" ry="38" fill="url(#dlGong)" stroke="#7a5a1e" stroke-width="2"/>' +
+            // 锣面同心纹
+            '<ellipse cx="58" cy="58" rx="31" ry="30" fill="none" stroke="rgba(122,90,30,0.35)" stroke-width="1.4"/>' +
+            '<ellipse cx="58" cy="58" rx="23" ry="22" fill="none" stroke="rgba(122,90,30,0.28)" stroke-width="1.2"/>' +
+            // 高光弧(铜面光泽,左上方最亮)
+            '<path d="M32 38 Q26 60 36 82" stroke="rgba(255,240,190,0.55)" fill="none" stroke-width="3.2" stroke-linecap="round"/>' +
+            '<path d="M41 34 Q37 48 40 60" stroke="rgba(255,248,210,0.35)" fill="none" stroke-width="1.8" stroke-linecap="round"/>' +
+            // 中心敲击点(锣脐)
+            '<ellipse cx="58" cy="62" rx="10.5" ry="8" fill="rgba(90,60,15,0.26)"/>' +
+            '<circle cx="58" cy="60" r="6.5" fill="#b88838" stroke="#7a5a1e" stroke-width="1.5"/>' +
+            '</g>' +
+            // 红绸带(系挂在锣顶边缘,自然垂落) —— 置于顶层
+            '<path d="M90 26 Q106 32 107 54 Q106 78 97 96 L110 93 Q117 68 115 44 Q113 28 101 26 Z" fill="#c43030" stroke="#7e1818" stroke-width="1.5"/>' +
+            '<path d="M99 36 Q104 56 101 82" stroke="rgba(70,8,8,0.5)" fill="none" stroke-width="1.6"/>' +
+            '<path d="M107 34 Q111 54 108 80" stroke="rgba(255,160,140,0.3)" fill="none" stroke-width="1.4"/>' +
+            // 绸带系结处(顶部绳孔)
+            '<circle cx="96" cy="28" r="2.8" fill="#4a2f12"/>' +
+            '</svg>',
+          // 大钹:斜靠立放,两片错开叠合,钹面微朝前,红绸垂落
+          dabo:
+            '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><radialGradient id="dbBo" cx="0.42" cy="0.3" r="0.85">' +
+            '<stop offset="0" stop-color="#f2d478"/><stop offset="0.6" stop-color="#d4a843"/><stop offset="1" stop-color="#9a7028"/></radialGradient></defs>' +
+            // 红绸巾(从钹顶垂下)
+            '<path d="M66 30 Q60 52 52 76 L60 72 Q66 52 72 32 Z" fill="#c43030"/>' +
+            '<path d="M44 34 Q36 52 28 72 L36 68 Q42 52 50 36 Z" fill="#a82828"/>' +
+            // 后片(偏左偏上,暗,与前片错开露缝)
+            '<g transform="rotate(-11 46 58)">' +
+            '<ellipse cx="44" cy="58" rx="25" ry="31" fill="#9a7028" stroke="#6b4d18" stroke-width="2"/>' +
+            '<ellipse cx="44" cy="58" rx="17" ry="21" fill="none" stroke="rgba(80,55,15,0.4)" stroke-width="1.2"/>' +
+            '<circle cx="44" cy="56" r="7" fill="#7a5a20" stroke="#5a3e14" stroke-width="1"/>' +
+            '</g>' +
+            // 前片(偏右偏下,亮)
+            '<g transform="rotate(-11 72 70)">' +
+            '<ellipse cx="70" cy="70" rx="26" ry="32" fill="url(#dbBo)" stroke="#7a5a1e" stroke-width="2.2"/>' +
+            '<ellipse cx="70" cy="70" rx="18" ry="22" fill="none" stroke="rgba(122,90,30,0.4)" stroke-width="1.2"/>' +
+            // 弧面高光
+            '<path d="M57 52 Q53 70 60 90" stroke="rgba(255,240,190,0.5)" fill="none" stroke-width="2.6" stroke-linecap="round"/>' +
+            // 钹帽(中心凸起)
+            '<circle cx="70" cy="67" r="8.5" fill="#c89838" stroke="#7a5a1e" stroke-width="1.6"/>' +
+            '<circle cx="70" cy="67" r="3.8" fill="#f4dd98"/>' +
+            '</g>' +
+            '</svg>',
+          // 小锣:平放俯视,锣面朝上,旁边搁一枚小锣槌
+          xiaoluo:
+            '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><radialGradient id="xlGong" cx="0.40" cy="0.36" r="0.75">' +
+            '<stop offset="0" stop-color="#f4dc90"/><stop offset="0.55" stop-color="#d4a843"/><stop offset="1" stop-color="#8a6424"/></radialGradient>' +
+            '<linearGradient id="xlEdge" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#b88a28"/><stop offset="1" stop-color="#6a4a18"/></linearGradient></defs>' +
+            // 锣边缘外侧厚度环(俯视可见的金属截面)
+            '<circle cx="52" cy="66" r="41" fill="url(#xlEdge)" stroke="#4a3010" stroke-width="1.5"/>' +
+            // 锣面(正圆,朝上平放)
+            '<circle cx="52" cy="66" r="38" fill="url(#xlGong)" stroke="#7a5a1e" stroke-width="2.5"/>' +
+            '<circle cx="52" cy="66" r="30" fill="none" stroke="rgba(122,90,30,0.4)" stroke-width="1.4"/>' +
+            '<circle cx="52" cy="66" r="22" fill="none" stroke="rgba(122,90,30,0.25)" stroke-width="1.1"/>' +
+            // 高光(左上方光泽)
+            '<path d="M28 50 Q22 64 28 82" stroke="rgba(255,244,200,0.5)" fill="none" stroke-width="2.8" stroke-linecap="round"/>' +
+            // 锣脐(中心凸起,俯视)
+            '<circle cx="52" cy="66" r="11" fill="#c89838" stroke="#7a5a1e" stroke-width="2"/>' +
+            '<circle cx="52" cy="66" r="4.2" fill="#f4dd98"/>' +
+            // 绳孔(3 孔对称)
+            '<g fill="#4a2f12"><circle cx="52" cy="31" r="2.6"/><circle cx="87" cy="66" r="2.6"/><circle cx="52" cy="101" r="2.6"/><circle cx="17" cy="66" r="2.6"/></g>' +
+            // 小锣槌(平放在锣面右侧,槌头搁在桌面上)
+            '<g transform="rotate(28 96 44)">' +
+            '<line x1="78" y1="44" x2="116" y2="44" stroke="#9a6b3a" stroke-width="3.8" stroke-linecap="round"/>' +
+            '<line x1="78" y1="44" x2="116" y2="44" stroke="rgba(60,36,16,0.4)" stroke-width="1.2" stroke-linecap="round"/>' +
+            '<circle cx="78" cy="44" r="7" fill="#ece0cc" stroke="#8a5a2a" stroke-width="2"/>' +
+            '<circle cx="76" cy="42" r="2.5" fill="rgba(255,255,255,0.5)"/>' +
+            '</g>' +
+            '</svg>',
+          // 堂鼓:侧着立放(可见鼓身高度+鼓面),鼓面朝向右前方
+          tanggu:
+            '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><linearGradient id="tgWood" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#b07a44"/><stop offset="0.5" stop-color="#8a5a2c"/><stop offset="1" stop-color="#5f3a1c"/></linearGradient>' +
+            '<radialGradient id="tgSkin" cx="0.42" cy="0.36" r="0.8">' +
+            '<stop offset="0" stop-color="#f7eedb"/><stop offset="1" stop-color="#cfbe9c"/></radialGradient></defs>' +
+            // 木质 X 形鼓架(置于鼓身后方,上端被鼓身遮挡)
+            '<line x1="44" y1="92" x2="82" y2="117" stroke="#4a2c14" stroke-width="5" stroke-linecap="round"/>' +
+            '<line x1="76" y1="92" x2="38" y2="117" stroke="#5a3a20" stroke-width="5" stroke-linecap="round"/>' +
+            '<line x1="34" y1="117" x2="46" y2="117" stroke="#3a2210" stroke-width="4" stroke-linecap="round"/>' +
+            '<line x1="74" y1="117" x2="86" y2="117" stroke="#3a2210" stroke-width="4" stroke-linecap="round"/>' +
+            '<g transform="rotate(-9 60 66)">' +
+            // 鼓身侧壁(立式圆柱)
+            '<path d="M34 34 Q34 28 40 27 L80 27 Q86 28 86 34 L86 96 Q86 102 80 102 L40 102 Q34 102 34 96 Z" fill="url(#tgWood)"/>' +
+            // 木纹(横向环纹)
+            '<path d="M37 48 Q60 51 83 48" stroke="rgba(50,28,12,0.35)" fill="none" stroke-width="1.6"/>' +
+            '<path d="M37 64 Q60 67 83 64" stroke="rgba(50,28,12,0.32)" fill="none" stroke-width="1.5"/>' +
+            '<path d="M37 80 Q60 83 83 80" stroke="rgba(50,28,12,0.3)" fill="none" stroke-width="1.4"/>' +
+            // 竖木纹
+            '<path d="M48 34 Q46 66 48 98" stroke="rgba(50,28,12,0.22)" fill="none" stroke-width="1.2"/>' +
+            '<path d="M72 34 Q74 66 72 98" stroke="rgba(255,200,140,0.12)" fill="none" stroke-width="1.2"/>' +
+            // 红鼓箍(上下两道)
+            '<rect x="34" y="38" width="52" height="5" fill="#a03030" opacity="0.85"/>' +
+            '<rect x="34" y="90" width="52" height="5" fill="#a03030" opacity="0.85"/>' +
+            // 上鼓面(朝右上,略呈椭圆)
+            '<ellipse cx="60" cy="29" rx="27" ry="11.5" fill="url(#tgSkin)" stroke="#7a2020" stroke-width="2.6"/>' +
+            '<ellipse cx="60" cy="29" rx="20" ry="7.5" fill="none" stroke="rgba(122,32,32,0.3)" stroke-width="1.2"/>' +
+            // 鼓钉
+            '<g fill="#f0d080" stroke="#8a6a24" stroke-width="0.5">' +
+            '<circle cx="37" cy="29" r="1.7"/><circle cx="45" cy="24.5" r="1.7"/><circle cx="60" cy="23" r="1.7"/><circle cx="75" cy="24.5" r="1.7"/><circle cx="83" cy="29" r="1.7"/>' +
+            '<circle cx="75" cy="33.5" r="1.7"/><circle cx="60" cy="35" r="1.7"/><circle cx="45" cy="33.5" r="1.7"/></g>' +
+            '</g>' +
+            // 鼓槌(斜倚鼓身)
+            '<line x1="94" y1="96" x2="112" y2="80" stroke="#9a6b3a" stroke-width="3.4" stroke-linecap="round"/>' +
+            '<circle cx="92" cy="98" r="5.5" fill="#ece0cc" stroke="#8a5a2a" stroke-width="1.8"/>' +
+            '</svg>',
+          // 唢呐:斜靠立放,杆尾抵桌面,喇叭口朝左上方高高翘起(顺时针旋转54°)
+          suona:
+            '<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">' +
+            '<defs><linearGradient id="snBrass" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0" stop-color="#f2d888"/><stop offset="0.5" stop-color="#c89838"/><stop offset="1" stop-color="#8a6424"/></linearGradient>' +
+            '<linearGradient id="snWood" x1="0" y1="0" x2="0" y2="1">' +
+            '<stop offset="0" stop-color="#9a6834"/><stop offset="0.5" stop-color="#7a4d22"/><stop offset="1" stop-color="#52301a"/></linearGradient></defs>' +
+            '<g transform="rotate(54 60 60)">' +
+            // 喇叭铜碗(在左侧,碗口朝左敞开)
+            '<path d="M 24 37 Q 13 60 24 83 L 57 69 Q 64 60 57 51 Z" fill="url(#snBrass)" stroke="#7a5a1e" stroke-width="2"/>' +
+            // 碗口沿 + 碗口内膛
+            '<ellipse cx="25" cy="60" rx="10" ry="22.5" fill="#e8c870" stroke="#7a5a1e" stroke-width="2"/>' +
+            '<ellipse cx="26" cy="60" rx="5.5" ry="14.5" fill="#4a3410"/>' +
+            // 碗身高光
+            '<path d="M 36 44 Q 42 59 36 76" stroke="rgba(255,240,190,0.55)" fill="none" stroke-width="2.4" stroke-linecap="round"/>' +
+            // 木杆(接碗端略粗,哨片端略细)
+            '<polygon points="55,51.5 55,68.5 108,65 108,55" fill="url(#snWood)" stroke="#3a2210" stroke-width="1.2"/>' +
+            // 杆身铜箍
+            '<rect x="53" y="49.5" width="9" height="21" rx="2" fill="#c89838" stroke="#7a5a1e" stroke-width="1"/>' +
+            // 音孔(前7后1,画5个可见)
+            '<g fill="#2a1606">' +
+            '<circle cx="70" cy="60.5" r="2.2"/><circle cx="77.5" cy="60.5" r="2.2"/><circle cx="85" cy="60.5" r="2.2"/><circle cx="92.5" cy="60.5" r="2.2"/><circle cx="100" cy="60.5" r="2.2"/>' +
+            '</g>' +
+            // 气牌(小铜碟) + 哨片(右端)
+            '<rect x="107" y="56" width="7" height="8.5" rx="1.5" fill="#c89838" stroke="#7a5a1e" stroke-width="1"/>' +
+            '<path d="M 114 57 L 123 54 L 120.5 60 L 123 66 L 114 63 Z" fill="#ead8b0" stroke="#9a7a4a" stroke-width="1.2"/>' +
+            '</g></svg>'
+        };
+
+        var instruments = data.instruments || [];
+        var instStage = document.getElementById("instrumentStage");
+        instStage.innerHTML = instruments.map(function (ins) {
+          return '<div class="instrument" data-area="' + ins.area + '" data-id="' + ins.id + '" role="button" tabindex="0" aria-label="' + ins.name + '">' +
+            '<div class="instrument-figure">' + (INSTR_SVG[ins.id] || '') + '</div>' +
+            '<div class="instrument-caption">' + ins.name + '</div>' +
+            '<div class="instrument-label">' +
+              '<div class="label-name">' + ins.name + '</div>' +
+              '<div class="label-tag">' + ins.tag + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+        // 乐器交互:悬停播放短促乐声(标签由 CSS :hover 自动浮出);点击打开详情卷轴
+        var instItems = instStage.querySelectorAll('.instrument');
+        var audioCache = {};
+        function playInstAudio(id) {
+          var a = audioCache[id];
+          if (!a) { a = new Audio('audio/inst_' + id + '.mp3'); a.preload = 'auto'; audioCache[id] = a; }
+          try { a.currentTime = 0; a.play().catch(function () {}); } catch (e) {}
+        }
+        function stopInstAudio(id) {
+          var a = audioCache[id];
+          if (a) { try { a.pause(); a.currentTime = 0; } catch (e) {} }
+        }
+        // 详情卷轴弹窗
+        var instModal = document.getElementById('instModal');
+        var instModalImg = document.getElementById('instModalImg');
+        var instModalFallback = document.getElementById('instModalFallback');
+        var instModalName = document.getElementById('instModalName');
+        var instModalTag = document.getElementById('instModalTag');
+        var instModalIntro = document.getElementById('instModalIntro');
+        var instModalById = {};
+        instruments.forEach(function (ins) { instModalById[ins.id] = ins; });
+        var currentModalInst = null;
+        function openInstModal(id) {
+          var ins = instModalById[id];
+          if (!ins) return;
+          currentModalInst = id;
+          instModalName.textContent = ins.name;
+          instModalTag.textContent = ins.tag || '';
+          instModalIntro.textContent = ins.detail || ins.desc || '';
+          // 实物图(缺失时回退为卡通 SVG)
+          instModalFallback.innerHTML = INSTR_SVG[id] || '';
+          instModalImg.style.display = '';
+          instModalImg.onerror = function () { instModalImg.style.display = 'none'; };
+          instModalImg.src = ins.image || ('images/inst_' + id + '.jpg');
+          instModal.classList.add('active');
+          instModal.setAttribute('aria-hidden', 'false');
+        }
+        function closeInstModal() {
+          if (currentModalInst) stopInstAudio(currentModalInst);
+          instModal.classList.remove('active');
+          instModal.setAttribute('aria-hidden', 'true');
+        }
+        document.getElementById('instModalClose').addEventListener('click', closeInstModal);
+        document.getElementById('instModalCloseBtn').addEventListener('click', closeInstModal);
+        document.getElementById('instModalBackdrop').addEventListener('click', closeInstModal);
+        instItems.forEach(function (el) {
+          var id = el.getAttribute('data-id');
+          el.addEventListener('mouseenter', function () { playInstAudio(id); });
+          el.addEventListener('mouseleave', function () { stopInstAudio(id); });
+          el.addEventListener('click', function (e) {
+            e.stopPropagation();
+            stopInstAudio(id);
+            openInstModal(id);
+          });
+          el.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openInstModal(id); }
+          });
+        });
+
+        // ===== 模块 2b:上半场·五腔横版联票 =====
+        var tonePinyin = { gaoqiang: 'Gāo Qiāng', kunqiang: 'Kūn Qiāng', huqin: 'Hú Qín', tanxi: 'Tán Xì', dengdiao: 'Dēng Diào' };
+        var tones = data.fiveTones || [];
+        document.getElementById("toneTickets").innerHTML = tones.map(function (t, i) {
+          return '' +
+            '<div class="tone-ticket" style="--tint:' + t.color + '; animation-delay:' + (i * 0.15) + 's;">' +
+              '<div class="tone-ticket-row">' +
+                '<div class="tone-ticket-main">' +
+                  '<div class="tone-ticket-id">' +
+                    '<span class="tone-ticket-name">' + t.name + '</span>' +
+                    '<span class="tone-ticket-pinyin">' + (tonePinyin[t.key] || '') + '</span>' +
+                  '</div>' +
+                  '<div class="tone-ticket-desc">' + t.feature + '</div>' +
+                '</div>' +
+                '<div class="tone-ticket-perf"></div>' +
+                '<div class="tone-ticket-stub">' +
+                  '<button class="tone-listen-btn" data-audio="' + t.audio + '" data-name="' + t.name + '">' +
+                    '<span class="listen-icon">🔊</span> 听一听' +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+              '<div class="tone-ticket-detail">' +
+                '<p class="tone-ticket-full-desc">' + t.desc + '</p>' +
+                '<div class="tone-ticket-meta">' +
+                  '<span>🎶 ' + t.feature + '</span>' +
+                  '<span>🎹 ' + t.instrument + '</span>' +
+                '</div>' +
+                t.detail.map(function (d) {
+                  return '<div class="detail-item"><strong>' + d.title + ':</strong> ' + d.text + '</div>';
+                }).join('') +
+              '</div>' +
+              '<span class="tone-expand-hint">点击展开 ▼</span>' +
+            '</div>';
+        }).join("");
+
+        // 五腔戏票点击展开/收起
+        document.querySelectorAll(".tone-ticket").forEach(function (card) {
+          card.addEventListener("click", function (e) {
+            if (e.target.closest(".tone-listen-btn")) return;
+            card.classList.toggle("expanded");
+            var hint = card.querySelector(".tone-expand-hint");
+            if (hint) hint.textContent = card.classList.contains("expanded") ? "点击收起 ▲" : "点击展开 ▼";
+          });
+        });
+
+        // 音频播放控制(保留原逻辑,适配新按钮)
+        var currentAudio = null;
+        document.querySelectorAll(".tone-listen-btn").forEach(function (btn) {
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            var audioSrc = btn.getAttribute("data-audio");
+            if (!audioSrc) return;
+
+            if (currentAudio && !currentAudio.paused) {
+              currentAudio.pause();
+              btn.querySelector(".listen-icon").textContent = "🔊";
+              btn.classList.remove("playing");
+              currentAudio = null;
+            } else {
+              if (currentAudio) currentAudio.pause();
+              var audio = new Audio(audioSrc);
+              audio.addEventListener("error", function () {
+                alert("音频文件暂未放置,请稍后将" + audioSrc + "放入项目文件夹");
+                btn.querySelector(".listen-icon").textContent = "🔊";
+                btn.classList.remove("playing");
+              });
+              audio.play().then(function () {
+                currentAudio = audio;
+                btn.querySelector(".listen-icon").textContent = "⏸";
+                btn.classList.add("playing");
+              }).catch(function () {
+                alert("音频文件暂未放置,请稍后将" + audioSrc + "放入项目文件夹");
+              });
+              audio.addEventListener("ended", function () {
+                btn.querySelector(".listen-icon").textContent = "🔊";
+                btn.classList.remove("playing");
+                currentAudio = null;
+              });
+            }
+          });
+        });
+
+        // ===== 模块 2c:下半场·四大绝活竖版方票 =====
+        var techs = data.fourTechniques || [];
+        // 入场延迟:左上(0s)右下(0.15s)先登场,右上(0.3s)左下(0.45s)后登场
+        var stuntDelays = [0, 0.3, 0.45, 0.15];
+        document.getElementById("stuntTickets").innerHTML = techs.map(function (t, i) {
+          var mediaHtml = '<img src="' + t.media + '" alt="' + t.name + '" class="stunt-ticket-img" ' +
+            'onerror="this.src=\'' + t.mediaPlaceholder + '\';this.onerror=null;" />';
+          return '' +
+            '<div class="stunt-ticket stunt-' + t.key + '" style="--accent:' + t.color + '; animation-delay:' + stuntDelays[i] + 's;">' +
+              '<div class="stunt-ticket-visual">' + mediaHtml + '</div>' +
+              '<div class="stunt-ticket-title">' +
+                '<strong>' + t.name + '</strong>' +
+                '<span>' + t.subtitle + '</span>' +
+              '</div>' +
+              '<div class="stunt-ticket-perf-h"></div>' +
+              '<div class="stunt-ticket-stub">' +
+                '<a href="' + t.video + '" target="_blank" rel="noopener" class="stunt-watch-btn">观看片段</a>' +
+              '</div>' +
+              '<div class="stunt-ticket-detail">' +
+                '<p>' + t.desc + '</p>' +
+                t.detail.map(function (d) {
+                  return '<div class="detail-item"><strong>' + d.title + ':</strong> ' + d.text + '</div>';
+                }).join('') +
+              '</div>' +
+              '<span class="stunt-expand-hint">点击展开 ▼</span>' +
+            '</div>';
+        }).join("");
+
+        // 绝活戏票点击展开/收起
+        document.querySelectorAll(".stunt-ticket").forEach(function (card) {
+          card.addEventListener("click", function (e) {
+            if (e.target.closest(".stunt-watch-btn")) return;
+            card.classList.toggle("expanded");
+            var hint = card.querySelector(".stunt-expand-hint");
+            if (hint) hint.textContent = card.classList.contains("expanded") ? "点击收起 ▲" : "点击展开 ▼";
+          });
+        });
+
+        // ===== 模块 3.6:川剧服饰(衣箱点击展开服饰详情) =====
+        (function () {
+          var trunkData = {
+            dayi: {
+              name: "大衣箱",
+              items: [
+                { name: "蟒袍", verdict: "黄为至尊，龙行天下", role: "皇生 / 净（扮帝王者）", color: "黄（土），帝王专色", pattern: "五爪金龙，盘领坐肩，海水江崖", rule: "内衬水衣、胖袄，外束玉带", aesthetics: "川剧蟒袍承明制而化简，去繁就简，重在气度。五爪为龙、四爪为蟒，一字之差，君臣之别，皆在一爪之数。" },
+                { name: "官衣", verdict: "素裹青袍，明断秋毫", role: "正生 / 须生（文官）", color: "紫、蓝、黑（按品级），素不绣花", pattern: "前后开衩，方补子（文禽武兽），玉带束腰", rule: "议政、审案、行礼场合必着，配乌纱", aesthetics: "官衣以\u201c素\u201d为尊，不施彩绣，唯胸前方补示品级，乃\u201c衣以章制\u201d之典范。一色之差，定人臣之序。" },
+                { name: "帔", verdict: "对襟宽袖，闲适雍容", role: "生 / 旦（富贵闲居者）", color: "秋香、宝蓝、绀紫，对花绣", pattern: "团花、散花，对襟开身，宽身阔袖", rule: "内衬褶子，居家、访亲时所着", aesthetics: "帔者，背也，言\u201c被\u201d于背。闲居之服，雍容而不失礼，最见人物身份与处境之安。" },
+                { name: "褶子", verdict: "万衣之祖，斜领青衫", role: "通用于生、旦、净、丑", color: "素青、玄色为正，亦有花褶", pattern: "边绣回纹，身多素净，斜领大襟", rule: "可外穿亦可内衬，行头之根本", aesthetics: "褶子为\u201c行头之王\u201d，穷儒、贵官、青衣、闺门皆可着。一衣之简，藏万相之变，最见川剧\u201c以服辨人\u201d之妙。" },
+                { name: "宫装", verdict: "璎珞云肩，仙袂飘飘", role: "旦（后妃、仙姬）", color: "五色俱备，红、黄为尊", pattern: "云肩缀玉，飘带垂珠，下着彩裙", rule: "须配大头、凤冠，行如仙子临风", aesthetics: "宫装为天上人间之服，以繁缨寄仙气。一步一摇，珠玉生风，最显旦角身段之柔与气派之华。" },
+                { name: "开氅", verdict: "大襟阔摆，方步雍容", role: "净 / 生（权臣、豪客）", color: "红、绿、紫、黑，绣满身花", pattern: "大开门襟，满绣狮、麒麟、海水", rule: "内衬褶子，外披开氅，方步显威", aesthetics: "开氅者，开也，敞其襟以示豪迈。多用于会盟、点将、迎宾之重场，一披之间，威仪自生。" }
+              ]
+            },
+            eryi: {
+              name: "二衣箱",
+              items: [
+                { name: "靠子", verdict: "绿表刚毅，武圣威仪", role: "武生 / 红生（关羽） / 净", color: "绿（木），象征重义勇猛", pattern: "背插四面靠旗、虎头护肩、靠肚绣狮", rule: "先扎靠旗杆，后系前后片，行话\u201c扎靠如束甲\u201d", aesthetics: "川剧靠子去清代实战甲之繁重，留其威仪，便于腾跃开打，是写意美学的典范。四面靠旗一展，便是千军万马。" },
+                { name: "箭衣", verdict: "马蹄窄袖，劲装利服", role: "武生 / 小生（骑射、差役）", color: "白、黑、红为主，素绣回纹", pattern: "马蹄袖口，束腰，下摆开衩", rule: "配腰带、薄底靴，骑射、行路之服", aesthetics: "箭衣为\u201c行旅之甲\u201d，去甲之重而留其干练。一束一绷间，尽是少年马上姿，最见武生身手之捷。" },
+                { name: "坎肩", verdict: "无袖短衣，套束其身", role: "丑 / 杂角（仆僮、兵卒）", color: "黑、蓝为主，素净少绣", pattern: "对襟无袖，下摆齐胯，绣简单花边", rule: "套于褶子之外，束带打绑腿", aesthetics: "坎肩者，蔽肩也，亦名\u201c马甲\u201d。衣之简者，示其役之微，亦显身手之捷，于小角色见大讲究。" }
+              ]
+            },
+            zhazha: {
+              name: "饰扎头",
+              items: [
+                { name: "盔帽", verdict: "戴冠束发，仪表天下", role: "通用于各行（按人物选盔）", color: "金、银为主，缀彩绒球", pattern: "蟠龙、凤翎、绒球、珠须", rule: "必先勒头、贴片，后戴盔帽", aesthetics: "盔帽为\u201c头服\u201d，一盔一帽，可辨忠奸贵贱。川剧盔帽承古制而略其繁，重象征而非写实，是\u201c以冠定人\u201d的视觉钥匙。" },
+                { name: "髯口", verdict: "假须传神，须眉即气", role: "生、净、丑（按年龄、性格）", color: "黑、黪、白，三色按年", pattern: "满髯、三髯、扎髯、八字，形制各异", rule: "口衔髯筋，以手动须，须随情动", aesthetics: "髯口非真须，乃\u201c情之器\u201d。一捋一甩，忠奸立现；一抖一咬，怒惧可辨。假须而传真气，是为戏曲之妙。" },
+                { name: "头面", verdict: "珠翠绕髻，光照云鬟", role: "旦（闺门、花旦、刀马）", color: "银镀金为主，缀红绒、翠羽", pattern: "泡子、面牌、串珠、凤钗", rule: "先梳大头，后簪头面，以饰定身份", aesthetics: "头面者，饰也。一珠一钗，皆有所指，示贵贱、别嫡庶，是旦角\u201c点睛\u201d之笔，亦川剧\u201c以饰辨人\u201d的收束。" }
+              ]
+            }
+          };
+
+          function entryHTML(item) {
+            return '' +
+              '<article class="bk-cb-entry">' +
+                '<header class="bk-cb-entry-head">' +
+                  '<h4 class="bk-cb-entry-name">' + item.name + '</h4>' +
+                '</header>' +
+                '<p class="bk-cb-verdict">' + item.verdict + '</p>' +
+                '<hr class="bk-cb-rule" />' +
+                '<div class="bk-cb-entry-body">' +
+                  '<dl class="bk-cb-spec">' +
+                    '<dt>对应行当</dt><dd>' + item.role + '</dd>' +
+                    '<dt>色彩归属</dt><dd>' + item.color + '</dd>' +
+                    '<dt>典型纹样</dt><dd>' + item.pattern + '</dd>' +
+                    '<dt>穿着规矩</dt><dd>' + item.rule + '</dd>' +
+                  '</dl>' +
+                  '<p class="bk-cb-aesthetics">' + item.aesthetics + '</p>' +
+                '</div>' +
+                '<hr class="bk-cb-rule bk-cb-rule-end" />' +
+              '</article>';
+          }
+
+          function renderTrunk(key) {
+            var data = trunkData[key];
+            if (!data) return;
+            var html = '<div class="bk-cb-trunk-detail-head">' +
+              '<span class="bk-cb-trunk-detail-label">' + data.name + '</span>' +
+              '<span class="bk-cb-trunk-detail-count">' + data.items.length + ' 件</span>' +
+            '</div>';
+            data.items.forEach(function (item) { html += entryHTML(item); });
+            html += '<div class="bk-cb-collapse-wrap"><button type="button" class="bk-cb-collapse-btn">收起 ▲</button></div>';
+            var box = document.getElementById("bkCbTrunkDetail");
+            if (box) {
+              box.innerHTML = html;
+              // 触发淡入动画
+              box.classList.remove("is-visible");
+              void box.offsetWidth;
+              box.classList.add("is-visible");
+            }
+          }
+
+          var trunks = document.querySelectorAll(".bk-cb-trunk[data-trunk]");
+          Array.prototype.forEach.call(trunks, function (t) {
+            t.addEventListener("click", function () {
+              // 再次点击已选中的衣箱则收起
+              if (t.classList.contains("is-active")) {
+                t.classList.remove("is-active");
+                t.setAttribute("aria-pressed", "false");
+                var box = document.getElementById("bkCbTrunkDetail");
+                if (box) { box.innerHTML = ""; box.classList.remove("is-visible"); }
+                var trunkSec = document.querySelector(".bk-cb-trunks");
+                if (trunkSec) setTimeout(function () { trunkSec.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50);
+                return;
+              }
+              Array.prototype.forEach.call(trunks, function (x) {
+                x.classList.remove("is-active");
+                x.setAttribute("aria-pressed", "false");
+              });
+              t.classList.add("is-active");
+              t.setAttribute("aria-pressed", "true");
+              renderTrunk(t.getAttribute("data-trunk"));
+            });
+          });
+
+          // 收起按钮(事件委托,因为内容是动态渲染的)
+          var detailBox = document.getElementById("bkCbTrunkDetail");
+          if (detailBox) {
+            detailBox.addEventListener("click", function (e) {
+              if (!e.target.classList.contains("bk-cb-collapse-btn")) return;
+              // 取消当前选中的衣箱,清空详情
+              Array.prototype.forEach.call(trunks, function (x) {
+                x.classList.remove("is-active");
+                x.setAttribute("aria-pressed", "false");
+              });
+              detailBox.innerHTML = "";
+              detailBox.classList.remove("is-visible");
+              var trunkSec = document.querySelector(".bk-cb-trunks");
+              if (trunkSec) setTimeout(function () { trunkSec.scrollIntoView({ behavior: "smooth", block: "start" }); }, 50);
+            });
+          }
+
+          // 五行五色色块悬停/轻触交互
+          var bandItems = document.querySelectorAll(".bk-cb-band-color");
+          var bandCaption = document.getElementById("bkCbBandCaption");
+          var bandDefault = "悬停色块查看详解 · 黄→绿→白→黑→红";
+          function highlightBand(item) {
+            Array.prototype.forEach.call(bandItems, function (x) {
+              x.classList.remove("is-active", "is-dimmed");
+            });
+            item.classList.add("is-active");
+            Array.prototype.forEach.call(bandItems, function (x) {
+              if (x !== item) x.classList.add("is-dimmed");
+            });
+            if (bandCaption) {
+              bandCaption.style.opacity = "0";
+              setTimeout(function () {
+                bandCaption.textContent = item.getAttribute("data-caption") || bandDefault;
+                bandCaption.style.opacity = "1";
+              }, 150);
+            }
+          }
+          function resetBand() {
+            Array.prototype.forEach.call(bandItems, function (x) {
+              x.classList.remove("is-active", "is-dimmed");
+            });
+            if (bandCaption) {
+              bandCaption.style.opacity = "0";
+              setTimeout(function () {
+                bandCaption.textContent = bandDefault;
+                bandCaption.style.opacity = "1";
+              }, 150);
+            }
+          }
+          Array.prototype.forEach.call(bandItems, function (item) {
+            item.addEventListener("mouseenter", function () { highlightBand(item); });
+            item.addEventListener("touchstart", function (e) {
+              e.preventDefault();
+              if (item.classList.contains("is-active")) { resetBand(); return; }
+              highlightBand(item);
+            }, { passive: false });
+          });
+          var bandEl = document.querySelector(".bk-cb-band");
+          if (bandEl) bandEl.addEventListener("mouseleave", resetBand);
+        })();
+
+        // 模块 4:脸谱翻转卡片(老信笺纸风,8 色 2 行 4 列,点击翻转)
+        document.getElementById("maskFlipGrid").innerHTML = data.maskColors.map(function (m) {
+          var hex = SCU.COLOR_HEX[m.color] || "#999";
+          // 色染斑块用 rgb 通道(洇纸渐变用)
+          var h = hex.replace('#', '');
+          var rgb = parseInt(h.substr(0, 2), 16) + ',' + parseInt(h.substr(2, 2), 16) + ',' + parseInt(h.substr(4, 2), 16);
+          // 真实图片,加载失败回退 SVG
+          var photoInner = '<img src="' + m.image + '" alt="' + m.name + '脸谱" class="flip-mask-img" ' +
+            'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />' +
+            '<span class="flip-mask-fallback">' + SCU.maskSVG(m.color) + '</span>';
+          return '' +
+            '<div class="flip-card" data-color="' + m.color + '">' +
+              '<div class="flip-card-inner" style="--mk:' + hex + ';--mk-rgb:' + rgb + ';">' +
+                // 正面:脸谱照 + 人物名 + 性格标签 + 右下色染
+                '<div class="flip-card-front">' +
+                  '<span class="flip-stain flip-stain-front"></span>' +
+                  '<div class="flip-mask-photo">' + photoInner + '</div>' +
+                  '<span class="flip-color-eyebrow">' + m.name + '脸谱</span>' +
+                  '<strong class="flip-person-name">' + m.character + '</strong>' +
+                  '<span class="flip-meaning-tag">' + m.meaning + '</span>' +
+                  '<span class="flip-hint">点击翻转</span>' +
+                '</div>' +
+                // 背面:椭圆金线画框 + 人物故事 + 洇色痕迹
+                '<div class="flip-card-back">' +
+                  '<span class="flip-stain flip-stain-back"></span>' +
+                  '<div class="flip-back-portrait">' + photoInner + '</div>' +
+                  '<div class="flip-back-label">代表人物</div>' +
+                  '<div class="flip-back-char">' + m.character + '</div>' +
+                  (m.bio ? '<p class="flip-back-bio">' + m.bio + '</p>' : '') +
+                  (m.aria ? '<div class="flip-back-aria">' + m.aria + '</div>' : '') +
+                  '<span class="flip-hint">点击返回</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+        }).join("");
+        Array.prototype.forEach.call(document.querySelectorAll(".flip-card"), function (card) {
+          card.addEventListener("click", function () {
+            card.classList.toggle("flipped");
+            // 翻转过程加"抬起"阴影,动画结束后移除
+            card.classList.add("flipping");
+            setTimeout(function () { card.classList.remove("flipping"); }, 600);
+          });
+        });
+
+        // 模块 5:川剧谱式(6 种)—— 书页式翻阅(从右向左翻)
+        var PATTERNS = data.maskPatterns || [];
+        var introText = "川剧脸谱按构图可分为六种基本谱式——" +
+          PATTERNS.map(function (p) { return "《" + p.name + "》"; }).join("、") +
+          ",各有不同的造型逻辑与人物用途,是认识川剧脸谱的基础入门。";
+        document.getElementById("patternsIntroText").textContent = introText;
+        document.getElementById("patternTotal").textContent = String(PATTERNS.length);
+
+        // 6 种谱式判词(背面引用)
+        var patternArias = {
+          "整脸":     "「一色铺面,直见性情。」",
+          "三块瓦脸": "「三瓦分明,层次井然。」",
+          "十字门脸": "「十字当头,庄重威严。」",
+          "碎脸":     "「纹饰繁密,桀骜不驯。」",
+          "歪脸":     "「五官歪斜,品行不端。」",
+          "象形脸":   "「以形写神,想象无疆。」"
+        };
+
+        // 6 张名称标签(快速跳转)
+        document.getElementById("patternTabs").innerHTML = PATTERNS.map(function (p, i) {
+          return '<button type="button" class="pattern-tab" data-i="' + i + '">' + p.name + '</button>';
+        }).join("");
+
+        // 卡片正/反面填充
+        function fillPatternPage(frontEl, backEl, p) {
+          frontEl.innerHTML =
+            '<div class="pattern-name">' + p.name + '</div>' +
+            '<div class="pattern-photo"><img src="' + p.image + '" alt="' + p.name + '" /></div>' +
+            '<div class="pattern-feature">' + p.intro + '</div>' +
+            '<div class="pattern-detail-text">' + p.detail + '</div>';
+          backEl.innerHTML =
+            '<div class="pattern-back-label">谱式说明</div>' +
+            '<div class="pattern-back-name">' + p.name + '</div>' +
+            '<div class="pattern-back-detail">' + p.detail + '</div>' +
+            '<div class="pattern-back-aria">' + (patternArias[p.name] || "") + '</div>';
+        }
+
+        // 双卡片交替(书页式翻阅)
+        var cardA = document.getElementById("patternCardA");
+        var cardB = document.getElementById("patternCardB");
+        var frontA = document.getElementById("patternFrontA");
+        var backA  = document.getElementById("patternBackA");
+        var frontB = document.getElementById("patternFrontB");
+        var backB  = document.getElementById("patternBackB");
+        var idxEl = document.getElementById("patternIdx");
+        var nextBtn = document.getElementById("patternNextBtn");
+
+        var patternState = {
+          idx: 0,            // 当前谱式下标
+          activeCard: "A",    // 当前显示的卡片
+          animating: false,
+        };
+
+        // 切换 active 类
+        function setActiveCard(which) {
+          cardA.classList.toggle("current", which === "A");
+          cardB.classList.toggle("current", which === "B");
+          cardA.style.zIndex = which === "A" ? "2" : "1";
+          cardB.style.zIndex = which === "B" ? "2" : "1";
+        }
+
+        // 翻到下一张:当前卡片向左翻走,另一张从右翻入
+        function flipTo(nextIdx) {
+          if (patternState.animating) return;
+          patternState.animating = true;
+
+          var isLast = (patternState.idx === PATTERNS.length - 1) && (nextIdx === 0);
+          var fromCard = patternState.activeCard === "A" ? cardA : cardB;
+          var toCard   = patternState.activeCard === "A" ? cardB : cardA;
+          var toFront  = patternState.activeCard === "A" ? frontB : frontA;
+          var toBack   = patternState.activeCard === "A" ? backB  : backA;
+          var nextActive = patternState.activeCard === "A" ? "B" : "A";
+
+          // 填充下一张内容
+          fillPatternPage(toFront, toBack, PATTERNS[nextIdx]);
+
+          // 起始状态:toCard 在右侧(enter-from-right),无 transition 干扰
+          toCard.classList.remove("current", "exit-to-left");
+          toCard.classList.add("enter-from-right");
+          toCard.style.zIndex = "2";
+          // 强制 reflow,确保 enter-from-right 生效后再翻入
+          void toCard.offsetWidth;
+
+          // 同时:from 翻向左,to 从右翻入到居中
+          fromCard.classList.remove("current");
+          fromCard.classList.add("exit-to-left");
+          fromCard.style.zIndex = "1";
+          toCard.classList.remove("enter-from-right");
+          toCard.classList.add("current");
+
+          // 翻完清理
+          setTimeout(function () {
+            fromCard.classList.remove("exit-to-left");
+            patternState.activeCard = nextActive;
+            patternState.idx = nextIdx;
+            idxEl.textContent = String(nextIdx + 1);
+            // 更新按钮文字
+            nextBtn.textContent = (nextIdx === PATTERNS.length - 1) ? "回到第一张 ↻" : "翻下一张 →";
+            // 更新标签激活
+            document.querySelectorAll("#patternTabs .pattern-tab").forEach(function (t, i) {
+              t.classList.toggle("active", i === nextIdx);
+            });
+            patternState.animating = false;
+          }, 900);
+        }
+
+        // 点击卡片本身 = 翻下一张
+        cardA.addEventListener("click", function () { flipTo((patternState.idx + 1) % PATTERNS.length); });
+        cardB.addEventListener("click", function () { flipTo((patternState.idx + 1) % PATTERNS.length); });
+        nextBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          flipTo((patternState.idx + 1) % PATTERNS.length);
+        });
+
+        // 标签快速跳转(带翻页动画)
+        document.querySelectorAll("#patternTabs .pattern-tab").forEach(function (tab) {
+          tab.addEventListener("click", function () {
+            var i = parseInt(tab.getAttribute("data-i"), 10);
+            if (i === patternState.idx || patternState.animating) return;
+            flipTo(i);
+          });
+        });
+
+        // 初始化:第一张放 A 卡,显示居中
+        fillPatternPage(frontA, backA, PATTERNS[0]);
+        setActiveCard("A");
+        // B 卡默认在右侧待命(不可见,因为 backface-visibility)
+        cardB.classList.add("enter-from-right");
+        cardB.style.zIndex = "1";
+        idxEl.textContent = "1";
+        document.querySelector("#patternTabs .pattern-tab").classList.add("active");
+
+        // 模块 6:变脸方式(4 种)
+        var methodIcons = ["🤚","💨","🪶","✨"];
+        document.getElementById("methodGrid").innerHTML = data.faceChangeMethods.map(function (m, i) {
+          return '' +
+            '<div class="method-card">' +
+              '<div class="method-icon">' + methodIcons[i % methodIcons.length] + '</div>' +
+              '<div class="method-body">' +
+                '<strong>' + m.name + '</strong>' +
+                '<p>' + m.desc + '</p>' +
+              '</div>' +
+            '</div>';
+        }).join("");
+
+        // 通用:把一组 {title,description,image,video} 渲染成剧目卡片 HTML
+        function renderPlayCards(list) {
+          return (list || []).map(function (p) {
+            var hasLink = p.video && p.video !== "#";
+            return '' +
+              '<div class="play-card play-with-img">' +
+                (hasLink
+                  ? '<a href="' + p.video + '" target="_blank" rel="noopener noreferrer" class="play-cover-link" title="观看《' + p.title + '》">' + playImgHTML(p.title, p.image) + '</a>'
+                  : playImgHTML(p.title, p.image)) +
+                '<div class="play-body">' +
+                  "<strong>《" + p.title + "》</strong>" +
+                  "<p>" + p.description + "</p>" +
+                  (hasLink
+                    ? '<a class="play-video-link" href="' + p.video + '" target="_blank" rel="noopener noreferrer">' + '观看 B 站视频' + '</a>'
+                    : '<span class="play-waiting-hint">封面与视频正在整理中…</span>') +
+                "</div>" +
+              "</div>";
+          }).join("");
+        }
+
+        // 通用:carousel 横滑控制(桌面一屏 3 张,小屏一屏 1 张)
+        // ids = { viewport, track, prev, next, dots }
+        function initCarousel(ids) {
+          var viewport = document.getElementById(ids.viewport);
+          var track = document.getElementById(ids.track);
+          var prevBtn = document.getElementById(ids.prev);
+          var nextBtn = document.getElementById(ids.next);
+          var dotsWrap = document.getElementById(ids.dots);
+          if (!viewport || !track || !prevBtn || !nextBtn || !dotsWrap) return;
+
+          var MOBILE_BP = 780; // 与 media query 对齐
+          var total = track.children.length;
+          var current = 0;
+
+          function getPageSize() {
+            return window.innerWidth <= MOBILE_BP ? 1 : 3;
+          }
+          function getGap() {
+            return window.innerWidth <= MOBILE_BP ? 0 : 20;
+          }
+          function getPageCount() {
+            return Math.max(1, Math.ceil(total / getPageSize()));
+          }
+          function stepWidth() {
+            var vp = viewport.clientWidth;
+            var ps = getPageSize();
+            var gap = getGap();
+            if (ps === 1) return vp;
+            return ((vp - gap * (ps - 1)) / ps + gap) * ps; // 每次移动 PAGE_SIZE 张
+          }
+          function renderDots(pageCount) {
+            var dotsHTML = "";
+            for (var d = 0; d < pageCount; d++) {
+              dotsHTML += '<button type="button" class="play-dot' + (d === 0 ? ' active' : '') + '" aria-label="第' + (d+1) + '组" data-i="' + d + '"></button>';
+            }
+            dotsWrap.innerHTML = dotsHTML;
+            dotsWrap.querySelectorAll(".play-dot").forEach(function (dt) {
+              dt.addEventListener("click", function () { goTo(parseInt(dt.getAttribute("data-i"), 10)); });
+            });
+          }
+          function goTo(idx) {
+            var pageCount = getPageCount();
+            if (idx < 0) idx = pageCount - 1;
+            if (idx >= pageCount) idx = 0;
+            current = idx;
+            var offset = current * stepWidth();
+            track.style.transform = "translateX(-" + offset + "px)";
+            var dots = dotsWrap.querySelectorAll(".play-dot");
+            dots.forEach(function (d, i) { d.classList.toggle("active", i === current); });
+            if (pageCount > 1) {
+              prevBtn.style.opacity = (current === 0) ? "0.55" : "1";
+              nextBtn.style.opacity = (current === pageCount - 1) ? "0.55" : "1";
+            } else {
+              prevBtn.style.opacity = nextBtn.style.opacity = "0.55";
+            }
+          }
+          function rebuild() {
+            var pageCount = getPageCount();
+            if (current >= pageCount) current = pageCount - 1;
+            renderDots(pageCount);
+            // 切换断点后不带动画
+            track.style.transition = "none";
+            goTo(current);
+            requestAnimationFrame(function () {
+              track.style.transition = "";
+            });
+          }
+          prevBtn.addEventListener("click", function () { goTo(current - 1); });
+          nextBtn.addEventListener("click", function () { goTo(current + 1); });
+
+          var resizeTimer;
+          var lastWasMobile = window.innerWidth <= MOBILE_BP;
+          window.addEventListener("resize", function () {
+            var nowMobile = window.innerWidth <= MOBILE_BP;
+            if (nowMobile !== lastWasMobile) {
+              // 断点切换 → 重新建指示器 + 立即定位
+              lastWasMobile = nowMobile;
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(rebuild, 100);
+            } else {
+              // 同断点内仅重新对齐
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(function () { goTo(current); }, 120);
+            }
+          });
+
+          requestAnimationFrame(rebuild);
+        }
+
+        // 模块 6.5:川剧绝活(carousel,形式同经典剧目)
+        var stuntGrid = document.getElementById("stuntGrid");
+        if (stuntGrid) {
+          stuntGrid.innerHTML = renderPlayCards(data.stunts);
+          initCarousel({
+            viewport: "stuntCarouselViewport", track: "stuntGrid",
+            prev: "stuntCarouselPrev", next: "stuntCarouselNext", dots: "stuntCarouselDots"
+          });
+        }
+
+        // 模块 7:剧目(carousel 单排横滑,一组 3 张,左右按钮 + 指示器切换)
+        if (document.getElementById("playsIntroText") && data.knowledge && data.knowledge.classicPlaysIntro) {
+          document.getElementById("playsIntroText").textContent = data.knowledge.classicPlaysIntro;
+        }
+        var playGrid = document.getElementById("playGrid");
+        if (playGrid) {
+          playGrid.innerHTML = renderPlayCards(data.plays);
+          initCarousel({
+            viewport: "playCarouselViewport", track: "playGrid",
+            prev: "playCarouselPrev", next: "playCarouselNext", dots: "playCarouselDots"
+          });
+        }
+      });
+
+      // ============================================================
+      // 模块 1:历史起源 - 沉浸式老戏台场景
+      // 5 个热区点击 → 弹出知识卡片模态框
+      // ============================================================
+      var HISTORY_CARDS = [
+        {
+          title: "川剧的形成（清代乾隆年间）",
+          text: "川剧形成于约 1790 年前后,起源于成都、重庆一带。五大声腔（昆、高、胡、弹、灯）在此汇流融合,形成了独特的川剧艺术。早期代表人物有魏长生等。",
+          img: "images/history_origin.jpg"
+        },
+        {
+          title: "五大声腔体系",
+          text: "昆腔源自江苏昆山腔,婉转细腻;高腔是四川本土腔调,高亢激昂;胡琴腔源于秦腔,悠扬抒情;弹戏腔板式变化丰富,轻快活泼;灯调是民间小调,生活气息浓厚。",
+          img: "images/history_5_styles.jpg"
+        },
+        {
+          title: "脸谱与变脸的起源",
+          text: "脸谱源于唐代面具,宋代定型。变脸最早用于神话剧《归正楼》,用于表现角色身份突变。早期变脸只有「抹脸」一种技法,后来发展出吹脸、扯脸等多种手法。",
+          img: "images/history_mask_origin.jpg"
+        },
+        {
+          title: "川剧的繁荣时期（民国至建国初期）",
+          text: "民国时期戏园遍布成都、重庆,代表戏班有三庆会、新又新等,代表艺人有康芷林、萧楷臣等。建国后成立四川省川剧院,川剧艺术得到进一步发展。",
+          img: "images/history_golden_age.jpg"
+        },
+        {
+          title: "川剧的现代传承",
+          text: "2006 年川剧列入国家级非物质文化遗产。现代川剧不断创新剧目、进校园、开展国际交流。代表人物有陈智林、沈铁梅等当代名家,但仍面临传承挑战。",
+          img: "images/history_modern.jpg"
+        }
+      ];
+
+      var modal = document.getElementById("historyModal");
+      var modalCard = document.getElementById("historyModalCard");
+      var modalImg = document.getElementById("historyModalImg");
+      var modalTitle = document.getElementById("historyModalTitle");
+      var modalText = document.getElementById("historyModalText");
+      var modalClose = document.getElementById("historyModalClose");
+
+      function openHistoryCard(idx) {
+        var card = HISTORY_CARDS[idx];
+        if (!card) return;
+        modalTitle.textContent = card.title;
+        modalText.textContent = card.text;
+        // 图片:有则显示,无则灰色占位
+        modalImg.innerHTML =
+          '<img src="' + card.img + '" alt="' + card.title + '" ' +
+            'onerror="this.style.display=\'none\';this.parentElement.classList.add(\'no-img\');" ' +
+            'onload="this.parentElement.classList.remove(\'no-img\');" ' +
+          'style="width:100%;height:auto;display:block;" />';
+        modal.classList.add("show");
+        SCU.sound.click();
+      }
+
+      function closeHistoryCard() {
+        modal.classList.remove("show");
+      }
+
+      // 热区点击
+      Array.prototype.forEach.call(document.querySelectorAll(".hotspot"), function (hs) {
+        hs.addEventListener("click", function () {
+          var idx = parseInt(hs.getAttribute("data-card"), 10);
+          openHistoryCard(idx);
+        });
+      });
+
+      // 追光跟随鼠标
+      var theaterScene = document.getElementById("theaterScene");
+      if (theaterScene) {
+        theaterScene.addEventListener("mousemove", function (e) {
+          var rect = theaterScene.getBoundingClientRect();
+          var x = ((e.clientX - rect.left) / rect.width) * 100;
+          var y = ((e.clientY - rect.top) / rect.height) * 100;
+          theaterScene.style.setProperty("--mouse-x", x + "%");
+          theaterScene.style.setProperty("--mouse-y", y + "%");
+        });
+        // 鼠标移出时回到中心
+        theaterScene.addEventListener("mouseleave", function () {
+          theaterScene.style.setProperty("--mouse-x", "50%");
+          theaterScene.style.setProperty("--mouse-y", "50%");
+        });
+      }
+
+      // 关闭:× 按钮
+      if (modalClose) modalClose.addEventListener("click", closeHistoryCard);
+      // 关闭:点击模态框外部
+      if (modal) modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeHistoryCard();
+      });
+      // 关闭:ESC 键
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("show")) closeHistoryCard();
+      });
+
+      // ============================================================
+      // 情绪色底板:滚动时背景像水彩一样缓慢晕染(约 2.2s)
+      // 视口中央 band 内的 [data-mood] 元素决定当前情绪色
+      // ============================================================
+      (function () {
+        var moodEls = document.querySelectorAll("[data-mood]");
+        if (!moodEls.length) return;
+        if (!("IntersectionObserver" in window)) {
+          document.body.setAttribute("data-mood", "wood");
+          return;
+        }
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (en.isIntersecting) {
+              document.body.setAttribute("data-mood", en.target.getAttribute("data-mood"));
+            }
+          });
+        }, { rootMargin: "-42% 0px -42% 0px", threshold: 0 });
+        Array.prototype.forEach.call(moodEls, function (el) { io.observe(el); });
+      })();
+    })();
+  </script>
+</body>
+</html>

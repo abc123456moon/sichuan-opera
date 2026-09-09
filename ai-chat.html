@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 问答 · 川剧文化小站</title>
+  <link rel="stylesheet" href="style.css?v=94" />
+</head>
+<body class="kb-page kb-chat" data-mood="lobby">
+  <!-- 舞台底板:与知识页/演出页同体系(追光+暗纹+暖底),最亮一档:戏园堂厢 -->
+  <div class="kb-bg" aria-hidden="true">
+    <div class="kb-bg-pattern"></div>
+    <div class="kb-bg-shade"></div>
+    <div class="kb-bg-spot"></div>
+  </div>
+  <header class="site-header"></header>
+
+  <main class="container">
+    <!-- 顶部标题 + 风格切换 -->
+    <div class="ai-header">
+      <div class="ai-header-text">
+        <h1 class="section-title">我是川小旦 🎭</h1>
+        <p class="subtitle">问我川剧的任何问题 —— 变脸、脸谱、行当、剧目,我都知道!</p>
+        <!-- 对话风格切换 -->
+        <div class="style-switch" role="tablist">
+          <button type="button" class="style-btn active" data-style="kid" role="tab">🧒 童趣版</button>
+          <button type="button" class="style-btn" data-style="adult" role="tab">👨 知识版</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider-pattern"></div>
+
+    <!-- 对话区:左侧川小旦(大) + 右侧聊天框 -->
+    <div class="ai-chat-stage">
+      <div class="ai-mascot-side" id="aiMascotAvatar">
+        <div class="mascot-container" id="mascotContainer">
+          <!-- 绝活特效层(点击时显示) -->
+          <div class="mascot-skill-layer" id="skillLayer"></div>
+          <!-- 川小旦主图(表情切换: hello / happy / think / like / heart) -->
+          <img src="images/mascot_hello.png" alt="川小旦" class="mascot-image" id="mascotImage"
+               data-hello="images/mascot_hello.png"
+               data-happy="images/mascot_happy.png"
+               data-think="images/mascot_think.png"
+               data-like="images/mascot_like.png"
+               data-heart="images/mascot_heart.png"
+               style="background:transparent;"
+               onerror="this.style.display='none';document.getElementById('mascotWrapFallback').style.display='flex';" />
+          <!-- SVG 兜底 -->
+          <div class="mascot-wrap mascot-bounce" id="mascotWrapFallback" style="display:none;width:120px;height:160px;"></div>
+          <!-- 点击提示 -->
+          <div class="mascot-tap-hint" id="tapHint">👆 点我看绝活!</div>
+        </div>
+        <!-- 表情状态指示 -->
+        <div class="mascot-mood-label" id="moodLabel">你好</div>
+      </div>
+
+      <!-- 对话记录区(可滚动) -->
+      <div class="chat-box" id="chatBox"></div>
+    </div>
+
+    <!-- 推荐问题快捷入口 -->
+    <div class="chat-presets">
+      <div class="preset-label">💡 试试这些问题:</div>
+      <div class="chip-row" id="chipRow"></div>
+      <button type="button" class="btn ghost chat-clear-btn" id="clearBtn">🗑 清除记录</button>
+    </div>
+
+    <!-- 底部:输入框 + 发送按钮 -->
+    <div class="chat-input-row">
+      <input
+        type="text"
+        class="chat-input"
+        id="userInput"
+        placeholder="输入你的川剧问题,例如:变脸怎么做到的?"
+        autocomplete="off"
+      />
+      <button class="btn chat-send-btn" id="sendBtn">发送</button>
+    </div>
+
+    <div class="divider-pattern"></div>
+
+    <div class="knowledge-block">
+      <h2>使用说明</h2>
+      <p>本页接入 <strong>Kimi AI</strong>(Moonshot API)。请在 <code>ai-chat.html</code> 中找到 <code>KIMI_CONFIG.apiKey</code>,替换为你的真实密钥(格式 <code>sk-...</code>)。未配置时自动回退到本地知识库 FAQ 匹配。</p>
+      <p style="font-size:13px;color:var(--color-muted);margin-top:6px;">⚠ 前端直接暴露 API Key 有安全风险,仅适用于本地演示。生产环境请通过后端代理转发请求。</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>川剧文化小站 · AI 问答</p>
+  </footer>
+
+  <script src="app.js?v=20260909a"></script>
+  <script>
+    (function () {
+      SCU.renderNav("aichat");
+
+      // 从"售票处"走进"戏园堂厢":底色再晕染提亮一档(米白/浅杏,约 2.2s)
+      setTimeout(function () {
+        document.body.setAttribute("data-mood", "parlor");
+      }, 150);
+
+      // ===== Kimi AI 配置 =====
+      var KIMI_CONFIG = {
+        apiKey: 'sk-V4OOG6MM0jXO7whUQ0eaiyQfzatqZCMu2Lfq7zWxiyEzpTWc',
+        apiUrl: 'https://api.moonshot.cn/v1/chat/completions'
+      };
+
+      var chatBox = document.getElementById("chatBox");
+      var userInput = document.getElementById("userInput");
+      var sendBtn = document.getElementById("sendBtn");
+      var mascotWrap = document.getElementById("mascotWrapFallback");
+      var mascotImage = document.getElementById("mascotImage");
+
+      // ===== 聊天记录持久化(localStorage) =====
+      var STORAGE_KEY = "scu_chat_history";
+
+      function saveMessages() {
+        try {
+          var bubbles = chatBox.querySelectorAll(".message .bubble");
+          var msgs = [];
+          for (var i = 0; i < bubbles.length; i++) {
+            var msg = bubbles[i].parentElement;
+            var role = msg.classList.contains("ai") ? "ai" : "user";
+            var text = bubbles[i].textContent;
+            // 跳过"正在思考..."的临时消息
+            if (text.indexOf("正在思考") >= 0 || text.indexOf("想想哈") >= 0) continue;
+            msgs.push({ role: role, content: text });
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(msgs));
+        } catch (e) {}
+      }
+
+      function loadMessages() {
+        try {
+          var saved = localStorage.getItem(STORAGE_KEY);
+          if (!saved) return false;
+          var msgs = JSON.parse(saved);
+          if (!msgs || !msgs.length) return false;
+          for (var i = 0; i < msgs.length; i++) {
+            addMessage(msgs[i].role, msgs[i].content);
+          }
+          return true;
+        } catch (e) { return false; }
+      }
+
+      function clearMessages() {
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        chatBox.innerHTML = "";
+      }
+
+      // ===== 川小旦神情动画(表情图片 + CSS 动画) =====
+      // mood: 'idle'(你好/待命) / 'think'(疑惑) / 'talk'(说话) / 'happy'(开心) / 'like'(点赞) / 'heart'(比心)
+      var moodLabel = document.getElementById('moodLabel');
+      // 全局 mood 定时器(每次 setMood 清除之前的,防止疑惑被提前打断)
+      var moodTimers = [];
+      function clearMoodTimers() {
+        moodTimers.forEach(function (t) { clearTimeout(t); });
+        moodTimers = [];
+      }
+      // 成功回答后的随机表情
+      var successMoods = ['happy', 'like', 'heart'];
+      var successLabels = { happy: '🎉 开心!', like: '👍 点赞!', heart: '❤️ 比心!' };
+      function randomSuccessMood() {
+        return successMoods[Math.floor(Math.random() * successMoods.length)];
+      }
+      function setMood(mood) {
+        // 清除之前 happy 的自动恢复定时器,避免打断当前状态
+        clearMoodTimers();
+        // 更新状态标签
+        if (moodLabel) {
+          moodLabel.classList.remove('thinking', 'speaking', 'happy');
+          if (mood === 'think') { moodLabel.textContent = '🤔 想想哈~'; moodLabel.classList.add('thinking'); }
+          else if (mood === 'talk') { moodLabel.textContent = '💬 正在回答'; moodLabel.classList.add('speaking'); }
+          else if (mood === 'happy') { moodLabel.textContent = '🎉 开心!'; moodLabel.classList.add('happy'); }
+          else if (mood === 'like') { moodLabel.textContent = '👍 点赞!'; moodLabel.classList.add('happy'); }
+          else if (mood === 'heart') { moodLabel.textContent = '❤️ 比心!'; moodLabel.classList.add('happy'); }
+          else { moodLabel.textContent = '你好'; }
+        }
+        // 优先用真实图片做动画,图片加载失败时回退到 SVG
+        if (mascotImage && mascotImage.style.display !== 'none') {
+          // 清除所有状态类(含 happy-idle)
+          mascotImage.classList.remove('thinking', 'speaking', 'happy', 'happy-idle');
+          // 清除内联 transform(来自鼠标跟随/空闲摆动)
+          mascotImage.style.transform = '';
+          // 切换表情图片:idle/talk 用 hello 图,think 用疑惑图,其余按对应图
+          var moodKey = (mood === 'think') ? 'think' : (mood === 'happy' ? 'happy' : (mood === 'like' ? 'like' : (mood === 'heart' ? 'heart' : 'hello')));
+          var newSrc = mascotImage.getAttribute('data-' + moodKey);
+          if (newSrc && mascotImage.src.indexOf(newSrc) === -1) {
+            mascotImage.src = newSrc;
+            // 表情切换闪光
+            mascotImage.classList.add('flash');
+            moodTimers.push(setTimeout(function () { mascotImage.classList.remove('flash'); }, 450));
+          }
+          if (mood === 'think') {
+            mascotImage.classList.add('thinking');
+            // 疑惑状态不自动结束,由外部 setMood 切换
+          } else if (mood === 'talk') {
+            mascotImage.classList.add('speaking');
+          } else if (mood === 'happy' || mood === 'like' || mood === 'heart') {
+            mascotImage.classList.add('happy');
+            // 跳跃动画(0.85s)播完后,保持表情 + 呼吸,3 秒后恢复待命
+            moodTimers.push(setTimeout(function () {
+              mascotImage.classList.remove('happy', 'thinking', 'speaking');
+              mascotImage.classList.add('happy-idle');
+            }, 850));
+            // 4 秒后完全恢复待命表情(hello)
+            moodTimers.push(setTimeout(function () {
+              mascotImage.classList.remove('happy-idle', 'happy', 'thinking', 'speaking');
+              var idleSrc = mascotImage.getAttribute('data-hello');
+              if (idleSrc) mascotImage.src = idleSrc;
+              if (moodLabel) { moodLabel.classList.remove('happy'); moodLabel.textContent = '👋 待命中'; }
+            }, 4000));
+          }
+          // idle(默认呼吸)不需要额外 class
+        } else {
+          // 回退 SVG
+          var animClass = '';
+          if (mood === 'think') animClass = 'mascot-bounce';
+          else if (mood === 'talk') animClass = 'mascot-talk';
+          else if (mood === 'happy' || mood === 'like' || mood === 'heart') animClass = 'mascot-bounce';
+          mascotWrap.innerHTML = SCU.mascotSVG(mood);
+          mascotWrap.className = 'mascot-wrap ' + animClass;
+        }
+      }
+
+      var DATA = null;
+      var presetQuestions = [
+        "川剧是什么时候形成的?",
+        "变脸的原理是什么?",
+        "川剧有哪些唱腔?",
+        "红色脸谱代表什么?",
+        "川剧经典剧目有哪些?"
+      ];
+
+      SCU.loadData(function (err, data) {
+        if (!err && data) {
+          DATA = data;
+          if (data.presetQuestions && data.presetQuestions.length) {
+            presetQuestions = data.presetQuestions;
+          }
+        }
+        // 渲染推荐问题
+        var chipHtml = "";
+        for (var i = 0; i < presetQuestions.length; i++) {
+          chipHtml += '<button type="button" class="chip" data-q="' + escAttr(presetQuestions[i]) + '">' +
+            (i + 1) + ". " + escHTML(presetQuestions[i]) + "</button>";
+        }
+        document.getElementById("chipRow").innerHTML = chipHtml;
+        Array.prototype.forEach.call(document.querySelectorAll(".chip"), function (chip) {
+          chip.addEventListener("click", function () {
+            userInput.value = chip.getAttribute("data-q");
+            sendQuestion(chip.getAttribute("data-q"));
+          });
+        });
+        // 恢复聊天记录,无记录则显示欢迎语(根据风格)
+        var restored = loadMessages();
+        if (!restored) {
+          addMessage("ai", WELCOME_MSGS[chatStyle]);
+        }
+      });
+
+      // ===== 点击川小旦:川剧绝活随机展示 =====
+      var mascotContainer = document.getElementById("mascotContainer");
+      var skillLayer = document.getElementById("skillLayer");
+      var tapHint = document.getElementById("tapHint");
+      var skillList = ['faceChange', 'waterSleeve'];
+      var skillNames = { faceChange: '变脸', waterSleeve: '水袖' };
+
+      function playSkill(skillName) {
+        var skill = skillName || skillList[Math.floor(Math.random() * skillList.length)];
+        // 清除之前的动画
+        skillLayer.className = 'mascot-skill-layer';
+        skillLayer.innerHTML = '';
+        // 强制重排,重新触发动画
+        void skillLayer.offsetWidth;
+        skillLayer.classList.add('skill-' + skill);
+
+        if (skill === 'faceChange') {
+          // 变脸:快速切换颜色闪烁
+          skillLayer.innerHTML = '<div class="face-flash"></div>';
+        } else if (skill === 'waterSleeve') {
+          // 水袖:左右飘动的白色曲线
+          skillLayer.innerHTML = '<div class="sleeve-left"></div><div class="sleeve-right"></div>';
+        }
+
+        // 川小旦切到开心表情 + 跳跃动画
+        setMood('happy');
+
+        // 吐火特效已取消,统一 3 秒清除
+        var clearDelay = 3000;
+        setTimeout(function () {
+          skillLayer.className = 'mascot-skill-layer';
+          skillLayer.innerHTML = '';
+          setMood('idle');
+        }, clearDelay);
+
+        // 隐藏点击提示
+        tapHint.style.display = 'none';
+      }
+
+      mascotContainer.addEventListener('click', function () { playSkill(); });
+      // 5 秒后自动隐藏点击提示
+      setTimeout(function () { tapHint.style.opacity = '0'; tapHint.style.transition = 'opacity 0.6s'; }, 5000);
+
+      // ===== 指令识别:让川小旦做动作 =====
+      // 返回 {type, skill, reply} 或 null(非动作指令)
+      // 注意:问句(含疑问词/求解释词)不拦截,正常发给 AI
+      function parseActionCommand(text) {
+        text = (text || '').trim().toLowerCase();
+        // 去除标点
+        var clean = text.replace(/[?,。,.!！?]/g, '');
+        // 疑问/求解释关键词 —— 含这些词的不拦截,发给 AI
+        var isQuestion = /原理|是什么|是什么意思|怎么|怎样|如何|介绍|历史|起源|来历|含义|意思|代表|区别|种类|哪些|特点|讲讲|说说|解释|为什么|为何|背景|故事|由来/.test(clean);
+        // 变脸:只在祈使句(表演/来一个/变一个)或单纯"变脸"两字时触发
+        if (!isQuestion && /(^变脸$|表演.*变脸|变脸.*表演|来个变脸|变一个脸|变脸看看|给我变脸|变脸吧|看.*变脸|变脸.*看看)/.test(clean)) {
+          return { type: 'skill', skill: 'faceChange', reply: '🎭 来啦!看我看我——变!' };
+        }
+        // 吐火/喷火特效已取消,此类问题正常发给 AI
+        // 水袖
+        if (!isQuestion && /(^水袖$|甩.*水袖|水袖.*甩|表演.*水袖|水袖.*表演|来个水袖|水袖看看|给我水袖|水袖吧|看.*水袖|水袖.*看看|甩个袖|甩袖吧)/.test(clean)) {
+          return { type: 'skill', skill: 'waterSleeve', reply: '💫 水袖轻扬——飘~' };
+        }
+        // 跳舞 / 跳一下
+        if (/跳舞|跳一下|跳个舞|蹦一下|跳跃|跳一个/.test(clean)) {
+          return { type: 'mood', mood: 'happy', reply: '💃 嘿嘿~川小旦给你跳一个!' };
+        }
+        // 打招呼
+        if (/^(你好|哈喽|hello|hi|嗨|在吗|你在吗|打招呼)/.test(clean)) {
+          return { type: 'mood', mood: 'happy', reply: '👋 哎呀你来啦!我是川小旦,问我川剧的事儿嘛~' };
+        }
+        // 随机绝活
+        if (!isQuestion && /(^绝活$|^绝技$|表演绝活|来个绝活|来一段绝活|表演一下|来一个绝活|show一个|来个绝技|表演一个)/.test(clean)) {
+          return { type: 'skill', skill: null, reply: '🎪 好嘞!给你来一段绝活!' };
+        }
+        return null;
+      }
+
+      function executeAction(cmd) {
+        if (cmd.type === 'skill') {
+          playSkill(cmd.skill);
+        } else if (cmd.type === 'mood') {
+          setMood(cmd.mood);
+        }
+        // 添加回复消息(对应表情头像)
+        var avatarMood = (cmd.type === 'mood' && cmd.mood) ? cmd.mood : 'happy';
+        addMessage('ai', cmd.reply, avatarMood === 'idle' ? 'happy' : avatarMood);
+        var lastAvatar = chatBox.querySelector('.message:last-child .avatar-ai img');
+        if (lastAvatar) lastAvatar.src = 'images/mascot_' + (avatarMood === 'idle' ? 'happy' : avatarMood) + '.png';
+      }
+
+      // ===== 立体交互:鼠标跟随 + 空闲摆动 =====
+      // 鼠标移动时,川小旦轻微"看向"鼠标方向(3D 倾斜)
+      var aiStage = document.querySelector('.ai-chat-stage');
+      if (aiStage && mascotImage && mascotImage.style.display !== 'none') {
+        var mouseTimer = null;
+        aiStage.addEventListener('mousemove', function (e) {
+          if (mascotImage.classList.contains('thinking') ||
+              mascotImage.classList.contains('speaking') ||
+              mascotImage.classList.contains('happy')) return;
+          var rect = mascotContainer.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2;
+          var cy = rect.top + rect.height / 2;
+          var dx = (e.clientX - cx) / rect.width;
+          var dy = (e.clientY - cy) / rect.height;
+          // 限制倾斜范围 ±8deg
+          var rotY = Math.max(-8, Math.min(8, dx * 10));
+          var rotX = Math.max(-5, Math.min(5, -dy * 7));
+          mascotImage.style.transform =
+            'perspective(700px) rotateY(' + rotY + 'deg) rotateX(' + rotX + 'deg) scale(1.02)';
+          mascotImage.style.animation = 'none';
+          clearTimeout(mouseTimer);
+          mouseTimer = setTimeout(function () {
+            mascotImage.style.transform = '';
+            mascotImage.style.animation = '';
+          }, 600);
+        });
+        aiStage.addEventListener('mouseleave', function () {
+          mascotImage.style.transform = '';
+          mascotImage.style.animation = '';
+        });
+      }
+
+      // 空闲时随机微摆动(像在悄悄打量用户)
+      var idleTimer = null;
+      function scheduleIdle() {
+        idleTimer = setTimeout(function () {
+          if (mascotImage && mascotImage.style.display !== 'none' &&
+              !mascotImage.classList.contains('thinking') &&
+              !mascotImage.classList.contains('speaking') &&
+              !mascotImage.classList.contains('happy')) {
+            // 随机:歪头 / 探身 / 踮脚
+            var actions = ['tilt', 'lean', 'peek'];
+            var act = actions[Math.floor(Math.random() * actions.length)];
+            if (act === 'tilt') {
+              var tilt = (Math.random() > 0.5 ? 1 : -1) * (3 + Math.random() * 4);
+              mascotImage.style.transform = 'rotate(' + tilt + 'deg) scale(1.02)';
+            } else if (act === 'lean') {
+              var lean = (Math.random() > 0.5 ? 1 : -1) * (6 + Math.random() * 6);
+              mascotImage.style.transform = 'translateX(' + lean + 'px) scale(1.015)';
+            } else {
+              mascotImage.style.transform = 'translateY(-6px) scale(1.03)';
+            }
+            setTimeout(function () {
+              mascotImage.style.transform = '';
+            }, 900);
+          }
+          scheduleIdle();
+        }, 3000 + Math.random() * 2500);
+      }
+      scheduleIdle();
+
+      function escHTML(s) {
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+        });
+      }
+      function escAttr(s) { return escHTML(s); }
+
+      // ===== 对话风格 =====
+      var chatStyle = 'kid'; // 'kid' 童趣版 | 'adult' 知识版
+      var STYLE_PROMPTS = {
+        kid: '你是川剧文化小站的 AI 助手"川小旦",一个可爱的川剧旦角小姑娘。\n\n【核心人设】你就是一个七八岁的川剧小徒弟,说话萌萌的、带点四川腔,喜欢用可爱的比喻。\n\n【绝对必须做到】\n- 每段话至少插2-3个emoji(🎭🌸🎪✨🐉🌈🦊🐼🌺🎵任选)\n- 每段话至少出现1个四川俏皮词(乖乖/哎呀/要得/咋个/巴适/摆一哈/哈儿/啥子)\n- 用"呀""哦""啦""嘛""哒"等语气词结尾\n- 用小朋友能懂的比喻(比如"像XX一样")\n- 禁止分点列条,要像聊天一样自然说\n- 控制在300字以内,说不完可以下次再说\n\n【参考例子 - 必须模仿这个风格】\n用户:红色脸谱代表什么?\n川小旦:乖乖~红脸就是忠义的意思呀🎭!比如关公关二爷,他对刘备忠心耿耿,所以脸就是红的哦~还有姜维、赵匡胤也是红脸哒🌸!像不像你们戴的红领巾代表爱祖国一样嘛~✨\n\n用户:变脸怎么做到的?\n川小旦:哎呀变脸超神奇呀🎪!演员叔叔偷偷准备好N张不同颜色的小脸谱,一转身就换一张~最快1/10秒哦!就像变魔术一样哒✨!还有扯线、吹粉粉的方法~要得嘛我给你摆一哈细节嘛🌸',
+        adult: '你是川剧文化小站的 AI 助手,一个专业的川剧知识顾问。\n\n【核心人设】博物馆讲解员,只讲干货。\n\n【绝对必须做到】\n- 零emoji,零表情符号,零方言\n- 用数字分点(1. 2. 3.)或小标题\n- 专业、简洁、学术化\n- 信息密度最大化,少说废话\n- 结尾必须完整,不能戛然而止\n\n【参考例子】\n用户:红色脸谱代表什么?\n正确:红色脸谱在川剧中象征忠义、勇武,为正面人物标识。\n1. 核心含义:忠诚耿直、英勇无畏\n2. 典型人物:关羽(见于《单刀会》《战长沙》)、姜维、赵匡胤\n3. 色彩细分:大红多用于忠勇豪杰,紫红示沉稳刚直'
+      };
+      var WELCOME_MSGS = {
+        kid: '乖乖~我是川小旦🌸!青衣花旦都会唱,变脸吐火也拿手!川剧的历史、脸谱、行当、剧目……要问啥子尽管说嘛~🎭✨',
+        adult: '你好,我是川小旦。我可以快速解答川剧相关的任何问题。请问想了解什么?'
+      };
+
+      // 风格切换按钮
+      document.querySelectorAll('.style-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.style-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          chatStyle = btn.getAttribute('data-style');
+        });
+      });
+
+      // ===== 后处理:强制风格 =====
+      function enforceStyle(text, style) {
+        if (!text) return text;
+        if (style === 'kid') {
+          // 如果缺少emoji,自动补上
+          var emojis = ['🎭', '🌸', '🎪', '✨', '🐉', '🌈', '🦊', '🌺', '🎵'];
+          var hasEmoji = emojis.some(function (e) { return text.indexOf(e) >= 0; });
+          if (!hasEmoji) {
+            // 在句末随机插入1个emoji
+            text = text.replace(/[。！？]?$/, emojis[Math.floor(Math.random() * emojis.length)]);
+          }
+          // 如果缺少四川词,在开头加一个
+          var sichuanWords = ['乖乖', '哎呀', '要得', '咋个', '巴适'];
+          var hasSichuan = sichuanWords.some(function (w) { return text.indexOf(w) >= 0; });
+          if (!hasSichuan) {
+            text = sichuanWords[Math.floor(Math.random() * sichuanWords.length)] + '~' + text;
+          }
+        } else if (style === 'adult') {
+          // 去除emoji
+          text = text.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu, '');
+          // 去除四川词
+          var badWords = ['乖乖', '哎呀', '要得', '咋个', '巴适', '摆一哈', '啥子', '哒', '嘛', '呀~', '哦~', '啦'];
+          for (var i = 0; i < badWords.length; i++) {
+            text = text.split(badWords[i]).join('');
+          }
+          // 去除笑脸
+          text = text.replace(/[☺😊😀😄😃]/g, '');
+          // 确保结尾完整
+          text = text.replace(/[,，、]\s*$/, '');
+        }
+        return text;
+      }
+
+      // ===== 调用 Kimi AI(直接调用 Moonshot API) =====
+      async function askKimi(question) {
+        try {
+          var systemPrompt = STYLE_PROMPTS[chatStyle] || STYLE_PROMPTS.kid;
+          var response = await fetch(KIMI_CONFIG.apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + KIMI_CONFIG.apiKey
+            },
+            body: JSON.stringify({
+              model: 'kimi-k2.6',
+              messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: question }
+              ],
+              temperature: 0.6, // API 仅允许 0.6(值过大会被网关 400 拒绝)
+              // 关闭深度推理:kimi-k2.6 是推理模型,reasoning 会先消耗 max_tokens,
+              // 导致长问题 content 被截为空。关闭后直接输出答案,更快更稳。
+              thinking: { type: 'disabled' },
+              max_tokens: chatStyle === 'kid' ? 2000 : 3000
+            })
+          });
+          console.log('[Kimi] Response status:', response.status, response.statusText);
+          var data = await response.json();
+          console.log('[Kimi] Response data:', JSON.stringify(data).substring(0, 800));
+          if (data.error) {
+            console.error('[Kimi] API error:', data.error);
+            var fb = faqFallback(question);
+            return fb || ('API 报错🎭: ' + (data.error.message || data.error));
+          }
+          var answer = data.choices && data.choices[0] ? data.choices[0].message.content : '';
+          // 检查是否被截断
+          var finishReason = data.choices && data.choices[0] ? data.choices[0].finish_reason : '';
+          if (finishReason === 'length') {
+            answer = answer.replace(/[,，、\s]+$/, '') + '...';
+          }
+          if (answer) return enforceStyle(answer, chatStyle);
+          // 极端情况:content 仍为空(推理耗尽预算),走 FAQ 或明确提示,不卡在"想想哈"
+          console.warn('[Kimi] content 为空,finish_reason:', finishReason);
+          var fb2 = faqFallback(question);
+          return fb2 || '哎呀,这个问题有点难,我想得头发都乱了还没想好🤯~换个问法再试试嘛🌸';
+        } catch (error) {
+          console.error('[Kimi] Fetch error:', error.message || error);
+          // CORS 或网络错误,尝试 FAQ 兜底
+          var fb3 = faqFallback(question);
+          return fb3 || '抱歉,网络连接出现问题🎭(' + (error.message || 'CORS') + ')';
+        }
+      }
+
+      // FAQ 本地知识库兜底
+      function faqFallback(question) {
+        if (DATA && DATA.faq) {
+          var ans = SCU.matchFAQ(question, DATA.faq);
+          if (ans) return ans;
+        }
+        return null;
+      }
+
+      // ===== AI 头像:用川小旦真实图片(默认你好表情) =====
+      function getAIAvatarHTML(mood) {
+        var validMoods = ['happy', 'think', 'like', 'heart', 'hello'];
+        var moodKey = validMoods.indexOf(mood) >= 0 ? mood : 'hello';
+        var src = 'images/mascot_' + moodKey + '.png';
+        return '<div class="avatar avatar-ai" style="overflow:hidden;border-radius:50%;">' +
+          '<img src="' + src + '" alt="川小旦头像" style="width:100%;height:100%;object-fit:contain;" ' +
+          'onerror="this.parentElement.innerHTML=SCU.mascotSVG(\'happy\')" />' +
+          '</div>';
+      }
+
+      // ===== 添加消息到聊天框(带头像) =====
+      function addMessage(role, content, mood) {
+        var messageDiv = document.createElement('div');
+        messageDiv.className = 'message ' + role;
+        var avatarHtml = '';
+        if (role === 'ai') {
+          avatarHtml = getAIAvatarHTML(mood);
+        } else {
+          avatarHtml = '<div class="avatar avatar-user"><img src="images/logo_mask.png" alt="用户头像" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML=(window.SCU&&SCU.userAvatarSVG)?SCU.userAvatarSVG():\'👤\'" /></div>';
+        }
+        messageDiv.innerHTML = avatarHtml + '<div class="bubble"></div>';
+        messageDiv.querySelector('.bubble').textContent = content;
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      // ===== 更新最后一条消息(用于流式/替换思考状态) =====
+      function updateLastMessage(content) {
+        var lastBubble = chatBox.querySelector('.message:last-child .bubble');
+        if (lastBubble) lastBubble.textContent = content;
+        // 回答落地后不强制滚动到底：答案开头原位停留，用户自行往下阅读
+      }
+
+      // ===== 发送问题 =====
+      async function sendQuestion(question) {
+        question = (question || "").trim();
+        if (!question) return;
+
+        // 先检测是否为动作指令(变脸/水袖/跳舞/打招呼/绝活)
+        var cmd = parseActionCommand(question);
+        if (cmd) {
+          addMessage('user', question);
+          userInput.value = '';
+          executeAction(cmd);
+          saveMessages();
+          return; // 不发送给 AI
+        }
+
+        addMessage('user', question);
+        userInput.value = '';
+        sendBtn.disabled = true;
+        userInput.disabled = true;
+        // 娃娃进入思考状态(动画:摇晃 + 下沉 + 疑惑表情) —— 一直保持到回答完成
+        setMood("think");
+        // 思考状态气泡(头像也用疑惑表情)
+        addMessage('ai', '🌸 川小旦想想哈~', 'think');
+        var answer = await askKimi(question);
+        // 回答完成,随机切换到开心/点赞/比心表情
+        var successMood = randomSuccessMood();
+        setMood(successMood);
+        updateLastMessage(answer);
+        // 把思考气泡的头像替换为对应表情
+        var lastAvatar = chatBox.querySelector('.message:last-child .avatar-ai img');
+        if (lastAvatar) lastAvatar.src = 'images/mascot_' + successMood + '.png';
+        saveMessages(); // 保存聊天记录到 localStorage
+        sendBtn.disabled = false;
+        userInput.disabled = false;
+        userInput.focus();
+      }
+
+      // ===== 发送按钮事件 =====
+      sendBtn.addEventListener('click', function () {
+        sendQuestion(userInput.value);
+      });
+
+      // ===== Enter 键发送 =====
+      userInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendBtn.click();
+      });
+
+      // ===== 清除聊天记录 =====
+      document.getElementById("clearBtn").addEventListener("click", function () {
+        if (confirm("确定清除所有聊天记录吗?")) {
+          clearMessages();
+          addMessage("ai", "记录已清除!有什么新问题尽管问我吧 🎭");
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,264 @@
+{
+  "maskColors": [
+    {"color": "red",    "name": "红色", "meaning": "忠诚勇敢", "character": "关羽",   "image": "images/mask_red.jpg",    "bio": "蜀汉五虎上将之首,忠义千秋,过五关斩六将,后世尊为武圣。红脸即由其而来,象征赤胆忠心。", "aria": "「桃园结义情如海,一片丹心贯九霄。」"},
+    {"color": "black",  "name": "黑色", "meaning": "公正刚毅", "character": "包拯",   "image": "images/mask_black.jpg",  "bio": "北宋名臣,人称包青天,铁面无私,断案如神,不畏权贵,是刚正清廉的化身。", "aria": "「铡刀之下无贵贱,黑脸丹心照汗青。」"},
+    {"color": "white",  "name": "白色", "meaning": "奸诈狡猾", "character": "曹操",   "image": "images/mask_white.jpg",  "bio": "东汉末年权臣,雄才大略却多疑善诈,「宁教我负天下人」一语道尽其奸雄本色,故以水白脸表之。", "aria": "「宁我负人天下事,一生奸雄笑苍茫。」"},
+    {"color": "blue",   "name": "蓝色", "meaning": "刚直勇敢", "character": "窦尔敦", "image": "images/mask_blue.jpg",   "bio": "《连环套》中的绿林豪杰,武艺高强、性情刚烈,劫富济贫,蓝脸表其骁勇与桀骜。", "aria": "「盗御马闯连环套,一身肝胆傲王侯。」"},
+    {"color": "green",  "name": "绿色", "meaning": "鲁莽冲动", "character": "张飞",   "image": "images/mask_green.jpg",  "bio": "蜀汉猛将,豹头环眼、声若巨雷,勇猛刚直又略带鲁莽,长坂桥一喝退曹兵百万。", "aria": "「当阳桥头一声吼,喝断桥梁水倒流。」"},
+    {"color": "yellow", "name": "黄色", "meaning": "骁勇善战", "character": "典韦",   "image": "images/mask_yellow.jpg", "bio": "曹操麾下猛将,力大无穷、忠勇绝伦,宛城之战舍命护主而亡。黄脸表其骁勇善战、威猛刚烈。", "aria": "「一双铁戟震八方,舍身护主气如霜。」"},
+    {"color": "purple", "name": "紫色", "meaning": "智勇刚毅", "character": "徐延昭", "image": "images/mask_purple.jpg", "bio": "明朝元勋徐达之后,袭封定国公,性情刚烈、守正不阿,怀揣御赐铜锤,上打昏君、下打谗臣,力保幼主登基。", "aria": "「铜锤一举安社稷,紫面丹心保幼主。」"},
+    {"color": "pink",   "name": "粉色", "meaning": "年老有心计", "character": "廉颇",   "image": "images/mask_pink.jpg",   "bio": "战国赵国名将,老当益壮、负荆请罪传为美谈。粉(老红)脸多表年高老将,亦用以刻画年迈而有心计之人。", "aria": "「廉颇未老披征甲,负荆一诺重千金。」"}
+  ],
+  "faceChangeMasks": [
+    {"name": "红脸·关羽",     "image": "images/mask_red.jpg",  "color": "red",    "char": "忠"},
+    {"name": "黑脸·包拯",     "image": "images/mask_black.jpg",   "color": "black",  "char": "正"},
+    {"name": "白脸·曹操",     "image": "images/mask_white.jpg",   "color": "white",  "char": "奸"},
+    {"name": "蓝脸·窦尔敦",   "image": "images/mask_blue.jpg", "color": "blue",   "char": "强"},
+    {"name": "绿脸·张飞",     "image": "images/mask_green.jpg","color": "green",  "char": "莽"},
+    {"name": "黄脸·典韦",     "image": "images/mask_yellow.jpg","color": "yellow", "char": "骁"},
+    {"name": "紫脸·徐延昭",   "image": "images/mask_purple.jpg",   "color": "purple", "char": "毅"},
+    {"name": "粉脸·廉颇",     "image": "images/mask_pink.jpg", "color": "pink",   "char": "老"},
+    {"name": "红脸·关平",     "image": "images/mask_red.jpg",  "color": "red",    "char": "义"},
+    {"name": "黑脸·张飞",     "image": "images/mask_black.jpg",   "color": "black",  "char": "直"},
+    {"name": "蓝脸·夏侯惇",   "image": "images/mask_blue.jpg", "color": "blue",   "char": "刚"},
+    {"name": "紫脸·魏延",     "image": "images/mask_purple.jpg",   "color": "purple", "char": "勇"}
+  ],
+  "roles": [
+    {"name": "生", "alias": "老生/小生/武生", "color": "#4A6B8A", "keyword": "儒雅风流", "intro": "生行是川剧中的男性角色,分为老生、小生、武生等。老生重唱功,苍劲深沉;小生重做功,儒雅风流;武生重武功,英武挺拔,是戏台上的\"正梁\"。", "description": "<p><strong>老生</strong>：中年、年长正派男子，唱腔沉稳醇厚</p><p><strong>武生</strong>：擅长打斗上阵的武将，节奏铿锵有力</p>", "image": "images/role_sheng.jpg"},
+    {"name": "旦", "alias": "青衣/花旦/刀马旦", "color": "#D4838A", "keyword": "婉约秀丽", "intro": "旦行是川剧中的女性角色,分为青衣、花旦、刀马旦、老旦等。青衣端庄稳重,花旦活泼娇俏,刀马旦英姿飒爽,老旦慈祥厚重,是戏台上的\"半边天\"。", "description": "<p><strong>青衣</strong>：端庄温婉的大家女子</p><p><strong>花旦</strong>：活泼娇俏的年轻少女</p>", "image": "images/role_dan.jpg"},
+    {"name": "净", "alias": "文净/武净", "color": "#4A2C4A", "keyword": "刚烈威猛", "intro": "净行是川剧中的花脸角色,以面部重彩涂绘为标志,分文净、武净。文净重唱念,气势磅礴;武净重工架,刚猛威烈。多扮演忠臣良将或奸雄豪强,是戏台上的\"大梁\"。", "description": "<p>俗称<strong>花脸</strong>，多为性格<strong>刚烈豪迈</strong>人物，脸谱色彩浓重</p>", "image": "images/role_jing.jpg"},
+    {"name": "末", "alias": "老末/老生", "color": "#8B6B4A", "keyword": "苍劲老成", "intro": "末行是川剧中的老年男性角色,多扮演忠仆、老仆或年迈长者。念白做工为主,苍劲老成,步履蹒跚中见功底,是戏台上\"压得住场\"的老角儿。", "description": "<p>年长配角，现已多归入<strong>老生</strong></p>", "image": "images/role_mo.jpg"},
+    {"name": "丑", "alias": "文丑/武丑", "color": "#E8DCC8", "keyword": "幽默诙谐", "intro": "丑角行也不再称三面、三花脸或小花脸了。喜剧角色,鼻梁涂白粉(豆腐块)分文丑、武丑,以幽默诙谐见长。", "description": "<p>滑稽诙谐的<strong>喜剧小人物</strong></p>", "image": "images/role_chou.jpg"}
+  ],
+  "plays": [
+    {"title": "白蛇传",        "description": "白娘子与许仙的爱情故事,川剧《金山寺》一折的变脸、吐火与紫金铙钹技艺脍炙人口,是最具川剧风格的神话大戏。", "image": "images/opera_white_snake.jpg",    "video": "https://www.bilibili.com/video/BV11faczCEer"},
+    {"title": "空城计",        "description": "三国戏经典,诸葛亮城楼抚琴退仲达,唱做并重的须生代表剧目,二黄唱腔沉稳凝重,尽显智者气度。",                 "image": "images/opera_kong_cheng_ji.jpg", "video": "https://www.bilibili.com/video/BV1mx411s7xK/"},
+    {"title": "滚灯",          "description": "灯戏喜剧,小丈夫被妻子罚跪顶灯,一连串跌扑翻滚皆头顶油灯不灭,将特技与市井情趣融为一体,笑料百出。",               "image": "images/opera_gun_deng.jpg",       "video": "https://www.bilibili.com/video/BV1as411N7wh/"},
+    {"title": "姚安杀妻",      "description": "胡琴传统戏,书生姚安贪恋美色杀妻另娶,剧情跌宕、表演张力极强,是川剧弹戏与胡琴结合的代表性骨子老戏。",             "image": "images/opera_yao_an_sha_qi.jpg",  "video": "https://www.bilibili.com/video/BV1fiDAYkEd6/"},
+    {"title": "离恨天·审",    "description": "新编古装戏,以鬼神之审拷问人间良知,唱词华丽、身段繁复,是近年川剧舞台上具有现代审美的优秀新编剧目。",             "image": "images/opera_li_hen_tian.jpg",    "video": "https://www.bilibili.com/video/BV11f421v74w/"},
+    {"title": "拉郎配",        "description": "由皇帝选妃引发的民间姻缘闹剧,讽刺扰民之政,妙趣横生,是川剧独有的喜剧经典,一唱三叹、包袱不断。",                   "image": "images/opera_la_lang_pei.jpg",    "video": "https://www.bilibili.com/video/BV1JW411g7HP"},
+    {"title": "三岔口",        "description": "武戏短打经典,黑夜中店主与将军摸黑搏斗,以完全无声的身段展现打斗,是考验武生、武丑功底的试金石。",                   "image": "images/opera_san_cha_kou.jpg",    "video": "https://www.bilibili.com/video/BV1Lp4y1e7MY"}
+  ],
+  "stunts": [
+    {"title": "川剧小生褶子功", "description": "小生以褶子(长衫)为道具,抖、抛、翻、绕一气呵成,尽显儒雅风流与身段功底。", "image": "images/stunt_zhezi_gong.jpg",   "video": "https://www.bilibili.com/video/BV1zT4y1B7HL/"},
+    {"title": "变胡子",         "description": "表演中髯口瞬间变色变形,以须髯的变化外化人物情绪与身份转变,别具巧思。",           "image": "images/stunt_bian_huzi.jpg",    "video": "https://www.bilibili.com/video/BV12S4y1b7iX/"},
+    {"title": "翎子功",         "description": "头戴双翎,以颈、头之力舞动雉翎,绕、抖、涮、竖,英武灵动,多用于武将小生。",       "image": "images/stunt_lingzi_gong.jpg",  "video": "https://www.bilibili.com/video/BV1fY411c7x6/"},
+    {"title": "打叉",           "description": "钢叉在演员身侧腾飞掠过,惊险精准,考验默契与胆识,是武戏中的高危绝技。",         "image": "images/stunt_da_cha.jpg",       "video": "https://www.bilibili.com/video/BV1AY4y1k73j/"},
+    {"title": "川剧水袖",       "description": "长袖翻飞如行云流水,抛、收、绕、抓间尽述人物情思,是旦角身段的看家功夫。",       "image": "images/stunt_shuixiu.jpg",      "video": "https://www.bilibili.com/video/BV1YB4y1y77Y/"},
+    {"title": "藏刀",           "description": "刀于举手投足间倏隐倏现,收放无痕,常用于表现人物的机变与杀机。",               "image": "images/stunt_cang_dao.jpg",     "video": "https://www.bilibili.com/video/BV15Y411w7HE/"},
+    {"title": "踢慧眼",         "description": "起腿踢踏,将金箔慧眼准确贴于额心,一气呵成,象征角色开天眼、显神通。",         "image": "images/stunt_ti_huiyan.jpg",    "video": "https://www.bilibili.com/video/BV1qt4y1x7Kd/"},
+    {"title": "变脸",           "description": "川剧招牌绝活,借特制脸谱与机关在瞬息间更换面孔,外化人物情绪骤变。",           "image": "images/stunt_bian_lian.jpg",    "video": "https://www.bilibili.com/video/BV1Q34y1h7PV/"},
+    {"title": "吐火",           "description": "口含松香喷火成焰,烈焰腾空,惊险壮观,多用于神怪剧目营造氛围。",             "image": "images/stunt_tu_huo.jpg",       "video": "https://www.bilibili.com/video/BV1sr4y1b7Tt/"},
+    {"title": "滚灯",           "description": "头顶油灯翻滚跌扑,灯不灭、油不洒,技与戏浑然一体,尽显川剧喜剧精神。",         "image": "images/stunt_gun_deng.jpg",     "video": "https://www.bilibili.com/video/BV1FY4y1k7qE/"},
+    {"title": "牵眼线",         "description": "以细线牵动眉眼,使面部表情随剧情灵活变化,细腻传神,别有韵味。",             "image": "images/stunt_qian_yanxian.jpg", "video": "https://www.bilibili.com/video/BV15u41167M6/"}
+  ],
+  "instruments": [
+    {"id": "xiaogu",   "name": "小鼓",         "tag": "板眼之帅 · 指挥全场", "area": "center",  "image": "images/inst_xiaogu.jpg",   "audio": "audio/inst_xiaogu.mp3",   "desc": "场面之统帅,鼓师以鼓签点出板眼,统率全台文武场,节奏快慢、情绪起落皆由此出。", "detail": "小鼓是壮、侗、彝、土家等族的棰击膜鸣乐器,多用于民族传统节日、婚丧喜庆和戏曲伴奏。属双面膜鸣乐器,无固定音高,发音频率高于大鼓,音色清晰明快,伴有沙沙声。演奏分单奏、双奏和滚奏三种,其中滚奏法最具特色——双棰极迅速地交替敲击,发出颗粒清晰的音响,通过轻重缓急的变化表达不同情绪。小鼓音高较结实,余音较短,常参加合奏或伴奏,与其它打击乐器同时或交替击奏。"},
+    {"id": "daluo",    "name": "大锣",         "tag": "声如雷震 · 武场之魂", "area": "backR",   "image": "images/inst_daluo.png",    "audio": "audio/inst_daluo.mp3",    "desc": "铜制大锣悬挂于架,声如洪钟雷霆,用于武将登场、两军对阵,是武场气势之魂。", "detail": "锣又称\"中国锣\",是交响乐队中唯一的中国乐器。大锣身为圆型弧面,铜制,四周以边框固定,用木棰击奏。属金属体鸣乐器,无固定音高,音响低沉宏亮而强烈,余音悠长持久。改变棰头质地可调整音色。锣声常用于表现紧张气氛和不祥预兆,具有独特的艺术效果。"},
+    {"id": "dabo",     "name": "大钹",         "tag": "金石交鸣 · 气势之胆", "area": "backL",   "image": "images/inst_dabo.jpg",     "audio": "audio/inst_dabo.mp3",     "desc": "一对铜钹相击,金石之声铿锵激越,常与大锣配合,烘托紧张激烈的舞台气氛。", "detail": "大钹又名大镲,圆形(中间突起),铜制,两面为一付,每面直径约一尺。属金属体鸣乐器,无固定音高,音响洪亮而强烈,穿透力很强。钹体用\"响铜\"制成,中部隆起部分称\"碗\",顶部钻孔以绸布拴系(称\"钹巾\"),演奏者双手持钹巾相击发音,也可悬挂支架用鼓槌滚奏。大钹音量大而余音长,善于烘托气氛,强奏时极富气势,弱奏时类似大鼓属节拍乐器,是管弦乐队和吹打乐队中必不可少的色彩性打击乐器。"},
+    {"id": "xiaoluo",  "name": "小锣(兼铰子)", "tag": "穿针引线 · 音色之隙", "area": "frontL",  "image": "images/inst_xiaoluo.png",  "audio": "audio/inst_xiaoluo.mp3",  "desc": "小锣平置,音色清亮脆丽,铰子(小钹)兼奏,于锣鼓缝隙中穿针引线,灵动活泼。", "detail": "小锣是中国传统打击乐器,因直径约22厘米的铜制锣面较小得名。锣面中心稍凸起,演奏时左手提锣内缘,右手持薄木片敲击,音色明亮清脆,常用于戏曲伴奏中配合动作节奏。属无固定音高的金属体鸣乐器,通过改变棰头质地可调整音色。京剧中称京小锣,多用于文人、女性或丑角角色的动作衬托。"},
+    {"id": "tanggu",   "name": "堂鼓",         "tag": "厚重铺底 · 氛围之源", "area": "frontR",  "image": "images/inst_tanggu.jpg",   "audio": "audio/inst_tanggu.mp3",   "desc": "木质鼓身、双面皮面,鼓声浑厚深沉,为场面铺底,营造升堂、出征等厚重氛围。", "detail": "堂鼓又称同鼓,以木为框,两面蒙牛皮,演奏时置于木架上用双槌敲击。鼓面较大,从鼓心到鼓边音高不同——鼓心音低,鼓边音高,通过控制敲击位置和力度可获得大幅度的音量与音色对比。大堂鼓直径一尺半以上,音色低沉厚实,常扮演激励人心、振奋士气的角色,是民间器乐合奏及戏曲音乐中常用的打击乐器。"},
+    {"id": "suona",    "name": "唢呐",         "tag": "高亢嘹亮 · 吹管之主", "area": "farR",    "image": "images/inst_suona.jpg",    "audio": "audio/inst_suona.mp3",    "desc": "铜碗木杆,音色高亢嘹亮,能奏悲喜诸调,是文场吹管之主,红白纸火皆离不得。", "detail": "唢呐又名喇叭,小唢呐称海笛。木制锥形管上开八孔(前七后一),上端装细铜管套双簧苇哨,下端套铜质碗状扩音器。音色明亮,音量大,在西晋时期新疆克孜尔石窟壁画中已出现,最晚16世纪已在中国民间流传。台湾民间称鼓吹,广东地区称\"八音\",是红白喜事和戏曲伴奏中不可或缺的吹管乐器。"}
+  ],
+  "shows": [
+    {"id": "show_001", "title": "变脸专场", "venue": "四川省川剧院", "time": "2026-09-05 19:30", "price": "180 元起", "booking": "现场购票或电话预订", "grade": "star", "stamp": "名角"},
+    {"id": "show_002", "title": "白蛇传·经典折子戏", "venue": "成都锦江剧场", "time": "2026-09-12 19:30", "price": "120 元起", "booking": "大麦网在线预订", "grade": "classic", "stamp": "经典"},
+    {"id": "show_003", "title": "川剧名家名段欣赏会", "venue": "重庆川剧艺术中心", "time": "2026-09-20 14:00", "price": "260 元起", "booking": "电话预订 023-XXXXXXXX", "grade": "star", "stamp": "名家"},
+    {"id": "show_004", "title": "亲子川剧体验场", "venue": "成都非物质文化遗产中心", "time": "2026-09-28 10:00", "price": "80 元(亲子套票)", "booking": "微信公众号预约", "grade": "family", "stamp": "亲子"}
+  ],
+  "knowledge": {
+    "history": "川剧是中国西南地区影响最大的戏曲剧种,形成于清代乾隆年间(约 18 世纪中叶),由昆腔、高腔、胡琴腔、弹戏(梆子腔)和四川民间灯戏五种声腔在四川地区长期融合而成。它流行于四川、重庆及云南、贵州的部分地区。川剧以变脸、吐火、滚灯等绝活闻名于世,2006 年被列入第一批国家级非物质文化遗产名录。",
+    "artFeatures": "川剧的艺术特色集中体现在'五腔共和'与'四大绝活'。五腔指昆腔、高腔、胡琴腔、弹戏、灯调五种声腔同台演出;四大绝活指变脸、吐火、滚灯、踢慧眼。川剧唱腔高亢激越,表演生活气息浓厚,喜剧色彩浓烈,擅长以夸张浪漫的手法表现人物。语言上使用四川方言,通俗易懂,幽默风趣。",
+    "heritage": "川剧于 2006 年入选第一批国家级非物质文化遗产名录。近年来,四川省川剧院、成都市川剧院等院团持续开展传承工作,设立传习基地,培养青年演员。代表人物有陈智林、沈铁梅、陈巧茹等名家,他们长期活跃于舞台并致力教学传承。同时通过'戏曲进校园'、新媒体短视频等方式让更多年轻人认识川剧。但仍面临人才断层、观众老龄化等挑战,亟需社会各界共同守护这一巴蜀文化瑰宝。",
+    "classicPlaysIntro": "川剧剧目繁多,早有\"唐三千,宋八百,数不完的三列国\"之说。其中要以高腔部分的遗产最为丰富,艺术特色亦最显著,传统剧目有\"五袍\"(《青袍记》《黄袍记》《白袍记》《红袍记》《绿袍记》)、\"四柱\"(《碰天柱》《水晶柱》《炮烙柱》《五行柱》),以及\"江湖十八本\"等,还有川剧界公认的\"四大本头\"(《琵琶记》《金印记》《红梅记》《投笔记》),不少为其他剧种失传的剧目。",
+    "classicPlays": [
+      {"title": "白蛇传",       "desc": "川剧神话大戏之首,《金山寺》一折变脸吐火精彩纷呈,白素贞与许仙的爱情故事家喻户晓。"},
+      {"title": "空城计",       "desc": "三国戏代表,诸葛亮城楼抚琴退司马,须生唱功与做派并重,二黄唱腔沉稳大气。"},
+      {"title": "滚灯",         "desc": "灯戏喜剧之王,头顶油灯翻跌扑舞,技与戏浑然一体,最能体现川剧喜剧精神。"},
+      {"title": "姚安杀妻",     "desc": "胡琴传统骨子老戏,书生杀妻另娶,跌宕剧情与胡琴弹戏声腔相融,表演张力极强。"},
+      {"title": "离恨天·审",   "desc": "近年新编剧目精品,以鬼神审人间,唱词典雅身段繁复,现代舞台审美与传统结合。"},
+      {"title": "拉郎配",       "desc": "川剧独有讽刺喜剧,皇帝选妃催生民间姻缘闹剧,包袱叠出一唱三叹,乡土气息浓厚。"},
+      {"title": "三岔口",       "desc": "武戏短打经典,黑夜摸黑搏斗全靠身段演绎无声之战,武生武丑功底试金石。"},
+      {"title": "琵琶记·四大本头","desc": "川剧\"四大本头\"之首(琵琶记、金印记、红梅记、投笔记),多为高腔演出,其他剧种已失传或罕见。"},
+      {"title": "玉簪记",       "desc": "传统喜剧,道姑陈妙常与潘必正琴挑情愫,唱腔细腻婉转,高腔帮腔极有意境。"}
+    ]
+  },
+  "fiveTones": [
+    {
+      "key": "gaoqiang",
+      "name": "高腔",
+      "subtitle": "川剧最重要的声腔",
+      "icon": "🎵",
+      "color": "#C41E3A",
+      "image": "https://via.placeholder.com/300x200/C41E3A/FFFFFF?text=高腔",
+      "audio": "audio/gaoqiang.mp3",
+      "instrument": "锣鼓 + 唢呐",
+      "feature": "无伴奏干唱,一唱众和",
+      "desc": "高腔是川剧中最重要的一种声腔,明末清初从外地传入四川,结合四川方言、民间歌谣、劳动号子、发问说唱等形式,逐步形成了具有地方特色的声腔音乐。",
+      "detail": [
+        { "title": "曲牌结构", "text": "川剧高腔是曲牌体音乐,曲牌数量众多、形式复杂。结构基本可概括为:起腔、立柱、唱腔、扫尾。" },
+        { "title": "帮打唱一体", "text": "高腔最主要的特点是没有乐器伴奏的干唱,即所谓'一唱众和'的徒歌形式,以帮打唱为一体。有的曲牌帮腔多于唱腔,有的基本全部都是帮腔,有的只在首尾两句有帮腔,具体形式由剧目决定。" },
+        { "title": "艺术风格", "text": "川剧高腔保留了南曲和北曲的优秀传统,兼有高亢激越和婉转抒情的唱腔曲调。" }
+      ]
+    },
+    {
+      "key": "kunqiang",
+      "name": "昆腔",
+      "subtitle": "典雅婉转的文人之声",
+      "icon": "🏮",
+      "color": "#6B2D8C",
+      "image": "https://via.placeholder.com/300x200/6B2D8C/FFFFFF?text=昆腔",
+      "audio": "audio/kunqiang.mp3",
+      "instrument": "笛子 + 苏钹",
+      "feature": "字正腔圆,格律规严",
+      "desc": "昆腔多文人之作,词白典雅,格律规严,演唱时特别讲究字正腔圆,加之曲牌曲折、节奏缓慢。川昆源于苏昆,艺人往往只选取昆曲中某些曲牌或唱句,插入其它声腔中演唱。",
+      "detail": [
+        { "title": "曲牌结构", "text": "川剧昆腔的曲牌结构与母体'苏昆'基本相同。应用时有'单支'和'成堂'两种形式。" },
+        { "title": "现状", "text": "以昆腔单一声腔形式演出的剧目已经不多了,更多是溶于高腔、胡琴、弹戏诸声腔之中,或与其它声腔共和。" },
+        { "title": "伴奏乐器", "text": "昆腔的主奏乐器是笛子。伴奏锣鼓及方式与其余高、胡、弹、灯诸声腔相同,以大锣敲边和苏钹二件乐器的特殊单色构成锣鼓的'苏味'来区别于其它声腔的锣鼓伴奏。" }
+      ]
+    },
+    {
+      "key": "huqin",
+      "name": "胡琴",
+      "subtitle": "二黄与西皮的统称",
+      "icon": "🎻",
+      "color": "#8B6B4A",
+      "image": "https://via.placeholder.com/300x200/D4AF37/1A1A1A?text=胡琴",
+      "audio": "audio/huqin.mp3",
+      "instrument": "小胡琴 + 月琴",
+      "feature": "咿唔如话,善于抒情",
+      "desc": "胡琴是二黄与西皮腔的统称,因其主要伴奏乐器是'小胡琴'而得名。约在乾隆年间形成,蜀伶新出琴腔,'其器不用笙笛,以胡琴为主,月琴应之,工尺咿唔如话'。",
+      "detail": [
+        { "title": "二黄腔", "text": "二黄包括正调(二黄)、阴调(反二黄)、老调三类基本腔。正调善于表现深沉、严肃、委婉和轻快的情绪;反二黄宜表现苍凉、凄苦、悲愤的情绪;老调则大多用于高亢、激昂的情绪。" },
+        { "title": "西皮腔", "text": "西皮腔与二黄腔的音乐性格相反,具有明朗、潇洒、激越、简练、流畅的品格。西皮、二黄多为单独使用,但也有不少剧目同时包纳二种声腔。" }
+      ]
+    },
+    {
+      "key": "tanxi",
+      "name": "弹戏",
+      "subtitle": "源自秦腔的川梆子",
+      "icon": "🥁",
+      "color": "#2E8B57",
+      "image": "https://via.placeholder.com/300x200/2E8B57/FFFFFF?text=弹戏",
+      "audio": "audio/tanxi.mp3",
+      "instrument": "盖板胡琴",
+      "feature": "盖板胡琴伴奏,甜苦分明",
+      "desc": "川剧弹戏是用盖板胡琴为主要伴奏乐器演唱的戏曲声腔,源自陕西秦腔,属梆子系统,因此又有'川梆子'之称。虽源于秦腔,但结合四川地方语言,经过长期衍变,已形成自己独特的艺术风格。",
+      "detail": [
+        { "title": "甜平 vs 苦平", "text": "弹戏包括情绪完全不同的两类曲调:长于表现喜感情的叫'甜平'(又称甜品、甜皮、甜腔);善于表现悲感情的叫'苦平'(又称苦品、苦皮)。它们具有相对独立性,但调式、板别、结构都是相同的,曲调骨架都一样。" },
+        { "title": "渊源", "text": "尽管弹戏与秦腔的关系不是相当接近,但从曲调结构、调式特点以及整个唱腔的韵味等方面分析,均可找到它们之间的渊源。" }
+      ]
+    },
+    {
+      "key": "dengdiao",
+      "name": "灯调",
+      "subtitle": "四川民间小调",
+      "icon": "🏮",
+      "color": "#E5B500",
+      "image": "https://via.placeholder.com/300x200/E5B500/1A1A1A?text=灯调",
+      "audio": "audio/dengdiao.mp3",
+      "instrument": "胖筒筒 + 花灯",
+      "feature": "短小活泼,生活气息浓",
+      "desc": "灯戏源于四川民间迎神赛社时的歌舞表演,是古代川蜀传统灯会的产物。所演为生活小戏,所唱为民歌小调、村坊小曲,体现了四川当地浓烈的生活气息。",
+      "detail": [
+        { "title": "声腔特点", "text": "灯戏声腔的特点是:乐曲短小,节奏鲜明,轻松活泼,旋律明快,具有浓厚的四川地方风味。" },
+        { "title": "主要曲调", "text": "灯调声腔主要由'胖筒筒'、发间小曲和'神歌腔'组成。灯戏伴奏的'胖筒筒',是一种比二胡杆粗、筒身大、声音略带'嗡'声的琴。" }
+      ]
+    }
+  ],
+  "fourTechniques": [
+    {
+      "key": "faceChange",
+      "name": "变脸",
+      "subtitle": "川剧最具代表性的绝活",
+      "icon": "🎭",
+      "color": "#C41E3A",
+      "media": "images/stunt_bian_lian.jpg",
+      "mediaPlaceholder": "https://via.placeholder.com/400x250/C41E3A/FFFFFF?text=变脸动图",
+      "video": "https://www.bilibili.com/video/BV1Q34y1h7PV/",
+      "desc": "变脸是川剧最具代表性的绝活,演员通过特制脸谱与机关,在极短时间内(最快可达 1/10 秒)完成脸谱更换,用以展现人物情绪的瞬间变化。",
+      "detail": [
+        { "title": "历史源流", "text": "变脸最早用于神话剧《归正楼》,用于表现角色身份突变。早期只有'抹脸'一种技法,后来发展出吹脸、扯脸等多种手法。" },
+        { "title": "主要手法", "text": "抹脸:演员预先在脸上涂抹油彩,表演时用手快速均匀涂抹;吹脸:演员用嘴吹起藏在碗或盘中的金粉、银粉或颜料;扯脸:将预先画好的多张脸谱叠挂在脸上,用机关线扯下一张张。" },
+        { "title": "艺术价值", "text": "变脸是国家级非物质文化遗产,是川剧的灵魂与招牌,20 世纪 80 年代后经彭登怀等大师创新,已发展到可在 1/10 秒内变一张脸。" }
+      ]
+    },
+    {
+      "key": "spitFire",
+      "name": "吐火",
+      "subtitle": "惊险刺激的视觉奇观",
+      "icon": "🔥",
+      "color": "#E5783A",
+      "media": "images/stunt_tu_huo.jpg",
+      "mediaPlaceholder": "https://via.placeholder.com/400x250/E5783A/FFFFFF?text=吐火动图",
+      "video": "https://www.bilibili.com/video/BV1sr4y1b7Tt/",
+      "desc": "吐火是川剧特技之一,演员口中藏有松香、桐油等易燃物,表演时喷洒点燃,形成烈焰喷射的壮观场面,常用于神怪剧目中的妖魔鬼怪形象。",
+      "detail": [
+        { "title": "表演方式", "text": "演员将松香粉或桐油含在口中,适时喷出,同时配合舞台灯光与道具火把,形成'火龙'效果。有的演员还能吐出连环火、抛物线火等高难度动作。" },
+        { "title": "经典剧目", "text": "吐火多见于《白蛇传》中的青蛇、《火焰山》中的牛魔王等神怪角色,是营造神秘氛围的重要手段。" },
+        { "title": "安全保障", "text": "吐火对演员的口腔保护和时机把控要求极高,稍有不慎便会灼伤,因此传承难度大,会此绝技的演员已不多见。" }
+      ]
+    },
+    {
+      "key": "rollLamp",
+      "name": "滚灯",
+      "subtitle": "滑稽幽默的头顶绝技",
+      "icon": "💡",
+      "color": "#E5B500",
+      "media": "images/stunt_gun_deng.jpg",
+      "mediaPlaceholder": "https://via.placeholder.com/400x250/E5B500/1A1A1A?text=滚灯动图",
+      "video": "https://www.bilibili.com/video/BV1FY4y1k7qE/",
+      "desc": "滚灯是川剧灯戏中的特技,演员头顶油灯,在保持灯不灭、油不洒的前提下翻滚跌扑,表演各种滑稽动作,具有浓厚的民间生活气息。",
+      "detail": [
+        { "title": "表演形式", "text": "演员将碗形油灯顶在头上,油灯深约一寸,燃灯油。表演中需完成翻跟斗、扑地、旋转变向等动作,灯不灭、油不洒即为成功。" },
+        { "title": "经典剧目", "text": "滚灯的经典剧目是《滚灯》,讲述小丈夫被妻子罚跪顶灯的故事,表演充满喜剧色彩,将生活情趣与特技融为一体。" },
+        { "title": "传承意义", "text": "滚灯体现了川剧源于民间、服务民间的特点,是川剧喜剧精神的生动载体。" }
+      ]
+    },
+    {
+      "key": "kickEye",
+      "name": "踢慧眼",
+      "subtitle": "点睛之笔的瞬间绝技",
+      "icon": "👁️",
+      "color": "#1E5AA8",
+      "media": "images/stunt_ti_huiyan.jpg",
+      "mediaPlaceholder": "https://via.placeholder.com/400x250/1E5AA8/FFFFFF?text=踢慧眼动图",
+      "video": "https://www.bilibili.com/video/BV1qt4y1x7Kd/",
+      "desc": "踢慧眼是川剧独特的特技,演员在表演中用脚将额头上的一张金箔'慧眼'贴稳,整个过程瞬间完成,干净利落,常用于神仙、高僧、武将等角色的点睛时刻。",
+      "detail": [
+        { "title": "表演技巧", "text": "演员需在表演中腾挪闪转、起腿踢踏,将预先放在靴尖的金箔准确踢到额头上,贴正贴稳,整套动作一气呵成。" },
+        { "title": "象征意义", "text": "踢慧眼象征角色'开天眼'、显神通,是川剧浪漫主义表演风格的典型体现,与变脸、吐火并称为川剧三大绝活。" },
+        { "title": "代表剧目", "text": "多见于《目连传》中的目连、《封神榜》中的二郎神等神话角色。" }
+      ]
+    }
+  ],
+  "maskPatterns": [
+    {"name": "整脸",     "image": "images/pattern_zheng_lian.jpg",     "intro": "全脸涂一种主色,仅以眉眼简单勾勒,色彩单纯,一目了然,多用于区分善恶正邪。", "detail": "整脸是川剧脸谱中最基础、最古老的谱式之一。演员只用一种纯色铺满面部(如红脸关羽、包拯的黑整脸),然后在眉眼处做出最简单的黑色勾画。因为色彩统一、没有多余花纹,人物性格直接由颜色表达,是所有脸谱谱式的'母体'。典型人物如关羽整脸表示忠义、赵匡胤整红脸红须代表帝王豪气。"},
+    {"name": "三块瓦脸", "image": "images/pattern_san_kuai_wa.jpg", "intro": "以鼻梁为界,左右两颊及额头各成一块,三色分明、层次清晰,是川剧中最为常见的谱式之一。", "detail": "三块瓦脸因其面部色彩分布酷似三片屋瓦而得名。通常以主色铺满额头和左右两颊共三块区域,用黑色线条勾出额区、颊区与鼻眼的分界,如同三片瓦叠放于脸上。该谱式辨识度高、层次分明,既可表现正面人物也可表现反面,比如姜维红三块瓦示忠勇、曹操的水白三块瓦示奸雄。"},
+    {"name": "十字门脸", "image": "images/pattern_shi_zi_men.jpg", "intro": "从脑门到鼻尖画一竖线,双目之间画一横线,呈'十'字形,庄重威严,常用于高层将帅或帝王。", "detail": "十字门脸的典型特征是在额上到鼻尖拉一整条粗黑竖线(天中到地阁),双眼之间横贯一条粗黑横线,两者交叉形成一个庄严的'十'字。因为线条雄浑、构图肃穆,这种谱式最适合表现位高权重、气度沉稳的角色,如廉颇、姚期等老将或尉迟恭这类重臣。面部主色可红可黑,十字永远为黑,以庄重为第一要义。"},
+    {"name": "碎脸",     "image": "images/pattern_sui_lian.jpg",     "intro": "线条繁杂、色彩丰富,纹饰细碎密集,多用于妖怪、绿林豪杰或性格怪诞之人。", "detail": "碎脸是川剧脸谱中最花哨、最具想象力的谱式。各种纹样——金钱纹、火焰纹、云纹、八卦、花鸟鱼虫——都能被艺术家信手拈来,密密麻麻地铺在脸上,颜色可以用到三四层以上。孙悟空的猴脸、各种鬼怪、绿林好汉都用碎脸来表达他们的非常规与桀骜不驯。碎脸的极致是'象形脸',干脆直接把动物图案画在演员脸上。"},
+    {"name": "歪脸",     "image": "images/pattern_wai_lian.jpg",     "intro": "五官不对称,左右歪斜,表现性格古怪、品行不端的人物,是丑行和净行的特色谱式。", "detail": "歪脸的核心是'不对称':一边眉高一边眉低,一边眼大一边眼小,嘴巴向旁边歪,左右两颊的颜色甚至都不一样。这种视觉上的扭曲直接向观众传递角色的扭曲心理——品行不端、怪癖邪恶的奸邪小人或者相貌吓人的丑角都用歪脸。最典型的是《十五贯》里的娄阿鼠,眉眼歪斜、嘴角歪扯,一看就是鼠辈小人。"},
+    {"name": "象形脸",   "image": "images/pattern_xiang_xing.jpg",   "intro": "以动物形象为蓝本,如孙悟空的猴脸、二郎神的神将脸,造型夸张、最具戏剧张力。", "detail": "象形脸是川剧脸谱中最具浪漫夸张色彩的谱式,它直接以某种动物或神仙形象为'模特',把特征夸张地画在演员脸上。孙悟空的金猴脸(金额、猴腮、火眼金睛)、钟馗的蝙蝠脸谱(额头上一只蝙蝠意喻'福到')、二郎神的三眼神将脸(额上多出一只神眼)都是典型代表。它结合了碎脸的繁复和整脸的主色,是川剧脸谱艺术想象力的巅峰。"}
+  ],
+  "faceChangeMethods": [
+    {"name": "抹脸", "desc": "演员将脸谱颜料预先抹在面部或道具上,演出时以手一抹,瞬间变色。"},
+    {"name": "吹脸", "desc": "将粉末状脸谱藏于器皿之中,演员靠近吹气,粉末附面而成新脸。"},
+    {"name": "扯脸", "desc": "将多层薄脸谱叠戴于面,层层揭扯,是变脸最常见的手法,讲究快、准、稳。"},
+    {"name": "其他方式", "desc": "如运气变脸、机械机关变脸等,手法神秘、师徒口传心授,不轻易外传。"}
+  ],
+  "faq": [
+    {"question": "川剧是什么时候形成的?", "answer": "川剧形成于清代乾隆年间(约 18 世纪中叶),由昆腔、高腔、胡琴腔、弹戏和四川灯戏五种声腔在四川地区长期融合而成,流行于四川、重庆及云贵部分地区。"},
+    {"question": "变脸的原理是什么?", "answer": "变脸是川剧最具代表性的绝活,演员通过特制脸谱与机关(如扯线脸谱、拉线面具),在极短时间内(最快可达 1/10 秒)完成脸谱更换,用以展现人物情绪的瞬间变化。手法讲究快、准、稳,是国家级非物质文化遗产。"},
+    {"question": "川剧有哪些唱腔?", "answer": "川剧有'五腔共和'之称,包括昆腔(昆曲)、高腔(川调高腔,以帮腔著称)、胡琴(皮黄腔系)、弹戏(梆子腔)、灯调(四川民间灯戏)。五种声腔各具特色,可同台演出。"},
+    {"question": "川剧的脸谱颜色有什么含义?", "answer": "川剧脸谱以颜色暗示性格,共 8 种主色:红色代表忠诚勇敢,黑色代表公正刚毅,白色代表奸诈狡猾,蓝色代表刚直勇敢,绿色代表鲁莽冲动,黄色代表骁勇善战,紫色代表智勇刚毅,粉色代表年老或工于心计。"},
+    {"question": "川剧有哪些经典剧目?", "answer": "川剧经典剧目丰富,代表作有《白蛇传》《变脸》《巴山秀才》《玉簪记》《拉郎配》《三岔口》《金山寺》等,既有传统折子戏,也有新编现代戏。"}
+  ],
+  "presetQuestions": [
+    "川剧是什么时候形成的?",
+    "变脸的原理是什么?",
+    "川剧有哪些唱腔?",
+    "川剧的脸谱颜色有什么含义?",
+    "川剧有哪些经典剧目?"
+  ]
+}
