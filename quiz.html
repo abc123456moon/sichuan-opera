@@ -15,7 +15,7 @@
       <!-- 全屏封面图 -->
       <div class="cover-fullimg">
         <div class="cover-fallback" id="coverFallback" style="display:none;"></div>
-        <img src="images/game_cover.png" alt="后台一夜封面" class="cover-img"
+        <img src="images/game_cover.jpg" alt="后台一夜封面" class="cover-img"
              onerror="this.style.display='none';document.getElementById('coverFallback').style.display='block';" />
       </div>
       <div class="cover-shade"></div>
@@ -49,7 +49,7 @@
     <div class="game-scene" id="scene-stage" data-scene="stage">
       <div class="game-stage-bg" id="stageBg">
         <div class="stage-bg-fallback" id="stageBgFallback" style="display:none;"></div>
-        <img src="images/game_stage_bg.png" alt="后台场景" class="stage-bg-img"
+        <img src="images/game_stage_bg.jpg" alt="后台场景" class="stage-bg-img"
              onerror="this.style.display='none';document.getElementById('stageBgFallback').style.display='block';" />
       </div>
 
@@ -531,7 +531,7 @@
       },
 
       // ===== 舞台背景切换 =====
-      // 关卡操作时换专属背景（如 images/level1_bg.png），缺失自动回退默认后台图
+      // 关卡操作时换专属背景（如 images/level1_bg.jpg），缺失自动回退默认后台图
       setStageBg: function (src) {
         var img = document.querySelector("#stageBg .stage-bg-img");
         if (!img) return;
@@ -544,7 +544,7 @@
           };
           img.onerror = function () {
             img.onerror = null;
-            img.src = "images/game_stage_bg.png";
+            img.src = "images/game_stage_bg.jpg";
           };
           // 加时间戳破缓存，替换图片后刷新必生效
           img.src = src + (src.indexOf("?") > -1 ? "&" : "?") + "t=" + Date.now();
@@ -838,7 +838,7 @@
       startLevel1: function () {
         this.updateProgress(1);
         this._praiseIdx = 0; // 赞许语从第一句开始
-        this.setStageBg("images/level1_bg.png"); // 脸谱配对专属背景
+        this.setStageBg("images/level1_bg.jpg"); // 脸谱配对专属背景
         var container = $("level1");
         // 隐藏其他关卡
         ["level2","level3","level4"].forEach(function (id) { $(id).classList.remove("active"); });
@@ -996,7 +996,7 @@
       _level1Complete: function () {
         $("level1").classList.remove("active");
         var self = this;
-        this.setStageBg("images/game_stage_bg.png"); // 对话时恢复后台背景
+        this.setStageBg("images/game_stage_bg.jpg"); // 对话时恢复后台背景
         this.showChars("normal", "normal");
         this.showDialogue([
           { name: "周师傅", text: "不错，脸谱认得了。八色脸谱，各有脾气，你都配对了。" },
@@ -1009,7 +1009,7 @@
       // ===== 第二关：案前勾脸（四步渐进：定谱式→定主色→勾纹样→点染） =====
       _startLevel2Dialogue: function () {
         var self = this;
-        this.setStageBg("images/level2_bg.png"); // 勾脸专属背景（第一关过渡对话结束后切换）
+        this.setStageBg("images/level2_bg.jpg"); // 勾脸专属背景（第一关过渡对话结束后切换）
         this.hideChars(); // 进入第二关：师徒立绘不出现，交代话以旁白形式交代
         this.showDialogue([
           { name: "周师傅", text: "坐到勾脸案前。勾脸讲究循序渐进，一共四步：先定谱式，再定主色，然后勾纹样，最后点染细节。" },
@@ -1757,7 +1757,7 @@
 
       startLevel3: function () {
         this.updateProgress(3);
-        this.setStageBg("images/level3_bg.png"); // 听辨专属背景（缺失自动回退当前背景）
+        this.setStageBg("images/level3_bg.jpg"); // 听辨专属背景（缺失自动回退当前背景）
         var container = $("level3");
         ["level1","level2","level4"].forEach(function (id) { $(id).classList.remove("active"); });
         container.classList.add("active");
@@ -1919,7 +1919,7 @@
 
       startLevel4: function () {
         this.updateProgress(4);
-        this.setStageBg("images/level4_bg.png"); // 登台专属背景（缺失自动回退当前背景）
+        this.setStageBg("images/level4_bg.jpg"); // 登台专属背景（缺失自动回退当前背景）
         var container = $("level4");
         ["level1","level2","level3"].forEach(function (id) { $(id).classList.remove("active"); });
         container.classList.add("active");
@@ -1986,10 +1986,10 @@
       // ===== 通关 =====
       showEnding: function () {
         this.goToScene("ending");
-        this.setStageBg("images/level4_bg.png"); // 舞台底图同步（再玩一次回到舞台时保持一致）
+        this.setStageBg("images/level4_bg.jpg"); // 舞台底图同步（再玩一次回到舞台时保持一致）
         // 通关场景在 scene-stage 之外（stageBg 随舞台场景一起隐藏），需自带与登台相同的背景照片
         $("scene-ending").style.background =
-          'linear-gradient(rgba(20,12,8,0.55), rgba(20,12,8,0.78)), url("images/level4_bg.png") center/cover no-repeat';
+          'linear-gradient(rgba(20,12,8,0.55), rgba(20,12,8,0.78)), url("images/level4_bg.jpg") center/cover no-repeat';
         var role = this._selectedRole;
         var col = this.paintColor;
         var text = this.playerName + "，你完成了「后台一夜」的全部四关。\n" +
