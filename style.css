@@ -6293,7 +6293,7 @@ body.kb-page .knowledge-block.mask-peel-block {
   letter-spacing: 1px; margin: 0 0 14px;
   font-family: "KaiTi","楷体",serif;
 }
-.drum-game { max-width: 600px; margin: 0 auto; }
+.drum-game { max-width: 680px; margin: 0 auto; }
 .drum-pattern-name {
   text-align: center; margin-bottom: 14px;
 }
@@ -6342,12 +6342,12 @@ body.kb-page .knowledge-block.mask-peel-block {
   border-color: rgba(139,195,74,0.3);
 }
 .drum-instruments {
-  display: flex; justify-content: center; gap: 14px;
+  display: flex; justify-content: center; gap: 20px;
   flex-wrap: wrap; margin-bottom: 16px;
 }
 .drum-pad {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  width: 120px; height: 120px; padding: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  width: 152px; height: 152px; padding: 14px;
   border: 2px solid rgba(92,58,14,0.4); border-radius: 16px;
   background: rgba(255,253,247,0.8);
   cursor: pointer; transition: all 0.15s; outline: none;
@@ -6357,14 +6357,17 @@ body.kb-page .knowledge-block.mask-peel-block {
 .drum-pad-name {
   font-size: 18px; color: #5C3A0E;
   font-family: "KaiTi","楷体",serif; font-weight: bold;
+  line-height: 1.2;
 }
 .drum-pad-note {
   font-size: 13px; color: #8B6914; opacity: 0.85;
   font-family: "KaiTi","楷体",serif;
+  line-height: 1.2;
 }
 .drum-pad-key {
   font-size: 12px; color: #A0522D; opacity: 0.7;
   background: rgba(160,82,45,0.12); border-radius: 4px; padding: 2px 8px;
+  line-height: 1.2;
 }
 .drum-pad.flash-hit {
   background: rgba(139,195,74,0.3); border-color: #8BC34A;
@@ -6423,10 +6426,12 @@ body.kb-page .knowledge-block.mask-peel-block {
   border-top: 1px dashed rgba(92,58,14,0.25);
 }
 @media (max-width: 768px) {
-  .drum-pad { width: 96px; height: 96px; padding: 10px; }
+  .drum-pad { width: 108px; height: 108px; padding: 8px; gap: 5px; }
   .drum-pad-icon { font-size: 28px; }
   .drum-pad-name { font-size: 15px; }
-  .drum-pad-note { font-size: 11px; }
+  .drum-pad-note { font-size: 10px; }
+  .drum-pad-key { font-size: 10px; padding: 1px 6px; }
+  .drum-instruments { gap: 12px; }
   .drum-note { width: 32px; height: 46px; font-size: 16px; }
   .drum-notation { gap: 5px; padding: 14px 10px; }
 }
