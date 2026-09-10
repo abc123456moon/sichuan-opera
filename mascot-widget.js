@@ -190,22 +190,11 @@
   function parseActionCommand(text) {
     text = (text || "").trim().toLowerCase();
     var clean = text.replace(/[?,。,.!！?]/g, "");
-    var isQuestion = /原理|是什么|是什么意思|怎么|怎样|如何|介绍|历史|起源|来历|含义|意思|代表|区别|种类|哪些|特点|讲讲|说说|解释|为什么|为何|背景|故事|由来/.test(clean);
-    if (!isQuestion && /(^变脸$|表演.*变脸|变脸.*表演|来个变脸|变一个脸|变脸看看|给我变脸|变脸吧|看.*变脸|变脸.*看看)/.test(clean)) {
-      return { type: "skill", skill: "faceChange", reply: "🎭 来啦!看我看我——变!" };
-    }
-    // 吐火/喷火特效已取消,此类问题正常发给 AI
-    if (!isQuestion && /(^水袖$|甩.*水袖|水袖.*甩|表演.*水袖|水袖.*表演|来个水袖|水袖看看|给我水袖|水袖吧|看.*水袖|水袖.*看看|甩个袖|甩袖吧)/.test(clean)) {
-      return { type: "skill", skill: "waterSleeve", reply: "💫 水袖轻扬——飘~" };
-    }
     if (/跳舞|跳一下|跳个舞|蹦一下|跳跃|跳一个/.test(clean)) {
       return { type: "mood", mood: "happy", reply: "💃 嘿嘿~川小旦给你跳一个!" };
     }
     if (/^(你好|哈喽|hello|hi|嗨|在吗|你在吗|打招呼)/.test(clean)) {
       return { type: "mood", mood: "happy", reply: "👋 哎呀你来啦!我是川小旦,问我川剧的事儿嘛~" };
-    }
-    if (!isQuestion && /(^绝活$|^绝技$|表演绝活|来个绝活|来一段绝活|表演一下|来一个绝活|show一个|来个绝技|表演一个)/.test(clean)) {
-      return { type: "skill", skill: null, reply: "🎪 好嘞!给你来一段绝活!" };
     }
     return null;
   }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>川剧百科 · 川剧文化小站</title>
-  <link rel="stylesheet" href="style.css?v=100" />
+  <link rel="stylesheet" href="style.css?v=104" />
 </head>
 <body class="kb-page" data-mood="wood">
   <!-- 舞台底板:情绪色 + 金色织锦暗纹 + 追光(内容之下,固定不动) -->
@@ -33,7 +33,7 @@
       <p>点击戏台上的红色光点,探索川剧的历史脉络。</p>
       <div class="theater-scene" id="theaterScene">
         <!-- 背景图(不存在则灰色占位) -->
-        <img class="theater-bg" src="images/bg_old_theater.jpg" alt="老式川剧戏园" onerror="this.style.display='none';this.parentElement.classList.add('no-bg');" />
+        <img class="theater-bg" src="images/bg_old_theater.jpg" alt="老式川剧戏园" loading="lazy" onerror="this.style.display='none';this.parentElement.classList.add('no-bg');" />
         <div class="theater-overlay"></div>
         <!-- 5 个热区(从上到下按戏台空间顺序排列) -->
         <div class="hotspot" style="top:22%;left:50%;" data-card="0">
@@ -388,7 +388,7 @@
         <div class="role-plaque-line"></div>
         <span class="role-plaque-nail"></span>
       </div>
-      <p>川剧变脸手法神秘,主要有以下四种方式,以"扯脸"最为常见。</p>
+      <p>川剧变脸手法神秘,主要有以下五种方式,以"扯脸"最为常见,"回脸"为变脸之逆技。</p>
       <div class="method-grid" id="methodGrid"></div>
     </div>
 
@@ -458,8 +458,8 @@
     <p>川剧文化小站 · 仅供学习交流使用</p>
   </footer>
 
-  <script src="app.js?v=20260909a"></script>
-  <script src="mascot-widget.js?v=3"></script>
+  <script src="app.js?v=20260910a"></script>
+  <script src="mascot-widget.js?v=4"></script>
   <script>
     (function () {
       SCU.renderNav("knowledge");
@@ -1209,7 +1209,6 @@
                   '<div class="flip-back-char">' + m.character + '</div>' +
                   (m.bio ? '<p class="flip-back-bio">' + m.bio + '</p>' : '') +
                   (m.aria ? '<div class="flip-back-aria">' + m.aria + '</div>' : '') +
-                  '<span class="flip-hint">点击返回</span>' +
                 '</div>' +
               '</div>' +
             '</div>';
@@ -1355,15 +1354,17 @@
         idxEl.textContent = "1";
         document.querySelector("#patternTabs .pattern-tab").classList.add("active");
 
-        // 模块 6:变脸方式(4 种)
-        var methodIcons = ["🤚","💨","🪶","✨"];
+        // 模块 6:变脸方式(5 种)
+        var methodIcons = ["🤚","💨","🪶","🔄","✨"];
         document.getElementById("methodGrid").innerHTML = data.faceChangeMethods.map(function (m, i) {
+          var hasVideo = m.video && m.video !== "#";
           return '' +
             '<div class="method-card">' +
               '<div class="method-icon">' + methodIcons[i % methodIcons.length] + '</div>' +
               '<div class="method-body">' +
                 '<strong>' + m.name + '</strong>' +
                 '<p>' + m.desc + '</p>' +
+                (hasVideo ? '<a href="' + m.video + '" target="_blank" rel="noopener noreferrer" class="method-video-link">▶ 观看视频</a>' : '') +
               '</div>' +
             '</div>';
         }).join("");

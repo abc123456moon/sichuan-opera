@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI 问答 · 川剧文化小站</title>
-  <link rel="stylesheet" href="style.css?v=94" />
+  <link rel="stylesheet" href="style.css?v=96" />
 </head>
 <body class="kb-page kb-chat" data-mood="lobby">
   <!-- 舞台底板:与知识页/演出页同体系(追光+暗纹+暖底),最亮一档:戏园堂厢 -->
@@ -49,7 +49,7 @@
           <!-- SVG 兜底 -->
           <div class="mascot-wrap mascot-bounce" id="mascotWrapFallback" style="display:none;width:120px;height:160px;"></div>
           <!-- 点击提示 -->
-          <div class="mascot-tap-hint" id="tapHint">👆 点我看绝活!</div>
+          <div class="mascot-tap-hint" id="tapHint" style="display:none;">👆 点我看绝活!</div>
         </div>
         <!-- 表情状态指示 -->
         <div class="mascot-mood-label" id="moodLabel">你好</div>
@@ -91,7 +91,7 @@
     <p>川剧文化小站 · AI 问答</p>
   </footer>
 
-  <script src="app.js?v=20260909a"></script>
+  <script src="app.js?v=20260910a"></script>
   <script>
     (function () {
       SCU.renderNav("aichat");
@@ -300,10 +300,6 @@
         tapHint.style.display = 'none';
       }
 
-      mascotContainer.addEventListener('click', function () { playSkill(); });
-      // 5 秒后自动隐藏点击提示
-      setTimeout(function () { tapHint.style.opacity = '0'; tapHint.style.transition = 'opacity 0.6s'; }, 5000);
-
       // ===== 指令识别:让川小旦做动作 =====
       // 返回 {type, skill, reply} 或 null(非动作指令)
       // 注意:问句(含疑问词/求解释词)不拦截,正常发给 AI
@@ -313,15 +309,6 @@
         var clean = text.replace(/[?,。,.!！?]/g, '');
         // 疑问/求解释关键词 —— 含这些词的不拦截,发给 AI
         var isQuestion = /原理|是什么|是什么意思|怎么|怎样|如何|介绍|历史|起源|来历|含义|意思|代表|区别|种类|哪些|特点|讲讲|说说|解释|为什么|为何|背景|故事|由来/.test(clean);
-        // 变脸:只在祈使句(表演/来一个/变一个)或单纯"变脸"两字时触发
-        if (!isQuestion && /(^变脸$|表演.*变脸|变脸.*表演|来个变脸|变一个脸|变脸看看|给我变脸|变脸吧|看.*变脸|变脸.*看看)/.test(clean)) {
-          return { type: 'skill', skill: 'faceChange', reply: '🎭 来啦!看我看我——变!' };
-        }
-        // 吐火/喷火特效已取消,此类问题正常发给 AI
-        // 水袖
-        if (!isQuestion && /(^水袖$|甩.*水袖|水袖.*甩|表演.*水袖|水袖.*表演|来个水袖|水袖看看|给我水袖|水袖吧|看.*水袖|水袖.*看看|甩个袖|甩袖吧)/.test(clean)) {
-          return { type: 'skill', skill: 'waterSleeve', reply: '💫 水袖轻扬——飘~' };
-        }
         // 跳舞 / 跳一下
         if (/跳舞|跳一下|跳个舞|蹦一下|跳跃|跳一个/.test(clean)) {
           return { type: 'mood', mood: 'happy', reply: '💃 嘿嘿~川小旦给你跳一个!' };
@@ -329,10 +316,6 @@
         // 打招呼
         if (/^(你好|哈喽|hello|hi|嗨|在吗|你在吗|打招呼)/.test(clean)) {
           return { type: 'mood', mood: 'happy', reply: '👋 哎呀你来啦!我是川小旦,问我川剧的事儿嘛~' };
-        }
-        // 随机绝活
-        if (!isQuestion && /(^绝活$|^绝技$|表演绝活|来个绝活|来一段绝活|表演一下|来一个绝活|show一个|来个绝技|表演一个)/.test(clean)) {
-          return { type: 'skill', skill: null, reply: '🎪 好嘞!给你来一段绝活!' };
         }
         return null;
       }

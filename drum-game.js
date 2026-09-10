@@ -80,6 +80,62 @@
     return masterGain;
   }
 
+  // ===== 锣:优先使用用户上传的真实音频,找不到则回退合成音 =====
+  var gongBuffer = null;
+  var gongLoading = false;
+  function loadGongAudio() {
+    if (gongBuffer || gongLoading) return;
+    gongLoading = true;
+    var ctx = ensureAudio();
+    if (!ctx) { gongLoading = false; return; }
+    var req = new XMLHttpRequest();
+    req.open('GET', 'audio/gong.mp3', true);
+    req.responseType = 'arraybuffer';
+    req.onload = function () {
+      if (req.status >= 200 && req.status < 300) {
+        ctx.decodeAudioData(req.response, function (buf) {
+          gongBuffer = buf;
+          gongLoading = false;
+        }, function () { gongLoading = false; });
+      } else { gongLoading = false; }
+    };
+    req.onerror = function () { gongLoading = false; };
+    req.send();
+  }
+
+  // 播放锣:有真实音频用音频,否则合成
+  function playGong(ctx, master, now, vol, dest) {
+    var out = dest || master;
+    var softVol = vol * 0.6; // 降低音量,避免刺耳
+    if (gongBuffer) {
+      var src = ctx.createBufferSource();
+      src.buffer = gongBuffer;
+      var g = ctx.createGain();
+      // 淡入避免开头爆音,整体音量限制
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(softVol, now + 0.015);
+      g.gain.exponentialRampToValueAtTime(0.001, now + gongBuffer.duration);
+      // 低通滤波,去掉尖锐高频泛音,音色更圆润
+      var lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.setValueAtTime(4000, now);
+      src.connect(lp); lp.connect(g); g.connect(out);
+      src.start(now);
+    } else {
+      // 合成回退:方波 800Hz + 谐波
+      var o2 = ctx.createOscillator();
+      var g2 = ctx.createGain();
+      o2.type = 'square';
+      o2.frequency.setValueAtTime(800, now);
+      o2.frequency.setValueAtTime(740, now + 0.02);
+      g2.gain.setValueAtTime(0, now);
+      g2.gain.linearRampToValueAtTime(0.25 * softVol, now + 0.015);
+      g2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+      o2.connect(g2); g2.connect(out);
+      o2.start(now); o2.stop(now + 0.65);
+    }
+  }
+
   function playDrum(drum, volume) {
     var ctx = ensureAudio();
     if (!ctx) return;
@@ -88,24 +144,40 @@
     var vol = (volume === undefined) ? 1.0 : volume;
 
     if (drum === '鼓') {
+      // 主体:低频正弦波(75→40Hz),音量提高
       var o = ctx.createOscillator();
       var g = ctx.createGain();
-      o.frequency.setValueAtTime(75, now);
-      o.frequency.exponentialRampToValueAtTime(40, now + 0.15);
-      g.gain.setValueAtTime(0.6 * vol, now);
-      g.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      o.frequency.setValueAtTime(85, now);
+      o.frequency.exponentialRampToValueAtTime(42, now + 0.15);
+      g.gain.setValueAtTime(0.85 * vol, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
       o.connect(g); g.connect(master);
-      o.start(now); o.stop(now + 0.3);
+      o.start(now); o.stop(now + 0.32);
+      // 叠加:更低八度(42→20Hz),增加浑厚感
+      var oSub = ctx.createOscillator();
+      var gSub = ctx.createGain();
+      oSub.frequency.setValueAtTime(42, now);
+      oSub.frequency.exponentialRampToValueAtTime(20, now + 0.15);
+      gSub.gain.setValueAtTime(0.5 * vol, now);
+      gSub.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      oSub.connect(gSub); gSub.connect(master);
+      oSub.start(now); oSub.stop(now + 0.35);
+      // 冲击:短促噪声瞬态,模拟鼓槌击鼓面的"嘭"
+      var bs = ctx.sampleRate * 0.03;
+      var buf = ctx.createBuffer(1, bs, ctx.sampleRate);
+      var bd = buf.getChannelData(0);
+      for (var i = 0; i < bs; i++) bd[i] = (Math.random() * 2 - 1) * (1 - i / bs);
+      var noise = ctx.createBufferSource();
+      noise.buffer = buf;
+      var nf = ctx.createBiquadFilter();
+      nf.type = 'lowpass'; nf.frequency.value = 200;
+      var ng = ctx.createGain();
+      ng.gain.setValueAtTime(0.4 * vol, now);
+      ng.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      noise.connect(nf); nf.connect(ng); ng.connect(master);
+      noise.start(now); noise.stop(now + 0.05);
     } else if (drum === '锣') {
-      var o2 = ctx.createOscillator();
-      var g2 = ctx.createGain();
-      o2.type = 'square';
-      o2.frequency.setValueAtTime(800, now);
-      o2.frequency.setValueAtTime(740, now + 0.02);
-      g2.gain.setValueAtTime(0.25 * vol, now);
-      g2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-      o2.connect(g2); g2.connect(master);
-      o2.start(now); o2.stop(now + 0.65);
+      playGong(ctx, master, now, vol);
     } else if (drum === '钹') {
       var bufferSize = ctx.sampleRate * 0.3;
       var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -233,21 +305,23 @@
     if (drum === '鼓') {
       var o = ctx.createOscillator();
       var g = ctx.createGain();
-      o.frequency.setValueAtTime(75, now);
-      o.frequency.exponentialRampToValueAtTime(40, now + 0.15);
-      g.gain.setValueAtTime(0.6 * vol, now);
-      g.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      o.frequency.setValueAtTime(85, now);
+      o.frequency.exponentialRampToValueAtTime(42, now + 0.15);
+      g.gain.setValueAtTime(0.8 * vol, now);
+      g.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
       o.connect(g); g.connect(accompanimentGain);
-      o.start(now); o.stop(now + 0.3);
+      o.start(now); o.stop(now + 0.32);
+      // 低八度叠加
+      var oSub = ctx.createOscillator();
+      var gSub = ctx.createGain();
+      oSub.frequency.setValueAtTime(42, now);
+      oSub.frequency.exponentialRampToValueAtTime(20, now + 0.15);
+      gSub.gain.setValueAtTime(0.45 * vol, now);
+      gSub.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      oSub.connect(gSub); gSub.connect(accompanimentGain);
+      oSub.start(now); oSub.stop(now + 0.35);
     } else if (drum === '锣') {
-      var o2 = ctx.createOscillator();
-      var g2 = ctx.createGain();
-      o2.type = 'square';
-      o2.frequency.setValueAtTime(800, now);
-      g2.gain.setValueAtTime(0.25 * vol, now);
-      g2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-      o2.connect(g2); g2.connect(accompanimentGain);
-      o2.start(now); o2.stop(now + 0.65);
+      playGong(ctx, master, now, vol, accompanimentGain);
     } else if (drum === '钹') {
       var bufferSize = ctx.sampleRate * 0.3;
       var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
@@ -296,6 +370,7 @@
   // ===== 开始游戏 =====
   function startGame(level, trackIdx) {
     ensureAudio();
+    loadGongAudio(); // 预加载锣音频文件
     currentLevel = level;
     pattern = PATTERNS[level][trackIdx];
     step = 0;

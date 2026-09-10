@@ -434,9 +434,9 @@
       playTone(220, 0.18, "sawtooth", 0.15, 0);
       playTone(165, 0.35, "sawtooth", 0.15, 0.12);
     },
-    // 轻点按
+    // 轻点按(柔和正弦波,不刺耳)
     click: function () {
-      playTone(660, 0.05, "square", 0.08, 0);
+      playTone(440, 0.08, "sine", 0.06, 0);
     },
     // 变脸:上扬 whoosh
     faceChange: function () {

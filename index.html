@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>川剧文化小站 · 首页</title>
   <meta name="description" content="川剧文化小站 - 帮助你在 10 分钟内快速了解川剧核心特色和文化背景" />
-  <link rel="stylesheet" href="style.css?v=95" />
+  <link rel="stylesheet" href="style.css?v=97" />
+  <!-- 预加载首屏关键图片,加速首次渲染 -->
+  <link rel="preload" as="image" href="images/bg_opera_01.jpg" fetchpriority="high" />
+  <link rel="preload" as="image" href="images/logo_mask.png" fetchpriority="high" />
 </head>
 <body class="home-body">
   <!-- 开场帷幕动画 -->
@@ -55,10 +58,10 @@
         <img src="images/bg_opera_01.jpg" alt="川剧舞台一" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
       </div>
       <div class="carousel-slide" data-idx="1">
-        <img src="images/bg_opera_02.jpg" alt="川剧舞台二" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
+        <img src="images/bg_opera_02.jpg" alt="川剧舞台二" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
       </div>
       <div class="carousel-slide" data-idx="2">
-        <img src="images/bg_opera_03.jpg" alt="川剧舞台三" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
+        <img src="images/bg_opera_03.jpg" alt="川剧舞台三" loading="lazy" onerror="this.style.display='none';this.parentNode.classList.add('no-img');" />
       </div>
       <!-- 手动控制:左右箭头 -->
       <button class="carousel-arrow prev" id="carouselPrev" aria-label="上一张">‹</button>
@@ -130,8 +133,8 @@
     <p>© 2026 Sichuan Opera Mini Site · Powered by HTML5 + CSS3 + 原生 JS</p>
   </footer>
 
-  <script src="app.js?v=20260909a"></script>
-  <script src="mascot-widget.js?v=3"></script>
+  <script src="app.js?v=20260910a"></script>
+  <script src="mascot-widget.js?v=4"></script>
   <script>
     (function () {
       // ====== 首页轮播背景(自动 5s + 左右箭头 + 圆点 + 淡入淡出) ======

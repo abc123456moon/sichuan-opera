@@ -242,9 +242,10 @@
     {"name": "象形脸",   "image": "images/pattern_xiang_xing.jpg",   "intro": "以动物形象为蓝本,如孙悟空的猴脸、二郎神的神将脸,造型夸张、最具戏剧张力。", "detail": "象形脸是川剧脸谱中最具浪漫夸张色彩的谱式,它直接以某种动物或神仙形象为'模特',把特征夸张地画在演员脸上。孙悟空的金猴脸(金额、猴腮、火眼金睛)、钟馗的蝙蝠脸谱(额头上一只蝙蝠意喻'福到')、二郎神的三眼神将脸(额上多出一只神眼)都是典型代表。它结合了碎脸的繁复和整脸的主色,是川剧脸谱艺术想象力的巅峰。"}
   ],
   "faceChangeMethods": [
-    {"name": "抹脸", "desc": "演员将脸谱颜料预先抹在面部或道具上,演出时以手一抹,瞬间变色。"},
-    {"name": "吹脸", "desc": "将粉末状脸谱藏于器皿之中,演员靠近吹气,粉末附面而成新脸。"},
-    {"name": "扯脸", "desc": "将多层薄脸谱叠戴于面,层层揭扯,是变脸最常见的手法,讲究快、准、稳。"},
+    {"name": "抹脸", "desc": "演员将脸谱颜料预先抹在面部或道具上,演出时以手一抹,瞬间变色。", "video": "https://www.xiaohongshu.com/explore/66857533000000000a005f28?xsec_token=CB3fHdfMnSrcdWZSRcf7N0522tSIFEghcUx9GTmAQywIU=&xsec_source=app_share"},
+    {"name": "吹脸", "desc": "将粉末状脸谱藏于器皿之中,演员靠近吹气,粉末附面而成新脸。", "video": "https://www.xiaohongshu.com/explore/66857533000000000a005f28?xsec_token=CB3fHdfMnSrcdWZSRcf7N0522tSIFEghcUx9GTmAQywIU=&xsec_source=app_share"},
+    {"name": "扯脸", "desc": "将多层薄脸谱叠戴于面,层层揭扯,是变脸最常见的手法,讲究快、准、稳。", "video": "https://www.xiaohongshu.com/explore/66857533000000000a005f28?xsec_token=CB3fHdfMnSrcdWZSRcf7N0522tSIFEghcUx9GTmAQywIU=&xsec_source=app_share"},
+    {"name": "回脸", "desc": "变脸的逆过程,将扯下的脸谱层层贴回原位,还原本来面目,考验手速与记忆,极为罕见。", "video": "https://www.bilibili.com/video/BV1gN411p7Sx/?share_source=copy_web&vd_source=713b320f026191339e1bc47237dc684d"},
     {"name": "其他方式", "desc": "如运气变脸、机械机关变脸等,手法神秘、师徒口传心授,不轻易外传。"}
   ],
   "faq": [
